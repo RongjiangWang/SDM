@@ -1,0 +1,316 @@
+#===============================================================================
+# This is the input file of FORTRAN77 program "sdm2013" for inversion of slip
+# distribution from InSAR data by the Steepst Descent Method (SDM).
+#
+# written by Rongjiang Wang
+# GeoForschungsZentrum Potsdam
+# e-mail: wang@gfz-potsdam.de
+# Phone +49 331 2881209
+# Fax +49 331 2881204
+#
+# Last modified: Potsdam, March, 2013
+#
+#################################################################
+##                                                             ##
+## If not specified otherwise, SI Unit System is used overall! ##
+##                                                             ##
+## For the local Cartesian coordinate system, the Aki's        ##
+## convention is used: x is northward, y is eastward, and z is ##
+## downward                                                    ##
+##                                                             ##
+## No blank line is allowed!                                   ##
+##                                                             ##
+## Any comment line should start with "#"!                     ##
+##                                                             ##
+#################################################################
+#
+#================================================================================
+#
+# 1. selection for homogeneous (1) or layered (0) earth model
+# 2. if homogeneous model is selected, then
+#      Poisson ratio
+#    else
+#      directory of differetial Green's functions, three file names (without
+#      the extension representing source type) for the vertical, radial and
+#      tangential component, respectively. all in char format and in one line.
+#
+#================================================================================
+# 1
+# 0.25
+ 0
+ './grn/'  'uz'  'ur'  'ut'
+#================================================================================
+# FAULT GEOMETRY/A-PRIORI CONDITIONS
+# ==================================
+# 1. idisc: switch (0/1) for subfaults input form,
+#    0 = read discrete patches from files or 1 = automatic discretization
+#================================================================================
+#   idisc
+#-------------------------------------------------------------------------------- 
+    1
+#-------------------------------------------------------------------------------- 
+#
+# IF(idisc = 0)THEN
+#
+# 2. ns: number of subfaults (<= NSMAX in sdmglob.h)
+# 3. parameters for the 1. subfault
+# 4. parameters for the 2. subfault
+# ...
+#
+#        subfault paramters
+#        ==================
+#        n:                 numbering of the subfault
+#        rake1/rake2:       rake range (rake1 <= rake2)
+#                           => a-priori constraint
+#                           (Note definition convention: (-180.0, 180.0) or
+#                           (0.0, 360.0))
+#        max_slip:          upper limit of slip amplitude
+#                           => a-priori constraint
+#        file_name:         data file for discrete patches
+#        iref               selection of the patch reference location
+#
+#   Note:
+#   the file includes one header line followed by 7 columns of data:
+#
+#   latitude[deg], longitude[deg], depth[km], length[km], width[km],
+#   strike[deg], dip[deg]
+#
+#   where (lat, lon, dep) is the reference location of the patch depending
+#   on iref: 1 = upper-left corner, 2 = upper-right corner,
+#            3 = lower-left corner, 4 = lower-right corner,
+#         else = central point (s. Fig.)
+#
+#        definitions for a rectangular fault patch
+#        =========================================
+#
+#                 north(x)
+#                  /
+#                 / | strike
+#            ref 1-----------------------2
+#                |\        p .            \ W
+#                :-\      i .              \ i
+#                |  \    l .                \ d
+#                :90 \  S .                  \ t
+#                |-dip\  .                    \ h
+#                :     \. ) rake               \ 
+#          downward(z)  3-----------------------4
+#                         L   e   n   g   t   h
+#
+#================================================================================
+#   N (total number of subfaults)
+#   n[-]  rake1[deg]  rake2[deg]   max_slip[m]  file_name               iref
+#--------------------------------------------------------------------------------
+#   1
+#   1     50.0        130.0        15.0         './fault_patches.dat'   1
+#--------------------------------------------------------------------------------
+#
+# ELSE
+#
+# 2. ns: number of subfaults (<= NSMAX in sdmglob.h)
+# 3. parameters for the 1. subfault
+# 4. parameters for the 2. subfault
+# ...
+#
+#        subfault paramters
+#        ==================
+#        n:                 numbering of the subfault
+#        top_depth:         depth of top fault edge
+#        btm_depth:         depth of bottom fault edge
+#                           (btm_depth > top_depth)
+#        patch_size:        approximate size of the automatically discretized
+#                           fault patches
+#
+#        rake1/rake2:       rake range (rake1 <= rake2)
+#                           => a-priori constraint
+#                           (Note definition convention: (-180.0, 180.0) or
+#                           (0.0, 360.0))
+#        max_slip:          upper limit of slip amplitude
+#                           => a-priori constraint
+#
+#        nwft:              number (2 <= nwft <= nwft_max) of reference wefts
+#                           defining the curved fault surface, which are not
+#                           necessarily equidistant but approximately
+#                           perpendicular to and arranged along the strike.
+#                           (Note: the size of nwft depends on the curvature of
+#                                  the fault, nwft = 2 for straight fault)
+#
+#        idip               selection of location for where the input dip is
+#                           valid:
+#                           idip = 1 -> upper edge
+#                                  2 -> lower edge
+#                               else -> no input dip (constant dip will be used)
+#
+#        igrid              selection of grid mesh rule:
+#                           igrid = 1 -> possibly uniform patch size
+#                                else -> uniform number of patches along dip
+#
+#        top_lat/lon:       geographic coordinates of the top edge of the
+#                           reference weft
+#        btm_lat/lon:       geographic coordinates of the bottom edge of the
+#                           reference weft
+#
+#        dip:               dip angle (0.0, 180.0) at the selected location (idip)
+#
+#                           (Note: 1. the range of dip angle is redefined: it may
+#                                  be > 0?and < 180?degree, so that connecting
+#                                  subfaults can be represented without to change
+#                                  the strike by 180? additionally top_dip = 90?
+#                                  is only allowed for vertical fault, i.e., in
+#                                  case (top_lat, top_lon) = (btm_lat, btm_lon)
+#                                  2. the dip angle can only be given either for
+#                                  the upper edge or for the lower edge. the dip
+#                                  angle for other locations will be determined
+#                                  automatically by assuming that it varies
+#                                  linearly with depth)
+#
+#================================================================================
+#   N (total number of discontinuous fault segments)
+#   n[-]  top_depth[km]  btm_depth[km]  patch_size[km]
+#         rake1[deg]     rake2[deg]     max_slip[m]
+#         nwft           idip
+#  1_st:  top_lat[deg]   top_lon[deg]   btm_lat[deg] btm_lon[deg]    dip[deg]
+#    ......
+#  n_th:  top_lat[deg]   top_lon[deg]   btm_lat[deg] btm_lon[deg]    dip[deg]
+#--------------------------------------------------------------------------------
+   3
+#---------------------------------------------------------------------------------------------
+   1      0.0           30.0                3.0                                   
+         80.0          180.0               15.0                                  
+         27            1                   0                                           
+         32.6100     105.5000         32.9100      105.1000       60             
+         32.5005     105.2797         32.8005      104.8797       60             
+         32.4838     105.2484         32.7838      104.8484       60             
+         32.4638     105.2150         32.7638      104.815        60             
+         32.4437     105.1805         32.7437      104.7805       60             
+         32.4226     105.1352         32.7226      104.7352       60             
+         32.4081     105.1071         32.7081      104.7071       60             
+         32.3914     105.0758         32.6914      104.6758       60             
+         32.3769     105.0510         32.6769      104.651        60             
+         32.3635     105.0262         32.6635      104.6262       60             
+         32.3434     104.9960         32.6434      104.596        60             
+         32.3267     104.9722         32.6267      104.5722       60             
+         32.3099     104.9431         32.6099      104.5431       60             
+         32.3010     104.9172         32.6010      104.5172       60             
+         32.2798     104.8902         32.5798      104.4902       60             
+         32.2608     104.8687         32.5608      104.4687       60             
+         32.2440     104.8514         32.5440      104.4514       60             
+         32.2295     104.8341         32.5295      104.4341       60             
+         32.2172     104.8082         32.5172      104.4082       60             
+         32.1937     104.7931         32.4937      104.3931       60             
+         32.1713     104.7715         32.4713      104.3715       60             
+         32.1456     104.7456         32.4456      104.3456       60             
+         32.1210     104.7218         32.4210      104.3218       60             
+         32.1030     104.7002         32.4030      104.3002       60             
+         32.0806     104.6797         32.3806      104.2797       60             
+         32.0638     104.6625         32.3638      104.2625       60             
+         32.0381     104.6441         32.3381      104.2441       60             
+#------------------------------------------------------------------------------- 
+ 2    0.0           30.0                3.0                                      
+      80.0          180.0               15.0                                     
+      23        1                                                                
+      32.0179   104.6236           32.3179     104.2236          55              
+      31.9966   104.6160           32.2966	   104.2160          55              
+      31.9741   104.5987           32.2741	   104.1987          55              
+      31.9495   104.5847           32.2495	   104.1847          55              
+      31.9281   104.5696           32.2281	   104.1696          55              
+      31.9091   104.5544           32.2091	   104.1544          55              
+      31.8866   104.5296           32.1866	   104.1296          55              
+      31.8754   104.5123           32.1754	   104.1123          55              
+      31.8664   104.4843           32.1664	   104.0843          55              
+      31.8485   104.4627           32.1485	   104.0627          55              
+      31.8238   104.4357           32.1238	   104.0357          55              
+      31.8002   104.4238           32.1002	   104.0238          55              
+      31.7484   104.4044           32.0484	   104.0044          55              
+      31.7091   104.3547           32.0091	   103.9547          55              
+      31.6877   104.3288           31.9877	   103.9288          55              
+      31.6675   104.3051           31.9675	   103.9051          55              
+      31.6249   104.1551           31.9249	   103.7551          55              
+      31.6035   104.1303           31.9035	   103.7303          55              
+      31.5720   104.1001           31.8720	   103.7001          55              
+      31.5393   104.0720           31.8393	   103.6720          55              
+      31.5122   104.0483           31.8122	   103.6483          55              
+      31.4852   104.0256           31.7852	   103.6256          55              
+      31.4593   103.9997           31.7593	   103.5997          55              
+#--------------------------------------------------------------------------------
+  3  0.0            30.0                3.0                                      
+     80.0           180.0               15.0                                     
+     27         1                                                                
+      31.4593   103.9997              31.7593	103.4997        50                 
+      31.4288   103.9759              31.7288	103.4759        50                 
+      31.4040   103.9511              31.7040	103.4511        50                 
+      31.3780   103.9230              31.6780	103.423         50                 
+      31.3396   103.8895              31.6396	103.3895        50                 
+      31.3091   103.8615              31.6091	103.3615        50                 
+      31.2786   103.8334              31.5786	103.3334        50                 
+      31.2617   103.8107              31.5617	103.3107        50                 
+      31.2402   103.7838              31.5402	103.2838        50                 
+      31.2154   103.7546              31.5154	103.2546        50                 
+      31.1837   103.7459              31.4837	103.2459        50                 
+      31.1599   103.7394              31.4599	103.2394        50                 
+      31.1407   103.7060              31.4407	103.206         50                 
+      31.1181   103.6768              31.4181	103.1768        50                 
+      31.0977   103.6520              31.3977	103.152         50                 
+      31.0751   103.6197              31.3751	103.1197        50                 
+      31.0524   103.5916              31.3524	103.0916        50                 
+      31.0309   103.5538              31.3309	103.0538        50                 
+      30.9981   103.5225              31.2981	103.0225        50                 
+      30.9765   103.4934              31.2765	102.9934        50                 
+      30.9663   103.4761              31.2663	102.9761        50                 
+      30.9403   103.4470              31.2403	102.947         50                 
+      30.9085   103.4114              31.2085	102.9114        50                 
+      30.8745   103.3649              31.1745	102.8649        50                 
+      30.8337   103.3250              31.1337	102.825         50                 
+      30.8019   103.2915              31.1019	102.7915        50                 
+      30.7667   103.2538              31.0667	102.7538        50                                         
+#===============================================================================
+# GPS/InSAR DATA                                                                
+# ==============                                                                
+# 1. number of data sets (<= NINSMAX defined in eqsglob.h), unit in metre of    
+#    data, and number of header lines
+#     
+# 2.1. file names for unfiltered and filtered data set 1 (data format by 4[+2]
+#      columns: lat[deg], lon[deg], data, error, [incidence, azimuth])
+# 2.2. the weighting factor, selection (1/0 = yes/no) for evaluating free offset
+#      in this data set, selection for constant (1) or position dependent (0)
+#      orientation of the displacement, in case of the constant orientation, the
+#      incidence and azimuth angles [deg] (examples: 90.0, 0.0 for x (north)
+#      displacement; 90.0, 90.0 for y (east) displacement; 0.0 0.0 for z (e.g.
+#      leveling) component; 23.0, -100.0 for LOS displacement to ascending
+#      ENVISAT; 23.0, 100.0 for LOS displacement to descending EVISAT)
+#
+#      If the orientation of the surface displacement within one dataset is
+#      position dependent, the data file should have 6 columns with the
+#      incidence and azimuth angles in the 5th and 6th column, respectively.
+#
+# 3.1. for data set 2;
+# ...
+#===============================================================================
+  3  1.0  0
+  './data/ns.dat'  './data/ns.dat'
+  1.00  0  1   90.0    0.0
+  './data/ew.dat'  './data/ew.dat'
+  1.00  0  1   90.0   90.0                    
+  './data/up.dat'  './data/up.dat'
+  1.00  0  1    0.0    0.0               
+#===============================================================================
+# ITERATION PARAMETERS
+# ====================
+# 1. the maximum number of iterations for minimizing the cost function
+#
+# 2. select the observable to be smoothed (1 = smoothing slip distribution; 2=
+#    smoothing stress drop distribution), the normalized smoothing factor
+#===============================================================================
+ 10000
+ 1  0.2
+#===============================================================================
+# OUTPUTS
+# =======
+# 1. file name for slip distribution (only one slip output file independent
+#    whether one or more fault segements are used);
+#
+# 2. file names for best-fitting results to observed data sets, one-to-one
+#    corresponding to the input displacement data files
+#===============================================================================
+ 'slip.dat'
+ 'output-un.dat'   'output-ue.dat'   'output-uz.dat'
+#================================end of input===================================
