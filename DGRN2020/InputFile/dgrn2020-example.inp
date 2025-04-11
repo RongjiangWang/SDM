@@ -1,0 +1,111 @@
+#=============================================================================
+# This is the input file of FORTRAN77 program "dgrn2020" for calculating
+# differential Green's functions of a multi-layered elastic half-space in
+# reference to a homogeneous elastic halfspace (i.e., layering and gravity
+# effects). All results will be stored in the given directory and provide the
+# necessary data base for the program "sdm", "ids", etc. for geodetic and
+# seismo-geodetic source inversions.
+#
+# written by Rongjiang Wang
+# GFZ German Research Centre for Geosciences
+# e-mail: wang@gfz-potsdam.de
+# phone +49 331 2881209
+# fax +49 331 2881204
+#
+# Last modified: Potsdam, April, 2020
+#
+#################################################################
+##                                                             ##
+## Cylindrical coordinates (Z positive downwards!) are used.   ##
+##                                                             ##
+## If not specified otherwise, SI Unit System is used overall! ##
+##                                                             ##
+#################################################################
+#
+#------------------------------------------------------------------------------
+#
+#	PARAMETERS FOR SOURCE-OBSERVATION CONFIGURATIONS
+#	================================================
+# 1. the uniform depth of the observation points [km];
+# 2. number of (horizontal) source-observation distances (> 1), start and end
+#    distances [km], ratio (>= 1.0) between max. and min. sampling interval
+#    (1.0 for equidistant sampling);
+# 3. number of source depths (>= 1), start and end source depths [km], ratio
+#    (>= 1.0) between max. and min. sampling interval (1.0 for equidistant
+#    sampling);
+#
+#    r1,r2 = minimum and maximum horizontal source-observation
+#            distances (r2 > r1 >= 0).
+#    zs1,zs2 = minimum and maximum source depths (zs2 > zs1 > 0).
+#
+#------------------------------------------------------------------------------
+   0.0       
+   51   0.0   1000.0  1.0
+   45   1.0     45.0  1.0
+#------------------------------------------------------------------------------
+#
+#	PARAMETERS FOR WAVENUMBER INTEGRATION
+#	=====================================
+# 1. relative accuracy of the wave-number integration (suggested: 0.1 - 0.01)
+#------------------------------------------------------------------------------
+ 0.01
+#------------------------------------------------------------------------------
+#
+#	PARAMETERS FOR OUTPUT FILES
+#	===========================
+#
+# 1. output directory
+# 2. file names for 3 displacement components (uz, ur, ut)
+#
+#    Note that all file or directory names should not be longer than 80
+#    characters. Directory and subdirectoy names must be separated and ended
+#    by /. All file names should be given without extensions that will be
+#    appended automatically by ".ss" for the strike-slip source, ".ds" for the
+#    dip-slip source, and ".cl" for the compensated linear vector dipole source)
+#
+#------------------------------------------------------------------------------
+ './DGreen/'
+ 'uz'  'ur'  'ut'
+#------------------------------------------------------------------------------
+#
+#	GLOBAL MODEL PARAMETERS
+#	=======================
+# 1. number of data lines of the layered model
+#
+#    The surface and the upper boundary of the half-space as well as the
+#    interfaces at which the poroelastic parameters are continuous, are all
+#    defined by a single data line; All other interfaces, at which the
+#    poroelastic parameters are discontinuous, are all defined by two data
+#    lines (upper-side and lower-side values). This input format could also be
+#    used for a graphic plot of the layered model. Layers which have different
+#    parameter values at top and bottom, will be treated as layers with a
+#    constant gradient, and will be discretised to a number of homogeneous
+#    sublayers. Errors due to the discretisation are limited within about 5%
+#    (changeable, see dgalloc.f).
+#
+# 2....	parameters of the multilayered model
+#
+#
+#------------------------------------------------------------------------------
+ 7                               |int: no_model_lines;
+#------------------------------------------------------------------------------
+# no  depth[km]  vp[km/s]  vs[km/s]  rho[g/cm^3]
+#------------------------------------------------------------------------------
+1       0       5.8000    3.4000    2.6300   
+2   12.00       5.8000    3.4000    2.6300 
+3   12.00       6.3000    3.6200    2.7400 
+4   24.00       6.3000    3.6200    2.7400 
+5   24.00       6.9000    3.9400    2.9200 
+6   40.00       6.9000    3.9400    2.9200 
+7   40.00       7.7000    4.2900    3.1700  
+#=======================end of input===========================================
+
+
+
+
+
+
+
+
+
+
