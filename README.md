@@ -11,3 +11,8 @@ Highlights:
 (4) optional smoothing constraint applied to slip or stress-drop
 
 (5) fast optimization algorithm based on the steepest descent method 
+
+For Windows user, the executable file is provided under the folder WindowsEXE. Linux user may compile the source codes with "gfortran" via a single command like, e.g.,
+~>cd .../SDM2011/SourceCode
+~>gfortran -o sdm2011 *.f -O3
+to get the excutable code sdm2011.
