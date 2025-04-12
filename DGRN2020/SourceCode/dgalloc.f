@@ -4,7 +4,7 @@ c     INDEX PARAMETERS FOR BESSEL FUNCTION TABLES
 c     ===========================================
 c
       integer*4 nbsj,ndbsj
-      parameter(nbsj=512,ndbsj=512)
+      parameter(nbsj=512,ndbsj=1024)
       integer*4 nnbsj,nnbsj1
       parameter(nnbsj=nbsj*ndbsj,nnbsj1=nnbsj+ndbsj)
 c

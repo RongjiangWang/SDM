@@ -317,10 +317,8 @@ c
 	    write(unit(i,istp),'(a)')'# Data in each source depth block'
 	    write(unit(i,istp),'(a)')'# ==============================='
 	    write(unit(i,istp),'(a)')'# 1. line: source layer parameters'
-	    write(unit(i,istp),'(a)')'#  s_depth, la, mu, rho, eta, rlx'
-	    write(unit(i,istp),'(a)')'# 2. line: (f(ir,it=1),ir=1,nr)'
-	    write(unit(i,istp),'(a)')'# 3. line: (f(ir,it=2),ir=1,nr)'
-	    write(unit(i,istp),'(a)')'#  ...'
+	    write(unit(i,istp),'(a)')'#  s_depth, la, mu, rho'
+	    write(unit(i,istp),'(a)')'# 2. line: (f(ir),ir=1,nr)'
 	  endif
         enddo
       enddo
@@ -380,7 +378,7 @@ c
 	    do ir=1,nr-1
 	      write(unit(i,istp),'(E13.5,$)')u(ir,i,istp)
             enddo
-	    write(unit(i,istp),'(E13.5)')u(nr,i,istp)
+	      write(unit(i,istp),'(E13.5)')u(nr,i,istp)
 400         continue
           enddo
         enddo

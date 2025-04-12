@@ -20,7 +20,7 @@ c
       real*8 lahs,muhs
       real*8 cics(4),cms(4),cbs(3),uk(3)
       real*8 y(8,4),cy0(3,4)
-      logical again
+      logical*2 again
 c
       integer*4 iret
       real*8 xokada,yokada,dip
@@ -30,7 +30,7 @@ c
 c
       integer*4 nkmin,nkmax
       real*8 eps,pi2
-      data nkmin,nkmax/256,65536/
+      data nkmin,nkmax/1024,65536/
       data eps,pi2/1.0d-03,6.28318530717959d0/
 c
       cs45=1.d0/dsqrt(2.d0)
@@ -43,7 +43,7 @@ c
         nr0=nr1
       endif
       do ir=nr1,nr2
-        r0(ir)=0.1d0*dsqrt(r(ir)*r(ir)+zdis*zdis)
+        r0(ir)=0.01d0*dsqrt(r(ir)*r(ir)+zdis*zdis)
       enddo
 c
 c     source functions
@@ -69,8 +69,8 @@ c
         enddo
       enddo
 c
-      lahs=la(nno(ls))
-      muhs=mu(nno(ls))
+      lahs=la(nno(lzrec))
+      muhs=mu(nno(lzrec))
       call dgsource(1.d0)
       call dghssrce(1.d0,lahs,muhs)
 c
@@ -81,7 +81,7 @@ c
       enddo
 50    again=.false.
       call dgkern(y,k0,lahs,muhs)
-      fac=k0*dsqrt(k0)*dexp(-0.25d0*(k0*r0(nr1))**2)
+      fac=k0*dsqrt(k0)*dexp(-0.5d0*(k0*r0(nr1))**2)
       do istp=1,4
         uabs=0.d0
         do i=1,5,2
@@ -154,15 +154,15 @@ c
           enddo
         endif
         do ir=nr0,nr2
-	  x=k*r(ir)
-        fac=dsqrt(k)*dexp(-0.25d0*(k*r0(ir))**2)
+	    x=k*r(ir)
+          fac=dsqrt(k)*dexp(-0.5d0*(k*r0(ir))**2)
 c
-c	  bessels functions from pre-calculated tables
+c	    bessels functions from pre-calculated tables
 c
-	  nx=idint(x/dxbsj)
-	  wr=dmod(x/dxbsj,1.d0)
-	  wl=1.d0-wr
-	  if(nx.gt.nnbsj)nx=nnbsj+mod(nx-nnbsj,ndbsj)
+	    nx=idint(x/dxbsj)
+	    wr=dmod(x/dxbsj,1.d0)
+	    wl=1.d0-wr
+	    if(nx.gt.nnbsj)nx=nnbsj+mod(nx-nnbsj,ndbsj)
           do istp=1,4
             cbs(1)=(wl*bsjfct(nx,ms(istp)-1)
      &             +wr*bsjfct(nx+1,ms(istp)-1))*fac
