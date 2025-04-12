@@ -3,28 +3,28 @@
 c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
-      integer ns,nps
+      integer*4 ns,nps
 c
       include 'sdmglob.h'
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     LOCAL WORK SPACES
 c     =================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer i,is,iw,il,ips,jps,ira,iwft,nlen,nwid
-      double precision lat0,lon0,st,st0,di,dl,dw,pn,pe,wid
-      double precision d0,dp0,dp,xp,yp,zp,dx,dy,lenpp
-      double precision dx1,dx2,dy1,dy2,dz1,dz2,dnx,dny,dnz,hdis,vdis
-      double precision x0,y0,bga,bgc,sma,smb,smc,alf,beta,d1,d2,dd
-      double precision ra(2),sm(3,3)
-      double precision xptop(2),yptop(2),xpbtm(2),ypbtm(2)
-      double precision lenp(2),widp(2),depp(2),ditop(2),dibtm(2)
-      double precision x(2,NPSMAX+1),y(2,NPSMAX+1),z(2,NPSMAX+1)
+      integer*4 i,is,iw,il,ips,jps,ira,iwft,nlen,nwid
+      real*8 lat0,lon0,st,st0,di,dl,dw,pn,pe,wid
+      real*8 d0,dp0,dp,xp,yp,zp,dx,dy,lenpp,subarea
+      real*8 dx1,dx2,dy1,dy2,dz1,dz2,dnx,dny,dnz,hdis,vdis
+      real*8 x0,y0,bga,bgc,sma,smb,smc,alf,beta,d1,d2,dd
+      real*8 ra(2),sm(3,3)
+      real*8 xptop(2),yptop(2),xpbtm(2),ypbtm(2)
+      real*8 lenp(2),widp(2),depp(2),ditop(2),dibtm(2)
+      real*8 x(2,NPSMAX+1),y(2,NPSMAX+1),z(2,NPSMAX+1)
       character*180 header
-      logical readok,bigdip
+      logical*2 readok,bigdip
 c
-      double precision fdip
+      real*8 fdip
 c
-      double precision PI,DIPEPS
+      real*8 PI,DIPEPS
       data PI,DIPEPS/3.14159265358979d0,1.0d0/
 c
       ra(1)=0.d0
@@ -54,9 +54,19 @@ c
             dlen(nps)=dlen(nps)*KM2M
             dwid(nps)=dwid(nps)*KM2M
             parea(nps)=dlen(nps)*dwid(nps)
+c
+c           added on May 18, 2024
+c
+            st=strike(nps)*DEG2RAD
+            di=dip(nps)*DEG2RAD
+c
             if(iref(is).ge.1.and.iref(is).le.4)then
-              st=strike(nps)*DEG2RAD
-              di=dip(nps)*DEG2RAD
+c
+c             deleted on May 18, 2024:
+c
+c             st=strike(nps)*DEG2RAD
+c             di=dip(nps)*DEG2RAD
+c
               if(iref(is).eq.1)then
                 pz(nps)=pz(nps)+0.5d0*dwid(nps)*dsin(di)
                 pn=0.5d0*dlen(nps)*dcos(st)
@@ -248,6 +258,7 @@ c
             dx1=x(2,iw-1)-x(1,iw)
             dy1=y(2,iw-1)-y(1,iw)
             dz1=z(2,iw-1)-z(1,iw)
+c
             dx2=x(2,iw)-x(1,iw-1)
             dy2=y(2,iw)-y(1,iw-1)
             dz2=z(2,iw)-z(1,iw-1)
@@ -334,9 +345,16 @@ c
       write(*,*)'------------------------------------------------'
       write(*,'(a,i7)')' total number of point sources: ',nps
 c
+c     update/calculate patchsize
+c
       sarea=0.d0
-      do ips=1,nps
-        sarea=sarea+parea(ips)
+      do is=1,ns
+        subarea=0.d0
+        do ips=nps1(is),nps2(is)
+          subarea=subarea+parea(ips)
+        enddo
+        patchsize(is)=dsqrt(subarea/dble(1+nps2(is)-nps1(is)))
+        sarea=sarea+subarea
       enddo
 c
       do ips=1,nps
@@ -430,5 +448,6 @@ c
           endif
         enddo
       enddo
+c
       return
       end

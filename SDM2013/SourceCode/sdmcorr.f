@@ -1,4 +1,4 @@
-      double precision function sdmcorr(ngd,nobs,nps)
+      real*8 function sdmcorr(ngd,nobs,nps)
       implicit none
 c
 c     calculate the slip gradient part of the cost function
@@ -6,10 +6,10 @@ c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
       include 'sdmglob.h'
-      integer ngd,nobs,nps
+      integer*4 ngd,nobs,nps
 c
-      integer igd,iobs,iobs1,iobs2,ips
-      double precision wei,b0,m0,b2,m2,bm,dm
+      integer*4 igd,iobs,iobs1,iobs2,ips
+      real*8 wei,b0,m0,b2,m2,bm,dm
 c
       b2=0.d0
       m2=0.d0

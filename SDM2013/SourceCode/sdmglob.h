@@ -10,8 +10,8 @@ c     NPSMAX = max. number of discrete point sources per source depth
 c     NGDMAX = max. number of geodetic data sets
 c     NWFTMAX = max. number of reference wefts of a curved fault segment
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer NSMAX,NWFTMAX,NPSMAX,NXYMAX,NZSMAX,NRMAX
-      integer NOBSMAX,NGDMAX
+      integer*4 NSMAX,NWFTMAX,NPSMAX,NXYMAX,NZSMAX,NRMAX
+      integer*4 NOBSMAX,NGDMAX
       parameter(NSMAX=10,NWFTMAX=100,NPSMAX=2000)
       parameter(NZSMAX=101,NRMAX=251)
       parameter(NOBSMAX=5000)
@@ -20,18 +20,18 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     CURVED FAULT SURFACES
 c     =====================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer idisc
-	  integer nwft(NSMAX),ndgrid(NSMAX)
-	  integer nps1(NSMAX),nps2(NSMAX),iref(NSMAX)
-	  double precision rake1(NSMAX),rake2(NSMAX),maxslip(NSMAX)
-      double precision topdep(NSMAX),btmdep(NSMAX),patchsize(NSMAX)
-      double precision toplat(NWFTMAX,NSMAX),btmlat(NWFTMAX,NSMAX)
-	  double precision toplon(NWFTMAX,NSMAX),btmlon(NWFTMAX,NSMAX)
-      double precision topdip(NWFTMAX,NSMAX)
+      integer*4 idisc
+	  integer*4 nwft(NSMAX),ndgrid(NSMAX)
+	  integer*4 nps1(NSMAX),nps2(NSMAX),iref(NSMAX)
+	  real*8 rake1(NSMAX),rake2(NSMAX),maxslip(NSMAX)
+      real*8 topdep(NSMAX),btmdep(NSMAX),patchsize(NSMAX)
+      real*8 toplat(NWFTMAX,NSMAX),btmlat(NWFTMAX,NSMAX)
+	  real*8 toplon(NWFTMAX,NSMAX),btmlon(NWFTMAX,NSMAX)
+      real*8 topdip(NWFTMAX,NSMAX)
 c
-      double precision ramean(NSMAX),rake360(NSMAX)
-      double precision cs1(NSMAX),ss1(NSMAX),cs2(NSMAX),ss2(NSMAX)
-      double precision measdrop(NSMAX),stdsdrop(NSMAX),maxsdrop(NSMAX)
+      real*8 ramean(NSMAX),rake360(NSMAX)
+      real*8 cs1(NSMAX),ss1(NSMAX),cs2(NSMAX),ss2(NSMAX)
+      real*8 measdrop(NSMAX),stdsdrop(NSMAX),maxsdrop(NSMAX)
 c
       common/irects/idisc,nwft,ndgrid,nps1,nps2,iref
 c
@@ -40,7 +40,7 @@ c
      &              ramean,rake360,
      &              cs1,ss1,cs2,ss2,measdrop,stdsdrop,maxsdrop
 c
-      double precision poisson,dspunit,sarea,costref,scostref
+      real*8 poisson,dspunit,sarea,costref,scostref
 c
       common/dglob/poisson,dspunit,sarea,costref,scostref
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,17 +55,17 @@ c                      induced by i-th component of slip at patch ips
 c     divgrn(ips,i,jps): stress drop divergence at patch jps
 c                      induced by i-th component of slip at patch ips
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer iz(NPSMAX)
-      integer ipsl(NPSMAX),ipsr(NPSMAX),ipsu(NPSMAX),ipsd(NPSMAX)
-      double precision plat(NPSMAX),plon(NPSMAX),pz(NPSMAX)
-      double precision d2l(NPSMAX),d2r(NPSMAX)
-      double precision d2t(NPSMAX),d2b(NPSMAX)
-      double precision dlen(NPSMAX),dwid(NPSMAX),parea(NPSMAX)
-      double precision strike(NPSMAX),dip(NPSMAX)
-      double precision pmwei(5,NPSMAX,2)
-      double precision strgrn(NPSMAX,2,NPSMAX,3)
-      double precision dcgrn(NPSMAX,2,NPSMAX,6)
-      double precision strdrop(NPSMAX,3),strdc(NPSMAX,6)
+      integer*4 iz(NPSMAX)
+      integer*4 ipsl(NPSMAX),ipsr(NPSMAX),ipsu(NPSMAX),ipsd(NPSMAX)
+      real*8 plat(NPSMAX),plon(NPSMAX),pz(NPSMAX)
+      real*8 d2l(NPSMAX),d2r(NPSMAX)
+      real*8 d2t(NPSMAX),d2b(NPSMAX)
+      real*8 dlen(NPSMAX),dwid(NPSMAX),parea(NPSMAX)
+      real*8 strike(NPSMAX),dip(NPSMAX)
+      real*8 pmwei(5,NPSMAX,2)
+      real*8 strgrn(NPSMAX,2,NPSMAX,3)
+      real*8 dcgrn(NPSMAX,2,NPSMAX,6)
+      real*8 strdrop(NPSMAX,3),strdc(NPSMAX,6)
 c
       common/ipoints/iz,ipsl,ipsr,ipsu,ipsd
       common/dpoints/plat,plon,pz,d2l,d2r,d2t,d2b,
@@ -78,10 +78,10 @@ c
 c     zs = depth samples
 c     r = distance samples
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      logical hsmodel
-      integer nr,nzs
-      double precision zobs,laobs,muobs
-      double precision r(NRMAX),zs(NZSMAX),muz(NZSMAX)
+      logical*2 hsmodel
+      integer*4 nr,nzs
+      real*8 zobs,laobs,muobs
+      real*8 r(NRMAX),zs(NZSMAX),muz(NZSMAX)
 c
       common /lgreeninfo/hsmodel
       common /greeninfo/zobs,laobs,muobs,r,zs,muz
@@ -98,7 +98,7 @@ c           (m11=m22=-1/2, m33=1) (no tangential component)
 c     Green's function coordinate system:
 c       (z,r,t) = cylindrical with z being downward(!)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      double precision grns(NZSMAX,NRMAX,3,3)
+      real*8 grns(NZSMAX,NRMAX,3,3)
 c
       common/greenfcts/grns
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,17 +110,17 @@ c     the 3 displcement components: ux,uy,uz
 c     NOBSMAX = the max. number of (filtered) data points
 c     NOBS0MAX = the max. number of (unfiltered) data points
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      logical caloffset,csconst(NGDMAX)
-      integer nheader
-      integer nobsj(NGDMAX),seloffset(NGDMAX)
-      double precision dinc_const(NGDMAX),dazi_const(NGDMAX)
-      double precision xcs(NOBSMAX),ycs(NOBSMAX),zcs(NOBSMAX)
-      double precision offset(NGDMAX)
-      double precision latobs(NOBSMAX),lonobs(NOBSMAX)
-      double precision dspobs(NOBSMAX),dspres(NOBSMAX)
-      double precision wf(NOBSMAX)
-      double precision wfsum
-      double precision wfm(NGDMAX),wfmsum(NGDMAX)
+      logical*2 caloffset,csconst(NGDMAX)
+      integer*4 nheader
+      integer*4 nobsj(NGDMAX),seloffset(NGDMAX)
+      real*8 dinc_const(NGDMAX),dazi_const(NGDMAX)
+      real*8 xcs(NOBSMAX),ycs(NOBSMAX),zcs(NOBSMAX)
+      real*8 offset(NGDMAX)
+      real*8 latobs(NOBSMAX),lonobs(NOBSMAX)
+      real*8 dspobs(NOBSMAX),dspres(NOBSMAX)
+      real*8 wf(NOBSMAX)
+      real*8 wfsum
+      real*8 wfm(NGDMAX),wfmsum(NGDMAX)
 c
       common/incidence/caloffset,csconst
       common/gdarno/nheader,nobsj,seloffset
@@ -134,9 +134,9 @@ c     ==========
 c
 c     slpmdl(2,..) = slip components in the strike and dip directions
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer slppos(NPSMAX)
-      double precision slpmdl(NPSMAX,2)
-      double precision dspmdl(NPSMAX,NOBSMAX,2),ddsp(NOBSMAX)
+      integer*4 slppos(NPSMAX)
+      real*8 slpmdl(NPSMAX,2)
+      real*8 dspmdl(NPSMAX,NOBSMAX,2),ddsp(NOBSMAX)
 c
       common/islipm/slppos
       common/dslipm/slpmdl,dspmdl,ddsp
@@ -146,7 +146,7 @@ c     ==================
 c     nwarn = total number of warnings
 c
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer nwarn
+      integer*4 nwarn
 c
       common/warnings/nwarn
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,8 +163,8 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     LOCAL CONSTANTS
 c     ===============
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      double precision DEG2RAD,KM2M,DAY2SEC,REARTH,G0
+      real*8 DEG2RAD,KM2M,DAY2SEC,REARTH,G0
       parameter(DEG2RAD=1.745329252d-02,KM2M=1.0d+03)
       parameter(DAY2SEC=8.64d+04,REARTH=6.371d+06,G0=9.82d+00)
-      double precision LAMREF,MUEREF
+      real*8 LAMREF,MUEREF
       parameter(LAMREF=3.0d+10,MUEREF=3.0d+10)

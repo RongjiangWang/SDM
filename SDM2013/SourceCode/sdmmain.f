@@ -20,13 +20,13 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     LOCAL WORK SPACES
 c     =================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer i,j,is,iobs,nobs,ns,ngd,nps,ierr
-      integer niter,ismooth,idip
-      double precision wgrad,swap,tuser,x,y,z,btmdip
+      integer*4 i,j,is,iobs,nobs,ns,ngd,nps,ierr
+      integer*4 niter,ismooth,idip
+      real*8 wgrad,swap,tuser,x,y,z,btmdip
       character*180 dataline
-      integer time
+      integer*4 time
 c
-      double precision fdip
+      real*8 fdip
 c
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     END DECLARATIONS
@@ -67,7 +67,7 @@ c
       print *,' #               (wang@gfz-potsdam.de)                 #'
       print *,' #                                                     #'
       print *,' #            GeoForschungsZentrum Potsdam             #'
-      print *,' #                    June 2020                        #'
+      print *,' #             Last update May 19, 2024                #'
       print *,' #######################################################'
       print *,'                                                       '
 c      tuser=dble(time()/24/3600)-38.d0*365.25d0
@@ -191,30 +191,31 @@ c
      &                toplat(1,is),toplon(1,is),
      &                btmlat(1,is),btmlon(1,is),
      &                topdip(1,is),patchsize(is),btmdep(is)-topdep(is))
-c
-          if(maxslip(is).le.0.d0)then
-            stop ' Bad parameter max_slip!'
-          endif
-c
-          if(rake1(is).gt.rake2(is))then
-            stop ' Wrong rake range!'
-          endif
-c
-          if(rake1(is).lt.-180.d0)then
-            stop ' Wrong rake difinition used!'
-          endif
-c
-          if(rake1(is).ge.0.d0.and.rake2(is).ge.0.d0)then
-            rake360(is)=360.d0
-          else
-            rake360(is)=0.d0
-          endif
-          cs1(is)=dcos(rake1(is)*DEG2RAD)
-          ss1(is)=dsin(rake1(is)*DEG2RAD)
-          cs2(is)=dcos(rake2(is)*DEG2RAD)
-          ss2(is)=dsin(rake2(is)*DEG2RAD)
         enddo
       endif
+      do is=1,ns
+        if(maxslip(is).le.0.d0)then
+          stop ' Bad parameter max_slip!'
+        endif
+c
+        if(rake1(is).gt.rake2(is))then
+          stop ' Wrong rake range!'
+        endif
+c
+        if(rake1(is).lt.-180.d0)then
+          stop ' Wrong rake difinition used!'
+        endif
+c
+        if(rake1(is).ge.0.d0.and.rake2(is).ge.0.d0)then
+           rake360(is)=360.d0
+        else
+          rake360(is)=0.d0
+        endif
+        cs1(is)=dcos(rake1(is)*DEG2RAD)
+        ss1(is)=dsin(rake1(is)*DEG2RAD)
+        cs2(is)=dcos(rake2(is)*DEG2RAD)
+        ss2(is)=dsin(rake2(is)*DEG2RAD)
+      enddo
 c00000000000000000000000000000000000000000000000000000000000000000000000
 c     READ IN PARAMETERS FOR OBSERVATION DATA
 c     =======================================

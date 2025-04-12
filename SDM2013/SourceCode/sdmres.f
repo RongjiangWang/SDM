@@ -7,12 +7,12 @@ c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
       include 'sdmglob.h'
 c
-      integer ngd,nps
-      double precision rmsres
-      double precision doffset(NGDMAX)
-      double precision maxres(NGDMAX),minres(NGDMAX),meanres(NGDMAX)
+      integer*4 ngd,nps
+      real*8 rmsres
+      real*8 doffset(NGDMAX)
+      real*8 maxres(NGDMAX),minres(NGDMAX),meanres(NGDMAX)
 c
-      integer igd,ips,iobs,iobs1,iobs2
+      integer*4 igd,ips,iobs,iobs1,iobs2
 c
       rmsres=0.d0
       iobs1=0

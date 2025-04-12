@@ -7,15 +7,15 @@ c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
       include 'sdmglob.h'
 c
-      integer ngd,nobs,ns,nps
-      double precision wgrad
-      double precision dslpmdl(NPSMAX,2),doffset(NGDMAX)
+      integer*4 ngd,nobs,ns,nps
+      real*8 wgrad
+      real*8 dslpmdl(NPSMAX,2),doffset(NGDMAX)
 c
-      integer is,ips,igd,iobs,iobs1,iobs2
-      double precision slpabs,fac,ra,rag
-      double precision cs,ss,csin,ssin,cslw,sslw,csup,ssup
-      double precision g1,g2,gc,gclw,gcup,gcin
-      double precision sdgrad(NPSMAX,2)
+      integer*4 is,ips,igd,iobs,iobs1,iobs2
+      real*8 slpabs,fac,ra,rag
+      real*8 cs,ss,csin,ssin,cslw,sslw,csup,ssup
+      real*8 g1,g2,gc,gclw,gcup,gcin
+      real*8 sdgrad(NPSMAX,2)
 c
       call sdmgrad(nps,nobs,sdgrad,wgrad)
       do is=1,ns

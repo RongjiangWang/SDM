@@ -3,7 +3,7 @@
 c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
-      integer ierr
+      integer*4 ierr
 c
       include 'sdmglob.h'
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,20 +18,20 @@ c           (m11=m22=-1/2, m33=1) (no tangential component)
 c     Green's function coordinate system:
 c       (z,r,t) = cylindrical with z being downward(!)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer unit(3,3)
+      integer*4 unit(3,3)
       character*163 greens(3,3)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     LOCAL WORK SPACES
 c     =================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer i,n,ir,izs
-      integer lend,lenf,istp
-      double precision r1,r2,dr,dract,rratio
-      double precision zs0,zs1,zs2,dzs,dzact,zratio
-      double precision las,mus,rhos,rhoobs
-      double precision d1,d2,d3,d4
+      integer*4 i,n,ir,izs
+      integer*4 lend,lenf,istp
+      real*8 r1,r2,dr,dract,rratio
+      real*8 zs0,zs1,zs2,dzs,dzact,zratio
+      real*8 las,mus,rhos,rhoobs
+      real*8 d1,d2,d3,d4
       character*180 dataline
-      logical clsh
+      logical*2 clsh
 c
 c     OPEN GREEN'S FUNCTIONS FILES
 c     ============================

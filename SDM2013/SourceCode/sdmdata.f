@@ -3,12 +3,12 @@
 c
 c     read in geodetic data
 c
-      integer ngd,nobs
+      integer*4 ngd,nobs
 c
       include 'sdmglob.h'
 c
-      integer i,igd
-      double precision lat,lon,obs,d4,d5,d6,obsmn
+      integer*4 i,igd
+      real*8 lat,lon,obs,d4,d5,d6,obsmn
       character*1 text
       character*180 dataline
 c

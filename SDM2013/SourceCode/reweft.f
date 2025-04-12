@@ -1,25 +1,25 @@
       subroutine reweft(nmax,n,nd,lat1,lon1,lat2,lon2,dip,step,z)
       implicit none
 c
-      integer nmax,n,nd
-      double precision step,z
-      double precision lat1(nmax),lon1(nmax)
-      double precision lat2(nmax),lon2(nmax)
-      double precision dip(nmax)
+      integer*4 nmax,n,nd
+      real*8 step,z
+      real*8 lat1(nmax),lon1(nmax)
+      real*8 lat2(nmax),lon2(nmax)
+      real*8 dip(nmax)
 c
 c     Last modified: Potsdam, March, 2013, by R. Wang
 c
-      integer nn
+      integer*4 nn
       parameter(nn=10000)
 c
-      integer i,j,k,l,nl
-      double precision x,y,len,delta,wid,widmax,diptop,dipbtm
-      double precision x1(nn),y1(nn),x2(nn),y2(nn),d(nn)
-      double precision lenk(nn)
+      integer*4 i,j,k,l,nl
+      real*8 x,y,length,delta,width,widthmax,diptop,dipbtm
+      real*8 x1(nn),y1(nn),x2(nn),y2(nn),d(nn)
+      real*8 lenk(nn)
 c
-      double precision fdip
+      real*8 fdip
 c
-      double precision DEG2RAD
+      real*8 DEG2RAD
       data DEG2RAD/1.745329252d-02/
 c
       delta=0.1d0*step
@@ -33,8 +33,8 @@ c
       lenk(1)=0.d0
       do i=2,n
         call disazi(6.371d+06,lat1(i-1),lon1(i-1),lat1(i),lon1(i),x,y)
-        len=dsqrt(x**2+y**2)
-        nl=1+idint(len/delta)
+        length=dsqrt(x**2+y**2)
+        nl=1+idint(length/delta)
         do l=1,nl
           k=k+1
           if(k.gt.nn)then
@@ -45,7 +45,7 @@ c
           x2(k)=lat2(i-1)+(lat2(i)-lat2(i-1))*dble(l)/dble(nl)
           y2(k)=lon2(i-1)+(lon2(i)-lon2(i-1))*dble(l)/dble(nl)
           d(k)=dip(i-1)+(dip(i)-dip(i-1))*dble(l)/dble(nl)
-          lenk(k)=lenk(k-1)+len/dble(nl)
+          lenk(k)=lenk(k-1)+length/dble(nl)
         enddo
       enddo
       n=2+idint(lenk(k)/step)
@@ -73,18 +73,18 @@ c
       lon2(n)=y2(k)
       dip(n)=d(k)
       if(nd.eq.1)then
-        widmax=0.d0
+        widthmax=0.d0
         do i=1,n
           call disazi(6.371d+06,lat1(i),lon1(i),lat2(i),lon2(i),x,y)
           x=dsqrt(x*x+y*y)
           diptop=dip(i)
           dipbtm=fdip(dip(i),x,z)
-          wid=(z/((dipbtm-diptop)*DEG2RAD))
+          width=(z/((dipbtm-diptop)*DEG2RAD))
      &       *dlog(dtan(0.5d0*dipbtm*DEG2RAD)
      &            /dtan(0.5d0*diptop*DEG2RAD))
-          widmax=dmax1(widmax,wid)
+          widthmax=dmax1(widthmax,width)
         enddo
-        nd=1+idint(widmax/step)
+        nd=1+idint(widthmax/step)
       else
         nd=0
       endif

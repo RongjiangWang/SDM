@@ -3,29 +3,29 @@
 c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
-      integer ns,nps,nobs,ismooth
+      integer*4 ns,nps,nobs,ismooth
 c
       include 'sdmglob.h'
 c
-      integer is,ips,jps,iobs,nlarge,ira,il,nl
-      integer i,j,ir,ir1,ir2,izs,izs1,izs2,idiv
-      integer inp,np5,ipsum,npercent
-      double precision dr,ddl,st,di,dux,duy,duz,dur,dut
-      double precision xobs,yobs,dobs,dal,daw
-      double precision eii,exx,eyy,ezz,exy,eyz,ezx
-      double precision si,co,si2,co2,dis,azi
-      double precision w1,w2,psss,psds,pscl,shss,shds
-      double precision dz1,dz2,dpz,dwei,pz1,pz2,xp,yp,px,py
-      double precision strst(0:4),strdi(0:4),strnn(0:4),dl(4),dw(4)
-      double precision csst(NPSMAX),ssst(NPSMAX)
-      double precision cs2st(NPSMAX),ss2st(NPSMAX)
-      double precision csdi(NPSMAX),ssdi(NPSMAX)
-      double precision rnn(3,NPSMAX),rst(3,NPSMAX),rdi(3,NPSMAX)
-      double precision sig(3,3),stress(3)
+      integer*4 is,ips,jps,iobs,nlarge,ira,il,nl
+      integer*4 i,j,ir,ir1,ir2,izs,izs1,izs2,idiv
+      integer*4 inp,np5,ipsum,npercent
+      real*8 dr,ddl,st,di,dux,duy,duz,dur,dut
+      real*8 xobs,yobs,dobs,dal,daw
+      real*8 eii,exx,eyy,ezz,exy,eyz,ezx
+      real*8 si,co,si2,co2,dis,azi
+      real*8 w1,w2,psss,psds,pscl,shss,shds
+      real*8 dz1,dz2,dpz,dwei,pz1,pz2,xp,yp,px,py
+      real*8 strst(0:4),strdi(0:4),strnn(0:4),dl(4),dw(4)
+      real*8 csst(NPSMAX),ssst(NPSMAX)
+      real*8 cs2st(NPSMAX),ss2st(NPSMAX)
+      real*8 csdi(NPSMAX),ssdi(NPSMAX)
+      real*8 rnn(3,NPSMAX),rst(3,NPSMAX),rdi(3,NPSMAX)
+      real*8 sig(3,3),stress(3)
 c
 c     for calling Okada's subroutine DC3D0
 c
-      INTEGER IRET
+      integer*4 IRET
       REAL*4 ALPHA,X,Y,Z,DEPTH,DIPS,DX,DY,DZ,
      &       UX,UY,UZ,UXX,UYX,UZX,UXY,UYY,UZY,UXZ,UYZ,UZZ
 c

@@ -1,4 +1,4 @@
-      double precision function sdmocost(ngd,nobs,doffset)
+      real*8 function sdmocost(ngd,nobs,doffset)
       implicit none
 c
 c     calculate the slip gradient part of the cost function
@@ -6,11 +6,11 @@ c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
       include 'sdmglob.h'
-      integer ngd,nobs
-      double precision doffset(NGDMAX)
+      integer*4 ngd,nobs
+      real*8 doffset(NGDMAX)
 c
-      integer igd,iobs,iobs1,iobs2
-      double precision ocost
+      integer*4 igd,iobs,iobs1,iobs2
+      real*8 ocost
 c
       ocost=0.d0
       iobs1=0

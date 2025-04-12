@@ -1,7 +1,7 @@
-      double precision function fdip(dipup,x,z)
+      real*8 function fdip(dipup,x,z)
       implicit none
 c
-      double precision dipup,x,z
+      real*8 dipup,x,z
 c
 c     calculate dip angle [deg] at the bottom edge of a
 c     curved fault by assuming that the dip varies linearly
@@ -13,11 +13,11 @@ c     z = vertical length of the fault
 c
 c     Last modified: Potsdam, March, 2013, by R. Wang
 c
-      integer i
-      double precision deg2rad,di0,di1,dil,dir,dim,fl,fr,fm
+      integer*4 i
+      real*8 deg2rad,di0,di1,dil,dir,dim,fl,fr,fm
 c
-      integer imax
-      double precision eps
+      integer*4 imax
+      real*8 eps
       data imax,eps/10000,1.0d-06/
 c
       if(x.le.0.d0.and.z.le.0.d0)then
