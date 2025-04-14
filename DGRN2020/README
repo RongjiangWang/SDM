@@ -1,3 +1,3 @@
-FORTRAN code DGRN generates a static (differential) Green's function database for SDM, in the case and only in the case that a multi-layered elastic halfspace model instead of a homogeneous one is selected, when using SDM.
+FORTRAN code DGRN generates a static (differential) Green's function database for SDM, when and only when a multi-layered elastic halfspace model instead of a homogeneous one is selected later during the geodetic inversion.
 
 Note that DGRN calculates only the differential Green's functions, that is, the differences between the layered halfspace model and a homogeneous halfspace model, to improve the computation effeciency. The homogeneous halfspace model is known as the analytical Okada solutions, which will be added automatically back to the differential Green's functions when using SDM.
