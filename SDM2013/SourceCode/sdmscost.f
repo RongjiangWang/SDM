@@ -24,7 +24,7 @@ c
           strdc(ips,i)=sd
           sdsum=sdsum+sd*sd
         enddo
-        scost=scost+parea(ips)*zhy(ips)*sdsum
+        scost=scost+parea(ips)*sdsum
       enddo
 c
       sdmscost=0.5d0*scost
