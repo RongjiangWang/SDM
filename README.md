@@ -33,3 +33,6 @@ Wang, R., B. Schurr, C. Milkereit, Zh. Shao and M. Jin (2011). An improved autom
 Wang, R., S. Parolai, M. Ge, M. Jin, T.R. Walter and J. Zschau (2012). The 2011 Mw 9.0 Tohoku Earthquake: Comparison of GPS and Strong-Motion Data. Bulletin of the Seismological Society of America, doi: 10.1785/0120110264. 
 
 Zhang, Y. (2025). A Simple Method for Improving the Resolution of Geodetic Slip Inversion. Geophysical Journal International 241(3), 1781–1790.
+
+----------------
+Last update: Nov. 20, 2025 by Rongjiang Wang.
