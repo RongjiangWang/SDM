@@ -115,7 +115,7 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       integer*4 nobsj(NGDMAX),seloffset(NGDMAX)
       real*8 dinc_const(NGDMAX),dazi_const(NGDMAX)
       real*8 xcs(NOBSMAX),ycs(NOBSMAX),zcs(NOBSMAX)
-      real*8 offset(NGDMAX)
+      real*8 offset(NGDMAX),do0(NGDMAX),dm0(NGDMAX)
       real*8 latobs(NOBSMAX),lonobs(NOBSMAX)
       real*8 dspobs(NOBSMAX),dspres(NOBSMAX)
       real*8 wf(NOBSMAX)
@@ -126,20 +126,22 @@ c
       common/gdarno/nheader,nobsj,seloffset
       common/projection/dinc_const,dazi_const,xcs,ycs,zcs
       common/positions/offset,latobs,lonobs
-      common/datasets/dspobs,dspres
+      common/datasets/dspobs,dspres,do0,dm0
       common/weighting/wfm,wfmsum,wf,wfsum
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     SLIP MODEL
 c     ==========
 c
 c     slpmdl(2,..) = slip components in the strike and dip directions
+c     zhang(ips) = weighted smoothing of roughness (Yong Zhang, 2025)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       integer*4 slppos(NPSMAX)
       real*8 slpmdl(NPSMAX,2)
       real*8 dspmdl(NPSMAX,NOBSMAX,2),ddsp(NOBSMAX)
+      real*8 zhy(NPSMAX)
 c
       common/islipm/slppos
-      common/dslipm/slpmdl,dspmdl,ddsp
+      common/dslipm/slpmdl,dspmdl,ddsp,zhy
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     WARNING STATISTICS
 c     ==================
@@ -163,6 +165,8 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     LOCAL CONSTANTS
 c     ===============
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      integer*4 izhy
+	  parameter(izhy=1)
       real*8 DEG2RAD,KM2M,DAY2SEC,REARTH,G0
       parameter(DEG2RAD=1.745329252d-02,KM2M=1.0d+03)
       parameter(DAY2SEC=8.64d+04,REARTH=6.371d+06,G0=9.82d+00)

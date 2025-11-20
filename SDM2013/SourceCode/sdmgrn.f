@@ -241,10 +241,14 @@ c
             dcgrn(ips,1,jps,2)=(strst(2)-2.d0*strst(0)+strst(4))*daw
             dcgrn(ips,1,jps,3)=0.d0
             dcgrn(ips,1,jps,4)=0.d0
+            dcgrn(ips,1,jps,5)=0.d0
+            dcgrn(ips,1,jps,6)=0.d0
             dcgrn(ips,2,jps,1)=0.d0
             dcgrn(ips,2,jps,2)=0.d0
             dcgrn(ips,2,jps,3)=(strdi(1)-2.d0*strdi(0)+strdi(3))*dal
             dcgrn(ips,2,jps,4)=(strdi(2)-2.d0*strdi(0)+strdi(4))*daw
+            dcgrn(ips,2,jps,5)=0.d0
+            dcgrn(ips,2,jps,6)=0.d0
           enddo
         else
           do jps=1,nps

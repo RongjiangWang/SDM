@@ -67,14 +67,10 @@ c
       print *,' #               (wang@gfz-potsdam.de)                 #'
       print *,' #                                                     #'
       print *,' #            GeoForschungsZentrum Potsdam             #'
-      print *,' #             Last update May 19, 2024                #'
+      print *,' #             Last update Nov 20, 2025                #'
       print *,' #######################################################'
       print *,'                                                       '
-c      tuser=dble(time()/24/3600)-38.d0*365.25d0
-c      if(tuser.gt.180.d0)then
-c        pause ' Time for demo applications is over.'
-c        stop
-c      endif
+c
       write(*,'(a,$)')' Please type the file name of input data: '
       read(*,'(a)')infile
       open(10,file=infile,status='old')
@@ -292,6 +288,9 @@ c
 c
       write(*,'(a)')' ... calculate the complete Green functions ...'
       call sdmgrn(ns,nps,nobs,ismooth)
+c
+      write(*,'(a)')' ... calculate smoothing weights...'
+      call sdmzhy(nps,nobs)
 c
       write(*,'(a)')' ... derive the slip distribution ...'
       call sdminv(ngd,ns,nps,nobs,niter,wgrad)
