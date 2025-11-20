@@ -8,22 +8,22 @@ c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
       include 'sdmglob.h'
 c
-      integer ngd,nobs,ns,nps
-      double precision wgrad
-      double precision dslpmdl(NPSMAX,2),doffset(NGDMAX)
-      logical converge
+      integer*4 ngd,nobs,ns,nps
+      real*8 wgrad
+      real*8 dslpmdl(NPSMAX,2),doffset(NGDMAX)
+      logical*2 converge
 c
-      integer i,imin,is,ips,igd,iobs,iobs1,iobs2
-      double precision a,b,slp0,dslp,slpabs,dsp,fac
-      double precision x,x0,dx,y,y0,dy,ra,cs,ss,cg,cg1,cg2
-      double precision a1,a1s,a2,a2s,b1,b2,ab,db1,db2,dab,det
-      double precision alfa,beta,scostp,scostm,scost0
-      double precision xp(0:5),yp(0:5)
-      double precision swapslp(NPSMAX,2),swapoffs(NGDMAX)
+      integer*4 i,imin,is,ips,igd,iobs,iobs1,iobs2
+      real*8 a,b,slp0,dslp,slpabs,dsp,fac
+      real*8 x,x0,dx,y,y0,dy,ra,cs,ss,cg,cg1,cg2
+      real*8 a1,a1s,a2,a2s,b1,b2,ab,db1,db2,dab,det
+      real*8 alfa,beta,scostp,scostm,scost0
+      real*8 xp(0:5),yp(0:5)
+      real*8 swapslp(NPSMAX,2),swapoffs(NGDMAX)
 c
-      double precision sdmocost,sdmscost
+      real*8 sdmocost,sdmscost
 c
-      double precision eps,alfamin
+      real*8 eps,alfamin
       data eps,alfamin/1.0d-02,1.0d-06/
 c
       converge=.false.

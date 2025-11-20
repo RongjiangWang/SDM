@@ -3,24 +3,24 @@
 c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
-      integer ns
-      double precision xcs0,ycs0,zcs0,latobs0,lonobs0
-      double precision disp0(4)
+      integer*4 ns
+      real*8 xcs0,ycs0,zcs0,latobs0,lonobs0
+      real*8 disp0(4)
 c
       include 'sdmglob.h'
 c
-      integer i,is,ips,ira,il,nl
-      integer ir,ir1,ir2,izs,izs1,izs2
-      double precision dr,dl,st,di,dux,duy,duz,dur,dut
-      double precision dz1,dz2,pz1,pz2,dpz,px,py,xp,yp
-      double precision xobs0,yobs0
-      double precision csst,ssst,csra,ssra,csdi,ssdi
-      double precision si,co,si2,co2,dis,azi,area,slp2
-      double precision w1,w2,dwei,psss,psds,pscl,shss,shds
+      integer*4 i,is,ips,ira,il,nl
+      integer*4 ir,ir1,ir2,izs,izs1,izs2
+      real*8 dr,dl,st,di,dux,duy,duz,dur,dut
+      real*8 dz1,dz2,pz1,pz2,dpz,px,py,xp,yp
+      real*8 xobs0,yobs0
+      real*8 csst,ssst,csra,ssra,csdi,ssdi
+      real*8 si,co,si2,co2,dis,azi,area,slp2
+      real*8 w1,w2,dwei,psss,psds,pscl,shss,shds
 c
 c     from Okada's subroutine DC3D0:
 c
-      INTEGER IRET
+      integer*4 IRET
       REAL*4 ALPHA,X,Y,Z,DEPTH,DIPS,DX,DY,DZ,
      &       UX,UY,UZ,UXX,UYX,UZX,UXY,UYY,UZY,UXZ,UYZ,UZZ
 c

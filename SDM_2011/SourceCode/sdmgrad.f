@@ -8,12 +8,12 @@ c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
       include 'sdmglob.h'
 c
-      integer nobs,nps
-      double precision wgrad
-      double precision sdgrad(NPSMAX,2)
+      integer*4 nobs,nps
+      real*8 wgrad
+      real*8 sdgrad(NPSMAX,2)
 c
-      integer i,iobs,ips,jps
-      double precision og,sg
+      integer*4 i,iobs,ips,jps
+      real*8 og,sg
 c
       do ips=1,nps
         do i=1,2
@@ -37,7 +37,7 @@ c
      &         +dcgrn(ips,i,jps,5)*strdc(jps,5)
      &         +dcgrn(ips,i,jps,6)*strdc(jps,6))
           enddo
-          sdgrad(ips,i)=og-wgrad*sg
+          sdgrad(ips,i)=og-wgrad*zhy(ips)*sg
         enddo
       enddo
 c

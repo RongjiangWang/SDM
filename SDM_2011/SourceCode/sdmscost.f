@@ -1,4 +1,4 @@
-      double precision function sdmscost(nps,slip)
+      real*8 function sdmscost(nps,slip)
       implicit none
 c
 c     calculate the slip gradient part of the cost function
@@ -6,11 +6,11 @@ c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
       include 'sdmglob.h'
-      integer nps
-      double precision slip(NPSMAX,2)
+      integer*4 nps
+      real*8 slip(NPSMAX,2)
 c
-      integer i,ips,jps
-      double precision scost,sd,sdsum
+      integer*4 i,ips,jps
+      real*8 scost,sd,sdsum
 c
       scost=0.d0
       do ips=1,nps
@@ -24,7 +24,7 @@ c
           strdc(ips,i)=sd
           sdsum=sdsum+sd*sd
         enddo
-        scost=scost+parea(ips)*sdsum
+        scost=scost+parea(ips)*zhy(ips)*sdsum
       enddo
 c
       sdmscost=0.5d0*scost

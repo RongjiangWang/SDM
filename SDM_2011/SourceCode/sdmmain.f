@@ -20,11 +20,11 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     LOCAL WORK SPACES
 c     =================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer i,j,is,iobs,nobs,ns,ngd,nps,ierr
-      integer niter,ismooth
-      double precision wgrad,swap,tuser
+      integer*4 i,j,is,iobs,nobs,ns,ngd,nps,ierr
+      integer*4 niter,ismooth
+      real*8 wgrad,swap,tuser
       character*180 dataline
-      integer time
+      integer*4 time
 c
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     END DECLARATIONS
@@ -65,14 +65,10 @@ c
       print *,' #               (wang@gfz-potsdam.de)                 #'
       print *,' #                                                     #'
       print *,' #            GeoForschungsZentrum Potsdam             #'
-      print *,' #                     June 2011                       #'
+      print *,' #                Last modified 2025                   #'
       print *,' #######################################################'
       print *,'                                                       '
-c      tuser=dble(time()/24/3600)-38.d0*365.25d0
-c      if(tuser.gt.180.d0)then
-c        pause ' Time for demo applications is over.'
-c        stop
-c      endif
+c
       write(*,'(a,$)')' Please type the file name of input data: '
       read(*,'(a)')infile
       open(10,file=infile,status='old')
@@ -231,6 +227,9 @@ c
 c
       write(*,'(a)')' ... calculate the complete Green functions ...'
       call sdmgrn(ns,nps,nobs,ismooth)
+c
+      write(*,'(a)')' ... calculate smoothing weights...'
+      call sdmzhy(nps,nobs)
 c
       write(*,'(a)')' ... derive the slip distribution ...'
       call sdminv(ngd,ns,nps,nobs,niter,wgrad)

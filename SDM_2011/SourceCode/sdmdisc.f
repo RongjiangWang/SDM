@@ -3,25 +3,25 @@
 c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
-      integer ns,nps
+      integer*4 ns,nps
 c
       include 'sdmglob.h'
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     LOCAL WORK SPACES
 c     =================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer i,is,iw,il,ips,jps,ira
-      double precision lat0,lon0,st,st0,di,dl,dw,pn,pe
-      double precision dx,dy,xp,yp,zp,d0,dp0,dp
-      double precision dx1,dx2,dy1,dy2,dz1,dz2,dnx,dny,dnz,hdis,vdis
-      double precision x0,y0,bga,bgc,sma,smb,smc,alf,beta,d1,d2,dd
-      double precision ra(2),sm(3,3)
-      double precision x(NPSMAX+1,NPSMAX+1),y(NPSMAX+1,NPSMAX+1)
-      double precision z(NPSMAX+1,NPSMAX+1)
-      double precision dip1(NPSMAX+1),dip2(NPSMAX+1)
-      double precision lft(NFTMAX),xft(NFTMAX),yft(NFTMAX)
+      integer*4 i,is,iw,il,ips,jps,ira
+      real*8 lat0,lon0,st,st0,di,dl,dw,pn,pe
+      real*8 dx,dy,xp,yp,zp,d0,dp0,dp
+      real*8 dx1,dx2,dy1,dy2,dz1,dz2,dnx,dny,dnz,hdis,vdis
+      real*8 x0,y0,bga,bgc,sma,smb,smc,alf,beta,d1,d2,dd
+      real*8 ra(2),sm(3,3)
+      real*8 x(NPSMAX+1,NPSMAX+1),y(NPSMAX+1,NPSMAX+1)
+      real*8 z(NPSMAX+1,NPSMAX+1)
+      real*8 dip1(NPSMAX+1),dip2(NPSMAX+1)
+      real*8 lft(NFTMAX),xft(NFTMAX),yft(NFTMAX)
 c
-      double precision PI,EPSDIP
+      real*8 PI,EPSDIP
       data PI,EPSDIP/3.14159265358979d0,0.1d0/
 c
       ra(1)=0.d0

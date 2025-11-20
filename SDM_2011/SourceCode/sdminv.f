@@ -3,30 +3,30 @@
 c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
-      integer ngd,ns,nps,nobs,niter
-      double precision wg0
+      integer*4 ngd,ns,nps,nobs,niter
+      real*8 wg0
 c
       include 'sdmglob.h'
 c
-      integer i,j,is,igd,iobs,iobs1,iobs2,ips,ira,iter
-      integer ipsmax(NSMAX)
-      double precision ra,rac,st,di,sdam,slp,rake,farea
-      double precision wgrad,misfit,roughness
-      double precision meanslip,slpabs,ms,mw,me,mep,fac,corr
-      double precision rmsres,cost,ocost,scost
-      double precision sm(3,3),smp(3,3),swap(100)
-      double precision ssm(NSMAX),dsm(NSMAX),slpm(NSMAX),slpmax(NSMAX)
-      double precision maxres(NGDMAX),minres(NGDMAX),meanres(NGDMAX)
-      double precision swapslp(NPSMAX,2),swapoffs(NGDMAX)
+      integer*4 i,j,is,igd,iobs,iobs1,iobs2,ips,ira,iter
+      integer*4 ipsmax(NSMAX)
+      real*8 ra,rac,st,di,sdam,slp,rake,farea
+      real*8 wgrad,misfit,roughness
+      real*8 meanslip,slpabs,ms,mw,me,mep,fac,corr
+      real*8 rmsres,cost,ocost,scost
+      real*8 sm(3,3),smp(3,3),swap(100)
+      real*8 ssm(NSMAX),dsm(NSMAX),slpm(NSMAX),slpmax(NSMAX)
+      real*8 maxres(NGDMAX),minres(NGDMAX),meanres(NGDMAX)
+      real*8 swapslp(NPSMAX,2),swapoffs(NGDMAX)
       character logfile*80,text*80
-      double precision sdmocost,sdmscost,sdmcorr
-      logical converge
+      real*8 sdmocost,sdmscost,sdmcorr
+      logical*2 converge
 c
-      integer icf,ncf
+      integer*4 icf,ncf
       parameter(ncf=10)
-      double precision cf1,cf2,cf(2*ncf)
+      real*8 cf1,cf2,cf(2*ncf)
 c
-      double precision eps
+      real*8 eps
       data eps/1.0d-04/
 c
       wgrad=0.d0
@@ -193,6 +193,11 @@ c
         misfit=dsqrt(ocost/costref)
         scost=sdmscost(nps,swapslp)
         if(scostref.gt.0.d0.and.wgrad.le.0.d0)then
+c
+c         fixing normalized smoothing factor
+c         scostref = roughness after the first iteration
+c         costref = data variance
+c
           wgrad=wg0*costref/scostref
         endif
         roughness=dsqrt(scost/costref)

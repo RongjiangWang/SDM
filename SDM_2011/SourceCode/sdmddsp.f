@@ -6,10 +6,10 @@ c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
       include 'sdmglob.h'
-      integer nobs,nps
-      double precision slip(NPSMAX,2)
+      integer*4 nobs,nps
+      real*8 slip(NPSMAX,2)
 c
-      integer ips,iobs
+      integer*4 ips,iobs
 c
       do iobs=1,nobs
         ddsp(iobs)=0.d0

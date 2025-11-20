@@ -4,10 +4,10 @@ c
 c	First implemented in Potsdam, Feb, 1999
 c	Last modified: Potsdam, Nov, 2001, by R. Wang
 c
-	integer unit
+	integer*4 unit
 	character line*180,char*1
 c
-	integer i
+	integer*4 i
 c
 c	this subroutine reads over all comment lines starting with "#".
 c

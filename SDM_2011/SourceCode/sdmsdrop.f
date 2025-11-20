@@ -6,11 +6,11 @@ c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
       include 'sdmglob.h'
-      integer ns,nps
+      integer*4 ns,nps
 c
-      integer i,is,ips,jps
-      double precision sd,sdss,sdds,sdnn,weisum,smsum,smmax,sm90
-      double precision wei(NPSMAX),sm(NPSMAX)
+      integer*4 i,is,ips,jps
+      real*8 sd,sdss,sdds,sdnn,weisum,smsum,smmax,sm90
+      real*8 wei(NPSMAX),sm(NPSMAX)
 c
       do ips=1,nps
         do i=1,3

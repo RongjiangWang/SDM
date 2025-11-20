@@ -1,13 +1,13 @@
 	subroutine disazi(rearth,lateq,loneq,latst,lonst,xnorth,yeast)
 	implicit none
 c
-	double precision rearth,lateq,loneq,latst,lonst,xnorth,yeast
+	real*8 rearth,lateq,loneq,latst,lonst,xnorth,yeast
 c
-	integer iangle
-	double precision latb,lonb,latc,lonc,angleb,anglec
-	double precision dis,a,b,c,s,aa
+	integer*4 iangle
+	real*8 latb,lonb,latc,lonc,angleb,anglec
+	real*8 dis,a,b,c,s,aa
 c
-	double precision PI,PI2,DEGTORAD
+	real*8 PI,PI2,DEGTORAD
 	data PI,PI2/3.14159265358979d0,6.28318530717959d0/
 	data DEGTORAD/1.745329252d-02/
 c

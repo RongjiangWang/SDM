@@ -3,18 +3,18 @@
 c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
-      integer ns,nps,ngd
+      integer*4 ns,nps,ngd
 c
       include 'sdmglob.h'
 c
-      integer i,j,is,ira,ips,igd,iobs,nobs0
-      double precision latobs0,lonobs0,dspobs0,slp,sd,rake,st,di
-      double precision dinc0,dazi0,xcs0,ycs0,zcs0,cs,ss,sdam,delta0
-      double precision premean,obsmean,dspres0,dspres1,dspres2,dspres3
-      double precision dsp0(4),ra(2),sm(3,3)
+      integer*4 i,j,is,ira,ips,igd,iobs,nobs0
+      real*8 latobs0,lonobs0,dspobs0,slp,sd,rake,st,di
+      real*8 dinc0,dazi0,xcs0,ycs0,zcs0,cs,ss,sdam,delta0
+      real*8 premean,obsmean,dspres0,dspres1,dspres2,dspres3
+      real*8 dsp0(4),ra(2),sm(3,3)
       character*1 text,txtis*2,slipfile*80
 c
-      integer nobs0max
+      integer*4 nobs0max
       data nobs0max/10000000/
 c
       write(*,'(a)')' ...output slip model ...'
