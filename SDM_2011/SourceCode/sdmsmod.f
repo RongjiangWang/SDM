@@ -11,7 +11,7 @@ c
       integer*4 i,ips,jps
       real*8 area,sd(3)
 c
-      if(ismooth.eq.1)then
+      if(ismooth.ne.2)then
         sdmsmod=0.d0
         area=0.d0
         do ips=1,nps
