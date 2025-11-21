@@ -1,4 +1,4 @@
-      subroutine sdmzhy(nps,nobs)
+      subroutine sdmzhy(nps,nobs,ismooth)
       implicit none
 c
 c     calculate location-dependent weights of roughness smoothing suggested by Zhang (2025)
@@ -6,12 +6,12 @@ c
 c     Last modified: Potsdam, Oct, 2025, by R. Wang
 c
       include 'sdmglob.h'
-      integer*4 nps,nobs
+      integer*4 nps,nobs,ismooth
 c
       integer*4 ips,iobs
       real*8 zhysum
 c
-      if(izhy.eq.3)then
+      if(ismooth.eq.3)then
         zhysum=0.d0
         do ips=1,nps
           zhy(ips)=0.d0
