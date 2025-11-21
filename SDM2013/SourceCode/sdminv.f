@@ -1,9 +1,9 @@
-      subroutine sdminv(ngd,ns,nps,nobs,niter,wg0)
+      subroutine sdminv(ngd,ns,nps,nobs,niter,wg0,ismooth)
       implicit none
 c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
-      integer*4 ngd,ns,nps,nobs,niter
+      integer*4 ngd,ns,nps,nobs,niter,ismooth
       real*8 wg0
 c
       include 'sdmglob.h'
@@ -12,14 +12,14 @@ c
       integer*4 ipsmax(NSMAX)
       real*8 ra,rac,st,di,sdam,slp,rake,farea
       real*8 wgrad,misfit,roughness
-      real*8 meanslip,slpabs,ms,mw,me,mep,fac,corr,muloc
+      real*8 meanslip,slpabs,ms,mw,me,mep,fac,corr
       real*8 rmsres,cost,ocost,scost
       real*8 sm(3,3),smp(3,3),swap(100)
       real*8 ssm(NSMAX),dsm(NSMAX),slpm(NSMAX),slpmax(NSMAX)
       real*8 maxres(NGDMAX),minres(NGDMAX),meanres(NGDMAX)
       real*8 swapslp(NPSMAX,2),swapoffs(NGDMAX)
       character logfile*80,text*80
-      real*8 sdmocost,sdmscost,sdmcorr
+      real*8 sdmocost,sdmscost,sdmcorr,sdmsmod
       logical*2 converge
 c
       integer*4 icf,ncf
@@ -27,7 +27,7 @@ c
       real*8 cf1,cf2,cf(2*ncf)
 c
       real*8 eps
-      data eps/1.0d-04/
+      data eps/1.0d-06/
 c
       wgrad=0.d0
       if(niter.gt.0)then
@@ -46,9 +46,9 @@ c
         open(20,file=slipout,status='old')
         read(20,'(a)')text
         do ips=1,nps
-          read(20,*)(swap(i),i=1,7)
-          slpmdl(ips,1)=swap(6)
-          slpmdl(ips,2)=-swap(7)
+          read(20,*)(swap(i),i=1,9)
+          slpmdl(ips,1)=swap(8)
+          slpmdl(ips,2)=-swap(9)
           swapslp(ips,1)=slpmdl(ips,1)
           swapslp(ips,2)=slpmdl(ips,2)
         enddo
@@ -126,15 +126,15 @@ c
         me=0.d0
         do is=1,ns
           do ips=nps1(is),nps2(is)
-            if(hsmodel)then
-              muloc=MUEREF
-            else
-              muloc=muz(iz(ips))
-            endif
             st=strike(ips)*DEG2RAD
             di=dip(ips)*DEG2RAD
             ra=datan2(slpmdl(ips,2),slpmdl(ips,1))
             fac=parea(ips)*dsqrt(slpmdl(ips,2)**2+slpmdl(ips,1)**2)
+            if(hsmodel)then
+              fac=fac*3.d+10
+            else
+              fac=fac*muz(iz(ips))
+            endif
             ms=ms+fac
 c
             smp(1,1)=-dsin(di)*dcos(ra)*dsin(2.d0*st)
@@ -151,7 +151,7 @@ c
 c
             do i=1,3
               do j=i,3
-                sm(i,j)=sm(i,j)+smp(i,j)*fac*muloc
+                sm(i,j)=sm(i,j)+smp(i,j)*fac
               enddo
             enddo
 c
@@ -162,7 +162,7 @@ c
                 mep=mep+smp(i,j)**2
               enddo
             enddo
-            me=me+dsqrt(mep)*fac*muloc
+            me=me+dsqrt(mep)*fac
           enddo
         enddo
         if(me.gt.0.d0)then
@@ -171,7 +171,7 @@ c
           me=0.d0
         endif
         if(ms.gt.0.d0)then
-          ms=(dlog10(ms*3.d+10)-9.1d0)/1.5d0
+          ms=(dlog10(ms)-9.1d0)/1.5d0
         else
           ms=0.d0
         endif
@@ -193,9 +193,14 @@ c
         misfit=dsqrt(ocost/costref)
         scost=sdmscost(nps,swapslp)
         if(scostref.gt.0.d0.and.wgrad.le.0.d0)then
+c
+c         fixing normalized smoothing factor
+c         scostref = roughness after the first iteration
+c         costref = data variance
+c
           wgrad=wg0*costref/scostref
         endif
-        roughness=dsqrt(scost/costref)
+        roughness=scost/sdmsmod(ns,nps,ismooth)
         write(30,1000)iter,mw,misfit,roughness
         write(*, 1000)iter,mw,misfit,roughness
         write(32,1000)iter,mw,misfit,roughness
