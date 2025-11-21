@@ -13,18 +13,18 @@ c
       real*8 scost,sd,sdsum
 c
       scost=0.d0
-      do ips=1,nps
+      do jps=1,nps
         sdsum=0.d0
         do i=1,6
           sd=0.d0
-          do jps=1,nps
-            sd=sd+slip(jps,1)*dcgrn(jps,1,ips,i)
-     &           +slip(jps,2)*dcgrn(jps,2,ips,i)
+          do ips=1,nps
+            sd=sd+slip(ips,1)*dcgrn(ips,1,jps,i)
+     &           +slip(ips,2)*dcgrn(ips,2,jps,i)
           enddo
-          strdc(ips,i)=sd
+          strdc(jps,i)=sd
           sdsum=sdsum+sd*sd
         enddo
-        scost=scost+parea(ips)*sdsum
+        scost=scost+parea(jps)*sdsum
       enddo
 c
       sdmscost=0.5d0*scost
