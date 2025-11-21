@@ -213,27 +213,25 @@ c
               strst(i)=0.d0
               strdi(i)=0.d0
             enddo
-            if(ips.eq.jps)then
+            if(ips.eq.jps.and.
+     &         ipsu(jps).gt.0.and.ipsd(jps).gt.0.and.
+     &         ipsl(jps).gt.0.and.ipsr(jps).gt.0)then
               strst(0)=1.d0
               strdi(0)=1.d0
-              if(ipsu(jps).eq.-1)then
-                strst(2)=strst(0)
-                strdi(2)=strdi(0)
-              endif
             endif
-            if(ips.eq.ipsl(jps))then
+            if(ips.eq.ipsl(jps).and.ipsr(jps).gt.0)then
               strst(1)=1.d0
               strdi(1)=1.d0
             endif
-            if(ips.eq.ipsr(jps))then
+            if(ips.eq.ipsr(jps).and.ipsl(jps).gt.0)then
               strst(3)=1.d0
               strdi(3)=1.d0
             endif
-            if(ips.eq.ipsu(jps))then
+            if(ips.eq.ipsu(jps).and.ipsd(jps).gt.0)then
               strst(2)=1.d0
               strdi(2)=1.d0
             endif
-            if(ips.eq.ipsd(jps))then
+            if(ips.eq.ipsd(jps).and.ipsu(jps).gt.0)then
               strst(4)=1.d0
               strdi(4)=1.d0
             endif
@@ -243,6 +241,7 @@ c
             dcgrn(ips,1,jps,4)=0.d0
             dcgrn(ips,1,jps,5)=0.d0
             dcgrn(ips,1,jps,6)=0.d0
+c
             dcgrn(ips,2,jps,1)=0.d0
             dcgrn(ips,2,jps,2)=0.d0
             dcgrn(ips,2,jps,3)=(strdi(1)-2.d0*strdi(0)+strdi(3))*dal
