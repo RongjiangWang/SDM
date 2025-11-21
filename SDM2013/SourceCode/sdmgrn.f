@@ -9,7 +9,7 @@ c
 c
       integer*4 is,ips,jps,iobs,nlarge,ira,il,nl
       integer*4 i,j,ir,ir1,ir2,izs,izs1,izs2,idiv
-      integer*4 inp,np5,ipsum,npercent
+      integer*4 np5,ipsum,npercent
       real*8 dr,ddl,st,di,dux,duy,duz,dur,dut
       real*8 xobs,yobs,dobs,dal,daw
       real*8 eii,exx,eyy,ezz,exy,eyz,ezx
@@ -89,8 +89,7 @@ c
       DS(2)=1.0
       DISL3=0.0
 c
-      np5=max0(1,nps/20)
-      inp=1
+      np5=nps*5
 c
       ipsum=0
       write(*,'(a)')' analytical Okada solutions - please wait: '
@@ -205,7 +204,7 @@ c
           enddo
         enddo
 c
-        if(ismooth.eq.1)then
+        if(ismooth.ne.2)then
           do jps=1,nps
             dal=1.d0/dlen(jps)**2
             daw=1.d0/dwid(jps)**2
@@ -347,20 +346,18 @@ c
           enddo
         endif
 c
-        if(ips.eq.inp*np5)then
-          npercent=inp*5
+        if(ips.gt.0.and.nps.ge.20.and.mod(100*ips,np5).eq.0)then
+          npercent=500*ips/np5
           write(*,'(a,i3,a)')'    - - - ',npercent,
      &                       '% calculated ...'
-          inp=inp+1
         endif
       enddo
 c
-      if(hsmodel)return
+      if(hsmodel)goto 500
 c
       dr=r(2)-r(1)
       ipsum=0
       write(*,'(a)')' numerical layering effect - please wait: '
-      inp=1
       do ips=1,nps
 c
         pz1=pz(ips)-0.5d0*dwid(ips)*ssdi(ips)
@@ -500,18 +497,21 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             enddo
           enddo
         enddo
-        if(ips.eq.inp*np5)then
-          npercent=inp*5
+        if(ips.gt.0.and.nps.ge.20.and.mod(100*ips,np5).eq.0)then
+          npercent=500*ips/np5
           write(*,'(a,i3,a)')'    - - - ',npercent,
      &                       '% of the Green functions calculated ...'
-          inp=inp+1
         endif
       enddo
+c
+c     for using Zhang's weighted smoothing of roughness
+c
+500   continue
+c
       if(nlarge.gt.0)then
         nwarn=nwarn+nlarge
         write(*,'(a,i5,a)')' Warning: ',nlarge,' too large distances'
      &                   //' exceed the Green-function coverage!'
       endif
-c
       return
       end
