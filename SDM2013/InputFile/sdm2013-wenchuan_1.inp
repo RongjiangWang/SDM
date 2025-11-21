@@ -299,8 +299,9 @@
 # ====================
 # 1. the maximum number of iterations for minimizing the cost function
 #
-# 2. select the observable to be smoothed (1 = smoothing slip distribution; 2=
-#    smoothing stress drop distribution), the normalized smoothing factor
+# 2. select the observable to be smoothed (1 = smoothing slip distribution; 2 =
+#    smoothing stress drop distribution, 3 = smoothing slip distribution with
+#    improved resolution by Zhang's approach), the normalized smoothing factor
 #===============================================================================
  200
  2  0.5

@@ -310,8 +310,9 @@
 # 1. file name for slip distribution (only one slip output file independent
 #    whether one or more fault segements are used);
 #
-# 2. file names for best-fitting results to observed data sets, one-to-one
-#    corresponding to the input displacement data files
+# 2. select the observable to be smoothed (1 = smoothing slip distribution; 2 =
+#    smoothing stress drop distribution, 3 = smoothing slip distribution with
+#    improved resolution by Zhang's approach), the normalized smoothing factor
 #===============================================================================
  'slip.dat'
  'output-un.dat'   'output-ue.dat'   'output-uz.dat'
