@@ -291,7 +291,7 @@ c
       call sdmgrn(ns,nps,nobs,ismooth)
 c
       write(*,'(a)')' ... calculate smoothing weights...'
-      call sdmzhy(nps,nobs)
+      call sdmzhy(nps,nobs,ismooth)
 c
       write(*,'(a)')' ... derive the slip distribution ...'
       call sdminv(ngd,ns,nps,nobs,niter,wgrad)

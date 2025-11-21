@@ -165,8 +165,6 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     LOCAL CONSTANTS
 c     ===============
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer*4 izhy
-	  parameter(izhy=1)
       real*8 DEG2RAD,KM2M,DAY2SEC,REARTH,G0
       parameter(DEG2RAD=1.745329252d-02,KM2M=1.0d+03)
       parameter(DAY2SEC=8.64d+04,REARTH=6.371d+06,G0=9.82d+00)
