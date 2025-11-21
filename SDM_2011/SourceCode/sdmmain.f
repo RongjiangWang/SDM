@@ -189,8 +189,9 @@ c00000000000000000000000000000000000000000000000000000000000000000000000
 c
 c     ismooth = 1: smoothing slip
 c               2: smoothing stress drop
+c               3: smoothing slip by Zhangs approach
 c
-      if(ismooth.lt.1.or.ismooth.gt.2)then
+      if(ismooth.lt.1.or.ismooth.gt.3)then
         stop ' Error in sdmmain: wrong ´smoothing selection!'
       endif
       if(wgrad.lt.0.d0)wgrad=0.d0

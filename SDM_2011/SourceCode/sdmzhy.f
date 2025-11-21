@@ -11,7 +11,7 @@ c
       integer*4 ips,iobs
       real*8 zhysum
 c
-      if(izhy.eq.1)then
+      if(izhy.eq.3)then
         zhysum=0.d0
         do ips=1,nps
           zhy(ips)=0.d0

@@ -204,7 +204,7 @@ c
           enddo
         enddo
 c
-        if(ismooth.eq.1)then
+        if(ismooth.ne.2)then
           do jps=1,nps
             dal=1.d0/dlen(jps)**2
             daw=1.d0/dwid(jps)**2
