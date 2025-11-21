@@ -1,9 +1,9 @@
-      subroutine sdminv(ngd,ns,nps,nobs,niter,wg0)
+      subroutine sdminv(ngd,ns,nps,nobs,niter,wg0,ismooth)
       implicit none
 c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
-      integer*4 ngd,ns,nps,nobs,niter
+      integer*4 ngd,ns,nps,nobs,niter,ismooth
       real*8 wg0
 c
       include 'sdmglob.h'
@@ -19,7 +19,7 @@ c
       real*8 maxres(NGDMAX),minres(NGDMAX),meanres(NGDMAX)
       real*8 swapslp(NPSMAX,2),swapoffs(NGDMAX)
       character logfile*80,text*80
-      real*8 sdmocost,sdmscost,sdmcorr
+      real*8 sdmocost,sdmscost,sdmcorr,sdmsmod
       logical*2 converge
 c
       integer*4 icf,ncf
@@ -27,7 +27,7 @@ c
       real*8 cf1,cf2,cf(2*ncf)
 c
       real*8 eps
-      data eps/1.0d-04/
+      data eps/1.0d-08/
 c
       wgrad=0.d0
       if(niter.gt.0)then
@@ -200,7 +200,7 @@ c         costref = data variance
 c
           wgrad=wg0*costref/scostref
         endif
-        roughness=dsqrt(scost/costref)
+        roughness=scost/sdmsmod(ns,nps,ismooth)
         write(30,1000)iter,mw,misfit,roughness
         write(*, 1000)iter,mw,misfit,roughness
         write(32,1000)iter,mw,misfit,roughness

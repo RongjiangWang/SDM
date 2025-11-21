@@ -232,7 +232,7 @@ c
       call sdmzhy(nps,nobs)
 c
       write(*,'(a)')' ... derive the slip distribution ...'
-      call sdminv(ngd,ns,nps,nobs,niter,wgrad)
+      call sdminv(ngd,ns,nps,nobs,niter,wgrad,ismooth)
 c
       call sdmout(ns,nps,ngd)
 c
