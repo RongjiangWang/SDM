@@ -27,7 +27,7 @@ c
       real*8 cf1,cf2,cf(2*ncf)
 c
       real*8 eps
-      data eps/1.0d-08/
+      data eps/1.0d-06/
 c
       wgrad=0.d0
       if(niter.gt.0)then
