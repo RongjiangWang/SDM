@@ -212,27 +212,37 @@ c
               strst(i)=0.d0
               strdi(i)=0.d0
             enddo
-            if(ips.eq.jps.and.
-     &         ipsu(jps).gt.0.and.ipsd(jps).gt.0.and.
-     &         ipsl(jps).gt.0.and.ipsr(jps).gt.0)then
+            if(ips.eq.jps)then
               strst(0)=1.d0
               strdi(0)=1.d0
-            endif
-            if(ips.eq.ipsl(jps).and.ipsr(jps).gt.0)then
+            else if(ips.eq.ipsl(jps))then
               strst(1)=1.d0
               strdi(1)=1.d0
-            endif
-            if(ips.eq.ipsr(jps).and.ipsl(jps).gt.0)then
+              if(ipsr(jps).le.0)then
+                strst(3)=1.d0
+                strdi(3)=1.d0
+              endif
+            else if(ips.eq.ipsr(jps))then
               strst(3)=1.d0
               strdi(3)=1.d0
-            endif
-            if(ips.eq.ipsu(jps).and.ipsd(jps).gt.0)then
+              if(ipsl(jps).le.0)then
+                strst(1)=1.d0
+                strdi(1)=1.d0
+              endif
+            else if(ips.eq.ipsu(jps))then
               strst(2)=1.d0
               strdi(2)=1.d0
-            endif
-            if(ips.eq.ipsd(jps).and.ipsu(jps).gt.0)then
+              if(ipsd(jps).le.0)then
+                strst(4)=1.d0
+                strdi(4)=1.d0
+              endif
+            else if(ips.eq.ipsd(jps))then
               strst(4)=1.d0
               strdi(4)=1.d0
+              if(ipsu(jps).le.0)then
+                strst(2)=1.d0
+                strdi(2)=1.d0
+              endif
             endif
             dcgrn(ips,1,jps,1)=(strst(1)-2.d0*strst(0)+strst(3))*dal
             dcgrn(ips,1,jps,2)=(strst(2)-2.d0*strst(0)+strst(4))*daw
@@ -503,6 +513,8 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      &                       '% of the Green functions calculated ...'
         endif
       enddo
+c
+c     for using Zhang's weighted smoothing of roughness
 c
 500   continue
 c
