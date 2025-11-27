@@ -1,8 +1,6 @@
       subroutine sdmddsp(nobs,nps,slip)
       implicit none
 c
-c     calculate the slip gradient part of the cost function
-c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
       include 'sdmglob.h'

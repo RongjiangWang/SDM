@@ -19,7 +19,7 @@ c
       real*8 maxres(NGDMAX),minres(NGDMAX),meanres(NGDMAX)
       real*8 swapslp(NPSMAX,2),swapoffs(NGDMAX)
       character logfile*80,text*80
-      real*8 sdmocost,sdmscost,sdmcorr,sdmsmod
+      real*8 sdmocost,sdmscost,sdmcorr,sdmsmod,sdmrough
       logical*2 converge
 c
       integer*4 icf,ncf
@@ -200,7 +200,7 @@ c         costref = data variance
 c
           wgrad=wg0*costref/scostref
         endif
-        roughness=scost/sdmsmod(ns,nps,ismooth)
+        roughness=sdmrough(nps,swapslp,ismooth)
         write(30,1000)iter,mw,misfit,roughness
         write(*, 1000)iter,mw,misfit,roughness
         write(32,1000)iter,mw,misfit,roughness

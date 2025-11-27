@@ -1,4 +1,4 @@
-      real*8 function sdmsmod(ns,nps,ismooth)
+      real*8 function sdmsmod(nps,ismooth)
       implicit none
 c
 c     calculate the slip gradient part of the cost function
@@ -6,7 +6,7 @@ c
 c     Last modified: Potsdam, Oct, 2008, by R. Wang
 c
       include 'sdmglob.h'
-      integer*4 ns,nps,ismooth
+      integer*4 nps,ismooth
 c
       integer*4 i,ips,jps
       real*8 area,sd(3)
