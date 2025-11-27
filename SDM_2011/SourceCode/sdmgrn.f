@@ -514,8 +514,6 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
         endif
       enddo
 c
-c     for using Zhang's weighted smoothing of roughness
-c
 500   continue
 c
       if(nlarge.gt.0)then
