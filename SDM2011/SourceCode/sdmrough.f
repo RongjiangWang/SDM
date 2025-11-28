@@ -22,7 +22,7 @@ c
             sd=sd+slip(ips,1)*dcgrn(ips,1,jps,i)
      &           +slip(ips,2)*dcgrn(ips,2,jps,i)
           enddo
-          strdc(jps,i)=sd
+          strdc(jps,i)=sd/zhy(jps)
           sdsum=sdsum+sd*sd
         enddo
         scost=scost+parea(jps)*sdsum

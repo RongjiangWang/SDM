@@ -37,7 +37,7 @@ c
      &         +dcgrn(ips,ira,jps,5)*strdc(jps,5)
      &         +dcgrn(ips,ira,jps,6)*strdc(jps,6))
           enddo
-          sdgrad(ips,ira)=og-wgrad*zhy(ips)*sg
+          sdgrad(ips,ira)=og-wgrad*sg
         enddo
       enddo
 c

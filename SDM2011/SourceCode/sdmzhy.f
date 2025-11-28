@@ -8,7 +8,7 @@ c
       include 'sdmglob.h'
       integer*4 nps,nobs,ismooth
 c
-      integer*4 ips,iobs
+      integer*4 i,ira,ips,jps,iobs
       real*8 zhysum
 c
       if(ismooth.eq.3)then
@@ -19,11 +19,21 @@ c
             zhy(ips)=zhy(ips)
      &              +dspmdl(ips,iobs,1)**2+dspmdl(ips,iobs,2)**2
           enddo
-          zhysum=zhysum+zhy(ips)
+          zhy(ips)=dsqrt(zhy(ips))
+          zhysum=zhysum+zhy(ips)**2
         enddo
-        zhysum=zhysum/dble(nps)
+        zhysum=dsqrt(zhysum/dble(nps))
         do ips=1,nps
           zhy(ips)=zhy(ips)/zhysum
+        enddo
+        do ips=1,nps
+          do ira=1,2
+            do jps=1,nps
+              do i=1,6
+                dcgrn(ips,ira,jps,i)=dcgrn(ips,ira,jps,i)*zhy(jps)
+              enddo
+            enddo
+          enddo
         enddo
       else
         do ips=1,nps

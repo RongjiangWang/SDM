@@ -155,7 +155,9 @@ c
       enddo
       dslp=eps*dsqrt(dslp/dble(nps))
 c
-      if(slp0.eq.0.d0)scostref=sdmscost(nps,dslpmdl)
+      if(slp0.eq.0.d0)then
+        scostref=sdmscost(nps,dslpmdl)
+      endif
 c
       do igd=1,ngd
         doffset(igd)=doffset(igd)*beta
