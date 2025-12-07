@@ -282,7 +282,8 @@
 #    whether one or more fault segements are used);
 #
 # 2. file names for best-fitting results to observed data sets, one-to-one
-#    corresponding to the input displacement data files
+#    corresponding to the input displacement data files, and for the data-
+#    correction parameters (if available)
 #===============================================================================
  'slip_model.dat'
  'output_un.dat'   'output_ue.dat'   'output_uz.dat' 'output_offsets.dat'
