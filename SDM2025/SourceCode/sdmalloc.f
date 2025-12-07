@@ -7,6 +7,8 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       parameter(DEG2RAD=1.745329252d-02,PI=3.14159265358979d0)
       parameter(KM2M=1.0d+03,DAY2SEC=8.64d+04,REARTH=6.371d+06)
       parameter(G0=9.82d+00,MUEREF=3.0d+10,MEGA=1.0d+06)
+      integer*4 nrelaxmax
+      parameter(nrelaxmax=10000)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     OBSTANGULAR SOURCE PLANES
 c     =========================

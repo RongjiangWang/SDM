@@ -11,7 +11,7 @@ c
       real*8 ds,rmsslp
       character*1 text
       real*8 sdmcorl
-      real*8 relax(10000)
+      real*8 relax(nrelaxmax)
       logical*2 convergence,landweber
 c
       real*8 eps
@@ -35,7 +35,7 @@ c       Modified Landweber iteration
 c
         open(20,file='zhyrelax.txt',status='old')
         nrelax=0
-        do irelax=1,10000
+        do irelax=1,nrelaxmax
           read(20,*,end=10)relax(irelax)
           nrelax=nrelax+1
         enddo
