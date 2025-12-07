@@ -37,4 +37,4 @@ Wang, R., S. Parolai, M. Ge, M. Jin, T.R. Walter and J. Zschau (2012). The 2011 
 Zhang, Y. (2025). A Simple Method for Improving the Resolution of Geodetic Slip Inversion. Geophysical Journal International 241(3), 1781–1790.
 
 ------------------------------
-Last update: Zhuhai, Dec 7, 2025, by Rongjiang Wang
+Last update: Dec 7, 2025, by Rongjiang Wang
