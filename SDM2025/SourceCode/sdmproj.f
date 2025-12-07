@@ -1,0 +1,105 @@
+      subroutine sdmproj(ierr)
+      use sdmalloc
+      implicit none
+      integer*4 ierr
+c
+c     Projection on to subspace with positive constraint
+c
+c     Last modified: Zhuhai, Nov. 2025, by R. Wang
+c
+      integer*4 i,j,is,ira,ips,igd,iobs,ipar
+      real*8 a,b,racs1,racs2,rass1,rass2,ra,racs,rass
+      real*8 slp,datnrm
+c
+      i=0
+      do ips=1,nps
+        do ira=1,2
+          i=i+1
+          slpmdl(ira,ips)=sysvec(i)/zhy(ips)
+        enddo
+      enddo
+c
+      do ipar=1,npar
+        corrpar(ipar)=sysvec(2*nps+ipar)*parunit(ipar)
+      enddo
+c
+      do is=1,ns
+        racs1=dcos(rake1(is)*DEG2RAD)
+        rass1=dsin(rake1(is)*DEG2RAD)
+        racs2=dcos(rake2(is)*DEG2RAD)
+        rass2=dsin(rake2(is)*DEG2RAD)
+        do ips=nps1(is),nps2(is)
+          slp=dsqrt(slpmdl(1,ips)**2+slpmdl(2,ips)**2)
+          if(rake1(is).eq.rake2(is))then
+            slp=dmax1(0.d0,slpmdl(1,ips)*racs1+slpmdl(2,ips)*rass1)
+            slpmdl(1,ips)=slp*racs1
+            slpmdl(2,ips)=slp*rass1
+          else if(slp.gt.0.d0.and.rake2(is)-rake1(is).lt.360.d0)then
+            ra=datan2(slpmdl(2,ips),slpmdl(1,ips))
+            if(rake360(is).gt.0.d0)then
+              ra=dmod(ra+2.d0*PI,2.d0*PI)
+            else
+              ra=dmod(ra-2.d0*PI,2.d0*PI)
+            endif
+            if(ra/DEG2RAD.lt.rake1(is).or.ra/DEG2RAD.gt.rake2(is))then
+              racs=dcos(ra)
+              rass=dsin(ra)
+              a=racs*racs1+rass*rass1
+              b=racs*racs2+rass*rass2
+              if(a.gt.0.d0.and.a.gt.b)then
+                slpmdl(1,ips)=slp*a*racs1
+                slpmdl(2,ips)=slp*a*rass1
+              else if(b.gt.0.d0.and.b.gt.a)then
+                slpmdl(1,ips)=slp*b*racs2
+                slpmdl(2,ips)=slp*b*rass2
+              else
+                slpmdl(1,ips)=0.d0
+                slpmdl(2,ips)=0.d0
+              endif
+            endif
+          endif
+          if(slp.gt.maxslip(is))then
+            slpmdl(1,ips)=slpmdl(1,ips)*maxslip(is)/slp
+            slpmdl(2,ips)=slpmdl(2,ips)*maxslip(is)/slp
+          endif
+        enddo
+      enddo
+      do ipar=1,npar
+        corrpar(ipar)=dmin1(parmax(ipar),
+     &                dmax1(parmin(ipar),corrpar(ipar)))
+      enddo
+c
+      i=0
+      do ips=1,nps
+        do ira=1,2
+          i=i+1
+          sysvec(i)=slpmdl(ira,ips)*zhy(ips)
+        enddo
+      enddo
+      do ipar=1,npar
+        i=i+1
+        sysvec(i)=corrpar(ipar)/parunit(ipar)
+      enddo
+c
+      sysmis=0.d0
+      datnrm=0.d0
+      do iobs=1,nobs
+        obsswp(iobs)=-wf(iobs)*datobs(iobs)
+        datnrm=datnrm+obsswp(iobs)**2
+        do i=1,nsys
+          obsswp(iobs)=obsswp(iobs)+obsmat(iobs,i)*sysvec(i)
+        enddo
+        sysmis=sysmis+obsswp(iobs)**2
+      enddo
+c
+      do j=1,nps*nsmocmp
+        obsswp(j)=0.d0
+        do i=1,nsys
+          obsswp(j)=obsswp(j)+smomat(j,i)*sysvec(i)
+        enddo
+        sysmis=sysmis+wei2smo*obsswp(j)**2
+      enddo
+c
+      sysmis=sysmis/datnrm
+      return
+      end
