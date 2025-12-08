@@ -156,9 +156,9 @@ c
 c     final message
 c
       do ipar=1,npar
-        write(*,'(a,i2,a,f12.6)')'  data-correction parameter ',ipar,
+        write(*,'(a,i2,a,E14.6)')'  data-correction parameter ',ipar,
      &                         ' found: ',corrpar(ipar)
-        write(32,'(a,i2,a,f12.6)')'  data-correction parameter ',ipar,
+        write(32,'(a,i2,a,E14.6)')'  data-correction parameter ',ipar,
      &                         ' found: ',corrpar(ipar)
       enddo
       write(*,'(a)')'  seg  mean_slp mean_rake   max_slp'
