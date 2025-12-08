@@ -1,0 +1,292 @@
+#===============================================================================
+# This is the input file of FORTRAN program "sdm2025" for inversion of slip
+# distribution from InSAR data by the Steepst Descent Method (SDM).
+#
+# written by Rongjiang Wang
+# GFZ Helmholtz Centre for Geosciences
+# e-mail: wang@gfz.de
+# Phone +49 331 2881209
+# Fax +49 331 2881204
+#
+# Last modified: Zhuhai, Dec 6, 2025 by R. Wang
+#
+#################################################################
+##                                                             ##
+## If not specified otherwise, SI Unit System is used overall! ##
+##                                                             ##
+## For the local Cartesian coordinate system, the Aki's        ##
+## convention is used: x is northward, y is eastward, and z is ##
+## downward                                                    ##
+##                                                             ##
+## No blank line is allowed!                                   ##
+##                                                             ##
+## Any comment line should start with "#"!                     ##
+##                                                             ##
+#################################################################
+#
+#================================================================================
+#
+# 1. selection for (0) homogeneous earth model or (1) layered earth model or
+#    (2) user-provided Green's functions
+# 2. if (0) homogeneous model is selected, then
+#      Poisson ratio
+#    else if (1)  layered earth model is selected, then
+#      directory of differetial Green's functions, three file names (without
+#      the extension representing source type) for the vertical, radial and
+#      tangential component, respectively. all in char format and in one line.
+#    else if (2) user-provided 3D Green's functions is selected, then
+#      directory of user's Green's functions, file names of strike_slip
+#      and thrust_slip Green's functions
+#      Each of the 2 user's 3D Green's functions should have the same format:
+#         one header line followed by
+#         i = 1 - nobs (number of observation data samples) rows, and
+#         j = 1 - nps (number of fault patches) columns
+#      giving the synthetic data at the i-th observation site per unit
+#      strike/thrust_slip at the j_th fault patch.
+#
+#================================================================================
+# 0
+# 0.25
+ 1
+ '../sdm2025_example_2/dgreen/'  'uz'  'ur'  'ut'
+# 2
+# './usr3dgrns/'  'strike_slip_3d_grns.dat'  'thrust_slip_3d_grns.dat'
+#================================================================================
+# FAULT GEOMETRY/A-PRIORI CONDITIONS
+# ==================================
+# 1. idisc: switch (0/1) for subfaults input form,
+#    0 = read discrete fault patches from files or 1 = automatic discretization
+#    of input sub-faults
+#================================================================================
+#   idisc
+#-------------------------------------------------------------------------------- 
+    1
+#-------------------------------------------------------------------------------- 
+#
+# IF(idisc = 0)THEN
+#
+# 2. ns: number of subfaults
+# 3. parameters for the 1. subfault
+# 4. parameters for the 2. subfault
+# ...
+#
+#        subfault paramters
+#        ==================
+#        n:                 numbering of the subfault
+#        rake1/rake2:       rake range (rake1 <= rake2)
+#                           => a-priori constraint
+#                           (Note definition convention: (-180.0, 180.0) or
+#                           (0.0, 360.0))
+#        max_slip:          upper limit of slip amplitude
+#                           => a-priori constraint
+#        file_name:         data file for discrete patches
+#        iref               selection of the patch reference location
+#
+#   Note:
+#   the file includes one header line followed by 7 columns of data:
+#
+#   latitude[deg], longitude[deg], depth[km], length[km], width[km],
+#   strike[deg], dip[deg]
+#
+#   where (lat, lon, dep) is the reference location of the patch depending
+#   on iref: 1 = upper-left corner, 2 = upper-right corner,
+#            3 = lower-left corner, 4 = lower-right corner,
+#         else = central point (s. Fig.)
+#
+#        definitions for a rectangular fault patch
+#        =========================================
+#
+#                 north(x)
+#                  /
+#                 / | strike
+#            ref 1-------------------------2
+#                |\          p .            \ W
+#                :-\        i .              \ i
+#                |  \      l .                \ d
+#                :90 \    S .      5           \ t
+#                |-dip\    .                    \ h
+#                :     \  .                      \ 
+#                       \.) rake                  \
+#          downward(z)  3--------------------------4
+#                          L   e   n   g   t   h
+#
+#================================================================================
+#   N (total number of subfaults)
+#   n[-]  rake1[deg]  rake2[deg]    max_slip[m]                  file_name  isref
+#--------------------------------------------------------------------------------
+#   1
+#   1           70.0     110.0            60.0   './fault_patches_310.dat'     5
+#------------------------ -------------------------------------------------------
+#
+# ELSE
+#
+# 2. ns: number of subfaults
+# 3. parameters for the 1. subfault
+# 4. parameters for the 2. subfault
+# ...
+#===============================================================================
+# FAULT GEOMETRY/A-PRIORI CONDITIONS
+# ==================================
+# 1. number of subfaults;
+#
+# 2.1. geometric parameters for the 1. subfault
+# 2.2. ...
+# 2.3. ...
+# 2.4. ...
+#
+# 3. ... for the 2. subfault ...
+# ...
+#                 north(x)
+#                  /
+#                 / | strike
+#            ref *-------------------------*
+#                |\          p .            \ W
+#                :-\        i .              \ i
+#                |  \      l .                \ d
+#                :90 \    S .                  \ t
+#                |-dip\    .                    \ h
+#                :     \  .                      \ 
+#                       \.) rake                  \
+#          downward(z)   *-------------------------*
+#                          L   e   n   g   t   h
+#
+#  NOTE: the range for dip angles is redefined: it may be >=0 and <= 180 degree,
+#        so that the rupture can be represented by connecting segments, i.e.,
+#        the end point of any straight segment is the start point of the
+#        following segment.
+#
+#        geometric paramters
+#        ===================
+#        n:                 numbering of the fault segment
+#        top_depth          depth of top fault edge
+#        width              fault width along dip
+#        average_strike:    average strike
+#                           Note: 0.0 <= strike <= 360.0 is used to define
+#                                 dipping axis of the arbitarily curved fault.
+#                                 Any average strike selected outside the
+#                                 (0.0, 360.0) range will be ignored. Instead,
+#                                 it will be determined automatically from the
+#                                 fault surface trace (see below)
+#        patch_size:        approximated fault discretisation step
+#
+#        rake1/rake2:       rake range (rake1 <= rake2)
+#                           => a-priori constraint
+#                           Note definition convention: (-180.0, 180.0) or
+#                           (0.0, 360.0)
+#        max_slip:          upper limit of slip amplitude
+#                           => a-priori constraint
+#
+#        nft:               number (2 <= nft <= nft_max) of locations
+#                           (e.g., surface rupture) defining top fault trace
+#        lat/lon:           geographic coordinates of the strace location
+#        top/bottom_dip:    (0.0, 180.0) define the location and depth dependent
+#                           dip angle (increasing or decreasing linearly with
+#                           depth)
+#                           Note: the trace locations should be ordered along
+#                                 the strike direction
+#
+#===============================================================================
+#   N (total number of fault segments)
+#
+#   Note: Any non-straight but continuous fault is one fault segment.
+#         Each fault segment may have an arbitrary usr-defined geometry.
+#
+#-------------------------------------------------------------------------------
+    1
+#-------------------------------------------------------------------------------
+#   n[-]  top_depth[km] width[km]         average_strike[deg]  patch_size[km]
+#         rake1[deg]    rake2[deg]        max_slip[m]
+#         nft
+#    1st: lat[deg]      lon[deg]          top_dip[deg]         bottom_dip[deg]      
+#    ......
+#    nth: lat[deg]      lon[deg]          top_dip[deg]         bottom_dip[deg]
+#-------------------------------------------------------------------------------
+    1    0.0            200.0             -1000.0              20.0
+         70.0           110.0                60.0
+         2
+         40.7831487771473	144.577148641917	14.0	14.0
+         35.3505099267260	142.978471497558    14.0    14.0
+#===============================================================================
+# GPS/InSAR DATA                                                                
+# ==============                                                                
+# 1. number of data sets, unit in metre of data, and number of header lines
+#
+# 2.1. file names of data set 1 (data format by 4[+2] columns: lat[deg],
+#      lon[deg], data, error, [incidence, azimuth])
+# 2.2. the weighting factor, selection for uniform (1) or position-dependent (0)
+#      orientation of the displacement, in case of the uniform orientation, the
+#      incidence and azimuth angles [deg]. examples: 90.0, 0.0 for x (north)
+#      displacement; 90.0, 90.0 for y (east) displacement; 0.0 0.0 for z (up)
+#      component; 23.0, -100.0 (flight azimuth - 90) for ascending LOS displacement
+#      or 23.0, 100.0 for descending LOS displacement
+#
+#      If the orientation of surface displacement within one dataset is
+#      position dependent, the data file should include 6 columns with the
+#      incidence and azimuth angles in the 5th and 6th column, respectively.
+#
+# 3.1. for data set 2;
+# ...
+#===============================================================================
+  3  1.0  0
+   '../GPS/ns.dat'
+  1.00  1   90.0    0.0
+   '../GPS/ew.dat'
+  1.00  1   90.0   90.0                    
+   '../GPS/up.dat'
+  1.00  1    0.0    0.0
+#===============================================================================
+# DATA-CORRECTION PARAMETERS
+# ==========================
+# (all these parameters should be independent from each other. they may include
+#  errors in the data caused by non-seismic sources, e.g., systematic offset
+#  in some datasets related to the reference point, tectonic block motion and
+#  rotation, spatial linear trends, etc. the choice of parameter units is free)
+# 
+# 1. number of data-correction parameters, file of Green's functions for
+#    computing the data corrections, which should be given by one header line
+#    followed by nobs (number of all data samples) rows and npar (number of
+#    data correction parameters) columns.
+# 2.1. varation range of the 1. data-correction parameter
+# 2.2. varation range of the 2. data-correction parameter
+# ...
+#===============================================================================
+  6    'offset_euler_grns.dat'
+      -0.1       0.1       !northward, unit = meter
+      -0.1       0.1       !eastward, unit = meter
+      -0.1       0.1       !upward, unit = meter
+  -1.0E-08   1.0E-08       !rotation around x ( 0°, 0°), unit = radian
+  -1.0E-08   1.0E-08       !rotation around y ( 0°,90°), unit = radian
+  -1.0E-08   1.0E-08       !rotation around z (90°, 0°), unit = radian
+#===============================================================================
+# PARAMETERS FOR ITERATIVE INVERSION
+# ==================================
+# 1. maximum number of iterations for minimizing the cost function, file of
+#    Zhang's list of relaxation factors for fast convergence
+#
+#    if the maximum number of iteration = 0, then forward modeling will be
+#    done. in this case, the file for output model (see below) should exist
+#    in the same format as got by inversion and will be used as the input
+#    slip model. suggestion: user may run sdm2025 at the first with only one
+#    iteration to get an output slip model, then modify it with your own
+#    slip distribution (8. and 9. column), and finally run sdm2025 with 0
+#    iteration.
+#
+# 2. select the observable to be smoothed (1 = slip smoothing, 2 = stress-drop
+#    smoothing), the normalized smoothing factor, and select the use of Zhang's
+#    approach to increase deep slip resolution (1/0 = yes/no)
+#===============================================================================
+ 5000  './ZHYRELAX.txt'
+ 1  0.1  0
+#===============================================================================
+# OUTPUTS
+# =======
+# 1. file name for slip distribution (only one slip output file independent
+#    whether one or more fault segements are used);
+#
+# 2. file names for best-fitting results to observed data sets, one-to-one
+#    corresponding to the input displacement data files, and for the data-
+#    correction parameters (if available)
+#===============================================================================
+ 'slip_model.dat'
+ 'output_un.dat'   'output_ue.dat'   'output_uz.dat' 'output_offsets_euler.dat'
+#================================end of input===================================
