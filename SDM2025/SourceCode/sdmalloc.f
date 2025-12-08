@@ -114,7 +114,7 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     FILE NAMES
 c     ==========
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      character*80 grndir,infile,slipout,logfile,relaxlist
+      character*80 grndir,infile,slipout,logfile,zhyrelax
       character*80 usr3dgrn(2),green(3),corrgrnfile,parout
       character*80, allocatable:: gddata(:),gdout(:)
       character*80, allocatable:: inpatches(:)
