@@ -276,7 +276,7 @@
 #    smoothing), the normalized smoothing factor, and select the use of Zhang's
 #    approach to increase deep slip resolution (1/0 = yes/no)
 #===============================================================================
- 5000  './lwrelax.txt'
+ 5000  './ZHYRELAX.txt'
  1  0.1  0
 #===============================================================================
 # OUTPUTS

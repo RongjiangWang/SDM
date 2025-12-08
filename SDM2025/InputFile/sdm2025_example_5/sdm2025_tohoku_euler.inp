@@ -255,9 +255,9 @@
 #  -0.1  0.1       !eastward, unit = meter
 #  -0.1  0.1       !upward, unit = meter
   3    'euler_grns.dat'
-  -5.0E-08   5.0E-08       !rotation around x ( 0°, 0°), unit = radian
-  -5.0E-08   5.0E-08       !rotation around y ( 0°,90°), unit = radian
-  -5.0E-08   5.0E-08       !rotation around z (90°, 0°), unit = radian
+  -5.0E-07   5.0E-07       !rotation around x ( 0°, 0°), unit = radian
+  -5.0E-07   5.0E-07       !rotation around y ( 0°,90°), unit = radian
+  -5.0E-07   5.0E-07       !rotation around z (90°, 0°), unit = radian
 #===============================================================================
 # PARAMETERS FOR ITERATIVE INVERSION
 # ==================================
@@ -276,7 +276,7 @@
 #    smoothing), the normalized smoothing factor, and select the use of Zhang's
 #    approach to increase deep slip resolution (1/0 = yes/no)
 #===============================================================================
- 5000  './lwrelax.txt'
+ 5000  './ZHYRELAX.txt'
  1  0.1  0
 #===============================================================================
 # OUTPUTS
