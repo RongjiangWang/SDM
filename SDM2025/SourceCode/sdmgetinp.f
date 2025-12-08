@@ -257,7 +257,7 @@ c     READ IN PARAMETERS FOR INVERSION REQUIREMENTS
 c     =============================================
 c00000000000000000000000000000000000000000000000000000000000000000000000
       call skipdoc(unit)
-      read(unit,*)niter,relaxlist
+      read(unit,*)niter,zhyrelax
       call skipdoc(unit)
       read(unit,*)ismooth,wei2smo0,izhy
 c

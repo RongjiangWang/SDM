@@ -33,7 +33,7 @@ c
 c
 c       Modified Landweber iteration
 c
-        open(20,file='zhyrelax.txt',status='old')
+        open(20,file=zhyrelax,status='old')
         nrelax=0
         do irelax=1,nrelaxmax
           read(20,*,end=10)relax(irelax)
