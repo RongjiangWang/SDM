@@ -250,11 +250,14 @@
 # 2.2. varation range of the 2. data-correction parameter
 # ...
 #===============================================================================
-#   0    'offset_grns.dat'
   3    'offset_grns.dat'
-  -0.1  0.1
-  -0.1  0.1
-  -0.1  0.1
+  -0.1  0.1       !northward, unit = meter
+  -0.1  0.1       !eastward, unit = meter
+  -0.1  0.1       !upward, unit = meter
+#  3    'euler_grns.dat'
+#  -5.0E-08   5.0E-08       !rotation around x ( 0°, 0°), unit = radian
+#  -5.0E-08   5.0E-08       !rotation around y ( 0°,90°), unit = radian
+#  -5.0E-08   5.0E-08       !rotation around z (90°, 0°), unit = radian
 #===============================================================================
 # PARAMETERS FOR ITERATIVE INVERSION
 # ==================================
