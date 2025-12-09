@@ -9,13 +9,13 @@ c
       integer*4 i,j,k,l,ir,ir1,ir2,izs,izs1,izs2,idiv
       integer*4 np10,ipsum,npercent
       real*8 dr,ddl,st,di,dux,duy,duz,dur,dut
-      real*8 xobs,yobs,dobs,dal,daw,wfsum
+      real*8 xobs,yobs,xobs0,yobs0,xps,yps,dobs,dal,daw,wfsum
       real*8 eii,exx,eyy,ezz,exy,eyz,ezx
-      real*8 si,co,si2,co2,dis,azi
+      real*8 si,si0,bsi,co,co0,bco,si2,co2,dis,dis0,azi,azi0,bazi
       real*8 w1,w2,psss,psds,pscl,shss,shds
       real*8 dz1,dz2,dpz,dwei,pz1,pz2,xp,yp,px,py
       real*8 strst(0:4),strdi(0:4),strnn(0:4),dl(4),dw(4)
-      real*8 sig(3,3),dsp(3),stress(3)
+      real*8 sig(3,3),dsp(3),stress(3),dux0(2),duy0(2),duz0(2)
       character*10 header
 c
 c     for calling Okada's subroutine DC3D0
@@ -196,6 +196,22 @@ c           transform from Aki's to Okada's system
 c
             call disazi(REARTH,plat(ips),plon(ips),
      &                  latobs(iobs),lonobs(iobs),xobs,yobs)
+c
+            dis=dsqrt(xobs**2+yobs**2)
+            if(dis.gt.dsqrt(dlen(ips)*dwid(ips)))then
+              azi=datan2(yobs,xobs)
+              call disazi(REARTH,latobs(iobs),lonobs(iobs),
+     &                    plat(ips),plon(ips),xps,yps)
+              bazi=datan2(yps,xps)-PI
+            else
+              azi=0.d0
+              bazi=0.d0
+            endif
+            co=dcos(azi)
+            si=dsin(azi)
+            bco=dcos(bazi)
+            bsi=dsin(bazi)
+c
             X=sngl(xobs*csst(ips)+yobs*ssst(ips))
             Y=sngl(xobs*ssst(ips)-yobs*csst(ips))
             Z=-sngl(zobs)
@@ -212,6 +228,10 @@ c             transform from Okada's to Aki's system
 c
               dux=dble(UX)*csst(ips)+dble(UY)*ssst(ips)
               duy=dble(UX)*ssst(ips)-dble(UY)*csst(ips)
+              dur=dux*co+duy*si
+              dut=duy*co-dux*si
+              dux=dur*bco-dut*bsi
+              duy=dur*bsi+dut*bco
               duz=-dble(UZ)
               datgrn(ira,ips,iobs)=datgrn(ira,ips,iobs)
      &              +dux*xcs(iobs)+duy*ycs(iobs)+duz*zcs(iobs)
@@ -452,59 +472,75 @@ c
       allocate(iz(nps),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmgrn: iz not allocated!'
 c
-      do ips=1,nps
-c
-        pz1=pz(ips)-0.5d0*dwid(ips)*ssdi(ips)
-        pz2=pz(ips)+0.5d0*dwid(ips)*ssdi(ips)
-c
-        izs1=1
-        do izs=1,nzs
-          if(zs(izs).le.pz1)then
-            izs1=izs
-          endif
-        enddo
-c
-        izs2=nzs
-        do izs=nzs,1,-1
-          if(zs(izs).ge.pz2)then
-            izs2=izs
-          endif
-        enddo
-c
-        iz(ips)=(izs1+izs2)/2
-c
-        nl=1+idint(dlen(ips)/dr)
-        ddl=dlen(ips)/dble(nl)
-c
-        do izs=izs1,izs2
-          if(izs.eq.izs1)then
-            if(izs.lt.nzs)then
-              dpz=dmax1(0.d0,dmin1(pz2,0.5d0*(zs(izs)+zs(izs+1)))-pz1)
-            else
-              dpz=pz2-pz1
-            endif
-          else if(izs.eq.izs2)then
-            dpz=dmax1(0.d0,pz2-dmax1(pz1,0.5d0*(zs(izs)+zs(izs-1))))
+      do iobs=1,nobs
+        do ips=1,nps
+          do ira=1,2
+            dux0(ira)=0.d0
+            duy0(ira)=0.d0
+            duz0(ira)=0.d0
+          enddo
+          call disazi(REARTH,plat(ips),plon(ips),
+     &                latobs(iobs),lonobs(iobs),xobs0,yobs0)
+          dis0=dsqrt(xobs0**2+yobs0**2)
+          if(dis0.gt.dsqrt(dlen(ips)*dwid(ips)))then
+            azi0=datan2(yobs0,xobs0)
+            call disazi(REARTH,latobs(iobs),lonobs(iobs),
+     &                  plat(ips),plon(ips),xps,yps)
+            bazi=datan2(yps,xps)-PI
           else
-            dz1=zs(izs)-dmax1(pz1,0.5d0*(zs(izs)+zs(izs-1)))
-            dz2=dmin1(pz2,0.5d0*(zs(izs)+zs(izs+1)))-zs(izs)
-            dpz=dmax1(0.d0,dz1)+dmax1(0.d0,dz2)
+            azi0=0.d0
+            bazi=0.d0
           endif
-          yp=(zs(izs)-pz(ips))/ssdi(ips)
-          dwei=(ddl*dpz/ssdi(ips))/parea(ips)
-          do il=1,nl
-            xp=-0.5d0*dwid(ips)+(dble(il)-0.5d0)*ddl
-            px=xp*csst(ips)-ssst(ips)*yp*csdi(ips)
-            py=xp*ssst(ips)+csst(ips)*yp*csdi(ips)
+          co0=dcos(azi0)
+          si0=dsin(azi0)
+          bco=dcos(bazi)
+          bsi=dsin(bazi)
 c
-            do iobs=1,nobs
+          pz1=pz(ips)-0.5d0*dwid(ips)*ssdi(ips)
+          pz2=pz(ips)+0.5d0*dwid(ips)*ssdi(ips)
 c
-c             transform from Aki's to Okada's system
+          izs1=1
+          do izs=1,nzs
+            if(zs(izs).le.pz1)then
+              izs1=izs
+            endif
+          enddo
 c
-              call disazi(REARTH,plat(ips),plon(ips),
-     &                latobs(iobs),lonobs(iobs),xobs,yobs)
-              xobs=xobs-px
-              yobs=yobs-py
+          izs2=nzs
+          do izs=nzs,1,-1
+            if(zs(izs).ge.pz2)then
+              izs2=izs
+            endif
+          enddo
+c
+          iz(ips)=(izs1+izs2)/2
+c
+          nl=1+idint(dlen(ips)/dr)
+          ddl=dlen(ips)/dble(nl)
+c
+          do izs=izs1,izs2
+            if(izs.eq.izs1)then
+              if(izs.lt.nzs)then
+                dpz=dmax1(0.d0,dmin1(pz2,0.5d0*(zs(izs)+zs(izs+1)))-pz1)
+              else
+                dpz=pz2-pz1
+              endif
+            else if(izs.eq.izs2)then
+              dpz=dmax1(0.d0,pz2-dmax1(pz1,0.5d0*(zs(izs)+zs(izs-1))))
+            else
+              dz1=zs(izs)-dmax1(pz1,0.5d0*(zs(izs)+zs(izs-1)))
+              dz2=dmin1(pz2,0.5d0*(zs(izs)+zs(izs+1)))-zs(izs)
+              dpz=dmax1(0.d0,dz1)+dmax1(0.d0,dz2)
+            endif
+            yp=(zs(izs)-pz(ips))/ssdi(ips)
+            dwei=(ddl*dpz/ssdi(ips))/parea(ips)
+            do il=1,nl
+              xp=-0.5d0*dwid(ips)+(dble(il)-0.5d0)*ddl
+              px=xp*csst(ips)-ssst(ips)*yp*csdi(ips)
+              py=xp*ssst(ips)+csst(ips)*yp*csdi(ips)
+c
+              xobs=xobs0-px
+              yobs=yobs0-py
 c
               dis=dsqrt(xobs**2+yobs**2)
               if(dis.gt.0.d0)then
@@ -525,10 +561,6 @@ c
 c
               w1=dwei*(r(ir2)-dis)/(r(ir2)-r(ir1))
               w2=dwei*(dis-r(ir1))/(r(ir2)-r(ir1))
-c
-              call disazi(REARTH,plat(ips),plon(ips),
-     &                    latobs(iobs),lonobs(iobs),xobs,yobs)
-              azi=datan2(yobs,xobs)
 c
               co=dcos(azi)
               si=dsin(azi)
@@ -587,13 +619,23 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
                 dur=dur+pscl
      &             *(w1*dgrns(ir1,izs,2,3)+w2*dgrns(ir2,izs,2,3))
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-                dux=dur*co-dut*si
-                duy=dur*si+dut*co
-                datgrn(ira,ips,iobs)=datgrn(ira,ips,iobs)
-     &                          +dux*xcs(iobs)+duy*ycs(iobs)
-     &                          +duz*zcs(iobs)
+                dux0(ira)=dux0(ira)+dur*co-dut*si
+                duy0(ira)=duy0(ira)+dur*si+dut*co
+                duz0(ira)=duz0(ira)+duz
               enddo
             enddo
+          enddo
+          do ira=1,2
+            dur=dux0(ira)*co0+duy0(ira)*si0
+            dut=duy0(ira)*co0-dux0(ira)*si0
+            duz=duz0(ira)
+c
+            dux=dur*bco-dut*bsi
+            duy=dur*bsi+dut*bco
+c
+            datgrn(ira,ips,iobs)=datgrn(ira,ips,iobs)
+     &                          +dux*xcs(iobs)+duy*ycs(iobs)
+     &                          +duz*zcs(iobs)
           enddo
         enddo
         if(mod(ips,np10).eq.0)then
