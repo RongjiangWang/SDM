@@ -8,7 +8,7 @@ c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
       integer*4 i,j,k,m,n,ira,ips,jps,igd,ipar
       real*8 a,b,sig2obs,sig2smo,matmod
-      real*8 maxsing
+      real*8 maxsing,minsing
 c
       real*8 eps
       data eps/1.0d-06/
@@ -128,11 +128,12 @@ c
 c
 c     dominant singular value of system matrix
 c
-      do m=1,nsys
-        sysvec(m)=sysbat(m)
-        vecswp(m)=sysbat(m)
-      enddo
-      sig2sys=maxsing(sysmat,sysvec,vecswp,nsys,eps)
+      sig2max=maxsing(sysmat,sysvec,vecswp,nsys,1.0d-04*eps)
+c
+c     minimum singular value of system matrix
+c     problem with minsing: slow converging
+c
+c     sig2min=minsing(sysmat,sig2max,sysvec,vecswp,nsys,1.0d-04*eps)
 c
       do i=1,nsys
         vecswp(i)=0.d0

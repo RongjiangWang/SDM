@@ -1,10 +1,10 @@
-      real*8 function maxsing(mat,vec,swp,n,eps)
+      real*8 function minsing(mat,maxsing,vec,swp,n,eps)
       implicit none
       integer*4 n
-      real*8 eps
+      real*8 maxsing,eps
       real*8 mat(n,n),vec(n),swp(n)
 c
-c     dominant eigenvalue of a positive defined symmetric matrix
+c     minimum eigenvalue of a positive defined symmetric matrix
 c     by the power method
 c
       integer*4 i,j,iter
@@ -21,9 +21,9 @@ c
       do iter=1,niter
         a=0.d0
         do i=1,n
-          vec(i)=0.d0
+          vec(i)=maxsing*swp(i)
           do j=1,n
-            vec(i)=vec(i)+mat(i,j)*swp(j) 
+            vec(i)=vec(i)-mat(i,j)*swp(j) 
           enddo
           a=a+vec(i)**2
         enddo
@@ -37,12 +37,12 @@ c
           b=a
         endif
       enddo
-      print *,' Warning in maxsing: convergence not achieved!'
+      print *,' Warning in minsing: convergence not achieved!'
 100   continue
 c
-c     the dominant eigenvalue sigma2 of sysmat found
+c     the minimum eigenvalue sigma2 of sysmat found
 c
-      maxsing=a
+      minsing=maxsing-a
 c
       return
       end

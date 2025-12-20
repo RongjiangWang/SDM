@@ -97,7 +97,8 @@ c     slpmdl(2,..) = slip components in the strike and dip directions
 c     zhang(ips) = weighted smoothing of roughness (Yong Zhang, 2025)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       integer*4 iearth,iter,niter,nsys,ismooth,izhy,nsmocmp
-      real*8 wei2smo0,wei2smo,sig2sys,step,step0,mwpsum,mwssum,mweq
+      real*8 wei2smo0,wei2smo,sig2max,sig2min,step,step0
+      real*8 mwpsum,mwssum,mweq
       real*8 rmsresall,rmsdatall,sysmis,sysmis0
       real*8, allocatable:: slpmdl(:,:),vecswp(:),matswp(:,:)
       real*8, allocatable:: datgrn(:,:,:),datmdl(:),batswp(:)

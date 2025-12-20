@@ -6,16 +6,17 @@ c
 c     SDM iteration
 c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
-      integer*4 i,j,ira,ips,igd,is,ipar,irelax,nrelax
-      real*8 misfit,misfit0,roughness0,corl
-      real*8 ds,rmsslp
+      integer*4 i,j,ira,ips,igd,is,ipar
+      integer*4 irelax,jter,nrelax,time,seed
+      real*8 misfit,misfit0,roughness0,corl,ran
+      real*8 ds,rmsslp,rand
       character*1 text
       real*8 sdmcorl
       real*8 relax(nrelaxmax)
       logical*2 convergence,landweber
 c
       real*8 eps
-      data eps/1.0d-06/
+      data eps/1.0d-12/
 c
       iter=0
       sysmis=1.d0
@@ -58,6 +59,9 @@ c
       endif
 c
       landweber=.true.
+      jter=0
+      seed=imod(time(),10000)
+      call srand(seed)
 c
       do iter=1,niter
 c
@@ -77,16 +81,16 @@ c       ckeck convergence
 c
         convergence=dabs(sysmis-sysmis0).le.eps*sysmis
 c
-        if(sysmis.gt.sysmis0)then
-          step=1.5d0/sig2sys
-          if(.not.landweber)then
-            landweber=.true.
-            goto 20
-          endif
+        if(sysmis.gt.sysmis0.and..not.landweber)then
+          step=1.d0/sig2max
+          landweber=.true.
+          jter=jter+1
+          goto 20
         else
           irelax=irelax+1
           if(irelax.gt.nrelax)irelax=1
-          step=relax(irelax)/sig2sys
+          step=relax(irelax)/sig2max
+c         step=10.d0**(3.d0*(rand(0))**4)/sig2max
           landweber=.false.
         endif
         sysmis0=sysmis
@@ -99,7 +103,7 @@ c
 c
         if(convergence)then
           write(*,'(a,i6,a)')' Convergence achieved by ',
-     &                  iter,' iterations!'
+     &                  iter,' successful iterations!'
           goto 100
         endif
       enddo
@@ -108,6 +112,7 @@ c
      &                  niter,' iterations!'
       endif
 100   continue
+      write(*,'(a,i6)')' --- failed interations: ',jter
 c
 c     end of Landwerber iteration
 c
