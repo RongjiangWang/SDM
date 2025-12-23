@@ -12,7 +12,7 @@ c
       real*8 ds,rmsslp,rand
       character*1 text
       real*8 sdmcorl
-      real*8 relax(nrelaxmax)
+      real*8 relax(nrelaxmax),tau(10000)
       logical*2 convergence,landweber
 c
       real*8 eps
@@ -38,9 +38,30 @@ c
         nrelax=0
         do irelax=1,nrelaxmax
           read(20,*,end=10)relax(irelax)
+          tau(irelax)=relax(irelax)
           nrelax=nrelax+1
         enddo
 10      close(20)
+c
+c        do i=1,10000
+c          do j=i+1,10000
+c            if(tau(i).gt.tau(j))then
+c              ds=tau(i)
+c              tau(i)=tau(j)
+c              tau(j)=ds
+c            endif
+c          enddo
+c        enddo
+c
+c        open(40,file='relax_pdf.dat',status='unknown')
+c        write(40,'(a)')'        percent            tau     dlog10_tau'
+c        write(40,'(a)')'            0.0            1.0            0.0'
+c        do i=1,100
+c          write(40,'(4f15.4)')0.01d0*dble(i),
+c     &                        tau(100*i),dlog10(tau(100*i))
+c        enddo
+c        close(40)
+c
         irelax=0
 c
         mweq=0.d0
@@ -60,8 +81,8 @@ c
 c
       landweber=.true.
       jter=0
-      seed=imod(time(),10000)
-      call srand(seed)
+c      seed=time()
+c      call srand(seed)
 c
       do iter=1,niter
 c
@@ -90,7 +111,7 @@ c
           irelax=irelax+1
           if(irelax.gt.nrelax)irelax=1
           step=relax(irelax)/sig2max
-c         step=10.d0**(3.d0*(rand(0))**4)/sig2max
+c          step=10.d0**((-1.4d0*dlog10(rand(0)))**(4.d0/3.d0))/sig2max
           landweber=.false.
         endif
         sysmis0=sysmis
