@@ -126,14 +126,7 @@ c
         enddo
       enddo
 c
-c     dominant singular value of system matrix
-c
       sig2max=maxsing(sysmat,sysvec,vecswp,nsys,1.0d-04*eps)
-c
-c     minimum singular value of system matrix
-c     problem with minsing: slow converging
-c
-c     sig2min=minsing(sysmat,sig2max,sysvec,vecswp,nsys,1.0d-04*eps)
 c
       do i=1,nsys
         vecswp(i)=0.d0
