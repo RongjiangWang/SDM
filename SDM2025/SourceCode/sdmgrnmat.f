@@ -54,7 +54,7 @@ c
           do ips=1,nps
             do ira=1,2
               n=n+1
-              smomat(m,n)=parea(jps)*dcgrn(ira,ips,i,jps)/zhy(jps)
+              smomat(m,n)=parea(jps)*dcgrn(ira,ips,i,jps)
             enddo
           enddo
           do ipar=1,npar
@@ -72,7 +72,7 @@ c
           sd=sd+smomat(i,j)**2
         enddo
         if(sd.gt.0.d0)then
-          sd=dsqrt(sd)
+          sd=dsqrt(sd/dble(nsys))
           do j=1,nsys
             smomat(i,j)=smomat(i,j)/sd
           enddo
