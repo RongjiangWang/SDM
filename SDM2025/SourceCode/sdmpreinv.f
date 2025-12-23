@@ -109,16 +109,16 @@ c
 c
       matmod=0.d0
       do m=1,nsys
-        matmod=matmod+0.5d0*(matswp(m,m)/sig2smo)**2
+        matmod=matmod+0.5d0*matswp(m,m)**2
         do n=m+1,nsys
-          matmod=matmod+(matswp(m,n)/sig2smo)**2
+          matmod=matmod+matswp(m,n)**2
         enddo
       enddo
       matmod=dsqrt(matmod)
 c
 c     final matrix of the observation + smoothing system
 c
-      wei2smo=wei2smo0*sig2obs*matmod/sig2smo
+      wei2smo=wei2smo0*sig2obs/matmod
 c
       do m=1,nsys
         do n=1,nsys
