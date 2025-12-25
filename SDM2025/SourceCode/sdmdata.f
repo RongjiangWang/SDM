@@ -138,6 +138,7 @@ c
       enddo
 c
       wfsum=0.d0
+      rmsdatall=0.d0
       do iobs=1,nobs
         rmsdatall=rmsdatall+(wf(iobs)*datobs(iobs))**2
         wfsum=wfsum+wf(iobs)**2

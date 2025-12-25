@@ -6,9 +6,11 @@ c
 c     first step to prepare SDM iteration
 c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
-      integer*4 i,j,k,m,n,ira,ips,jps,igd,ipar
+      integer*4 i,j,k,m,n,ira,ips,jps,igd,iobs,ipar
       real*8 a,b,sig2obs,sig2smo,obsmod,smomod
-      real*8 maxsing,minsing
+      real*8 datvar,smovar
+      real*8 maxsing
+      real*8 sd(6)
 c
       real*8 eps
       data eps/1.0d-08/
@@ -76,14 +78,6 @@ c
         enddo
       enddo
 c
-c     dominant singular value of obsmat
-c
-      do m=1,nsys
-        sysvec(m)=sysbat(m)
-        vecswp(m)=sysbat(m)
-      enddo
-      sig2obs=maxsing(sysmat,sysvec,vecswp,nsys,eps)
-c
       do m=1,nsys
         do n=1,m
           matswp(m,n)=0.d0
@@ -99,39 +93,6 @@ c
         enddo
       enddo
 c
-c     dominant singular value of smomat
-c
-      do m=1,nsys
-        sysvec(m)=sysbat(m)
-        vecswp(m)=sysbat(m)
-      enddo
-      sig2smo=maxsing(matswp,sysvec,vecswp,nsys,eps)
-c
-      obsmod=0.d0
-      smomod=0.d0
-      do m=1,nsys
-        obsmod=obsmod+0.5d0*sysmat(m,m)**2
-        smomod=smomod+0.5d0*matswp(m,m)**2
-        do n=m+1,nsys
-          obsmod=obsmod+sysmat(m,n)**2
-          smomod=smomod+matswp(m,n)**2
-        enddo
-      enddo
-      obsmod=dsqrt(obsmod)
-      smomod=dsqrt(smomod)
-c
-c     final matrix of the observation + smoothing system
-c
-      wei2smo=wei2smo0*dble(nsys)*obsmod/smomod
-c
-      do m=1,nsys
-        do n=1,nsys
-          sysmat(m,n)=sysmat(m,n)+wei2smo*matswp(m,n)
-        enddo
-      enddo
-c
-      sig2max=maxsing(sysmat,sysvec,vecswp,nsys,eps)
-c
       do i=1,nsys
         vecswp(i)=0.d0
         do j=1,nsys
@@ -146,6 +107,41 @@ c
       enddo
 c
       step0=b/a
+c
+      do i=1,nsys
+        sysvec(i)=step0*sysbat(i)
+      enddo
+c
+      call sdmproj(ierr)
+c
+      smovar=0.d0
+      do jps=1,nps
+        smomod=0.d0
+        do i=1,nsmocmp
+          sd(i)=0.d0
+          do ips=1,nps
+            sd(i)=sd(i)+slpmdl(1,ips)*dcgrn(1,ips,i,jps)
+     &                 +slpmdl(2,ips)*dcgrn(2,ips,i,jps)
+          enddo
+          smomod=smomod+sd(i)*sd(i)
+        enddo
+        smovar=smovar+parea(jps)*smomod
+      enddo
+c
+      datvar=0.d0
+      do iobs=1,nobs
+        datvar=datvar+(wf(iobs)*datobs(iobs))**2
+      enddo
+c
+      wei2smo=wei2smo0*datvar/smovar
+c
+      do m=1,nsys
+        do n=1,nsys
+          sysmat(m,n)=sysmat(m,n)+wei2smo*matswp(m,n)
+        enddo
+      enddo
+c
+      sig2max=maxsing(sysmat,sysvec,vecswp,nsys,eps)
 c
 c     initialization
 c
