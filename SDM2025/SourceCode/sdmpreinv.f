@@ -10,7 +10,6 @@ c
       real*8 a,b,sig2obs,sig2smo,obsmod,smomod
       real*8 datvar,smovar
       real*8 maxsing
-      real*8 sd(6)
 c
       real*8 eps
       data eps/1.0d-08/
@@ -96,7 +95,7 @@ c
       do i=1,nsys
         vecswp(i)=0.d0
         do j=1,nsys
-          vecswp(i)=vecswp(i)+sysmat(i,j)*sysbat(i)
+          vecswp(i)=vecswp(i)+sysmat(i,j)*sysbat(j)
         enddo
       enddo
       a=0.d0
@@ -115,17 +114,12 @@ c
       call sdmproj(ierr)
 c
       smovar=0.d0
-      do jps=1,nps
+      do i=1,nsys
         smomod=0.d0
-        do i=1,nsmocmp
-          sd(i)=0.d0
-          do ips=1,nps
-            sd(i)=sd(i)+slpmdl(1,ips)*dcgrn(1,ips,i,jps)
-     &                 +slpmdl(2,ips)*dcgrn(2,ips,i,jps)
-          enddo
-          smomod=smomod+sd(i)*sd(i)
+        do j=1,nsys
+          smomod=smomod+matswp(i,j)*sysvec(j)
         enddo
-        smovar=smovar+parea(jps)*smomod
+        smovar=smovar+smomod*sysvec(i)
       enddo
 c
       datvar=0.d0
