@@ -25,7 +25,7 @@ c
             zhy(ips)=zhy(ips)
      &              +datgrn(1,ips,iobs)**2+datgrn(2,ips,iobs)**2
           enddo
-          zhy(ips)=dsqrt(zhy(ips))
+          zhy(ips)=dsqrt(zhy(ips)/dble(nobs))
           zhysum=zhysum+zhy(ips)**2
         enddo
         zhysum=dsqrt(zhysum/dble(nps))
