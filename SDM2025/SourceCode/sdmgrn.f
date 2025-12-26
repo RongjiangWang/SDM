@@ -183,8 +183,8 @@ c
 c
         AL1=sngl(-0.5d0*dlen(ips))
         AL2=sngl(+0.5d0*dlen(ips))
-        AW1=sngl(-0.499999d0*dwid(ips))
-        AW2=sngl(+0.499999d0*dwid(ips))
+        AW1=sngl(-0.4999999d0*dwid(ips))
+        AW2=sngl(+0.4999999d0*dwid(ips))
 c
 c       displacement Green functions
 c
@@ -382,7 +382,7 @@ c
               strdi(0)=strgrn(ira,ips,2,jps)
               strnn(0)=strgrn(ira,ips,3,jps)
               do idiv=1,4
-                dobs=pz(jps)+dw(idiv)*ssdi(jps)
+                dobs=dmax1(0.d0,pz(jps)+dw(idiv)*ssdi(jps))
                 if(dobs.gt.0.d0)then
                   xobs=xobs
      &                +dl(idiv)*csst(jps)-dw(idiv)*csdi(jps)*ssst(jps)
