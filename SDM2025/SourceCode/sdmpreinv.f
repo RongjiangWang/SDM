@@ -6,8 +6,8 @@ c
 c     first step to prepare SDM iteration
 c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
-      integer*4 i,j,k,m,n,ira,ips,jps,igd,iobs,ipar
-      real*8 a,b,sig2obs,sig2smo,obsmod,smomod
+      integer*4 i,j,k,m,n,ira,ips,jps,igd,ipar
+      real*8 a,b
       real*8 datvar,smovar
       real*8 maxsing
 c
@@ -92,6 +92,33 @@ c
         enddo
       enddo
 c
+      a=0.d0
+      b=0.d0
+      do i=1,nsys
+        sysvec(i)=0.d0
+        vecswp(i)=0.d0
+        do j=1,nsys
+          sysvec(i)=sysvec(i)+sysmat(i,j)*sysbat(j)
+          vecswp(i)=vecswp(i)+matswp(i,j)*sysbat(j)
+        enddo
+        a=a+sysbat(i)*sysvec(i)
+        b=b+sysbat(i)*vecswp(i)
+      enddo
+c
+      if(b.le.0.d0)then
+        stop ' Error in sdmpreinv: no slip model can be found!'
+      endif
+c
+      wei2smo=wei2smo0*a/b
+c
+      do m=1,nsys
+        do n=1,nsys
+          sysmat(m,n)=sysmat(m,n)+wei2smo*matswp(m,n)
+        enddo
+      enddo
+c
+      sig2max=maxsing(sysmat,sysvec,vecswp,nsys,eps)
+c
       do i=1,nsys
         vecswp(i)=0.d0
         do j=1,nsys
@@ -106,36 +133,6 @@ c
       enddo
 c
       step0=b/a
-c
-      do i=1,nsys
-        sysvec(i)=step0*sysbat(i)
-      enddo
-c
-      call sdmproj(ierr)
-c
-      smovar=0.d0
-      do i=1,nsys
-        smomod=0.d0
-        do j=1,nsys
-          smomod=smomod+matswp(i,j)*sysvec(j)
-        enddo
-        smovar=smovar+smomod*sysvec(i)
-      enddo
-c
-      datvar=0.d0
-      do iobs=1,nobs
-        datvar=datvar+(wf(iobs)*datobs(iobs))**2
-      enddo
-c
-      wei2smo=wei2smo0*datvar/smovar
-c
-      do m=1,nsys
-        do n=1,nsys
-          sysmat(m,n)=sysmat(m,n)+wei2smo*matswp(m,n)
-        enddo
-      enddo
-c
-      sig2max=maxsing(sysmat,sysvec,vecswp,nsys,eps)
 c
 c     initialization
 c

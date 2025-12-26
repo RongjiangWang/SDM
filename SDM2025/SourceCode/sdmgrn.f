@@ -7,7 +7,7 @@ c     Last modified: 2025 in Zhuhai by R. Wang
 c
       integer*4 is,ips,jps,iobs,nlarge,ira,il,nl,lend,lenf
       integer*4 i,j,k,l,ir,ir1,ir2,izs,izs1,izs2,idiv
-      integer*4 np10,ipsum,npercent
+      integer*4 np10,npercent
       real*8 dr,ddl,st,di,dux,duy,duz,dur,dut
       real*8 xobs,yobs,xobs0,yobs0,xps,yps,dobs,dal,daw,wfsum
       real*8 eii,exx,eyy,ezz,exy,eyz,ezx
@@ -175,7 +175,6 @@ c
 c
       np10=max0(1,nps/10)
 c
-      ipsum=0
       write(*,'(a)')' analytical Okada solutions - please wait: '
       do ips=1,nps
 c
@@ -466,11 +465,12 @@ c
       if(hsmodel)goto 500
 c
       dr=r(2)-r(1)
-      ipsum=0
       write(*,'(a)')' numerical layering effect - please wait: '
 c
       allocate(iz(nps),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmgrn: iz not allocated!'
+c
+      np10=max0(1,nobs/10)
 c
       do iobs=1,nobs
         do ips=1,nps
@@ -638,10 +638,10 @@ c
      &                          +duz*zcs(iobs)
           enddo
         enddo
-        if(mod(ips,np10).eq.0)then
-          npercent=10*(ips/np10)
+        if(mod(iobs,np10).eq.0)then
+          npercent=10*(iobs/np10)
           write(*,'(a,i3,a)')'    - - - ',npercent,
-     &                       '% of the Green functions calculated ...'
+     &                   '% of the diff. Green functions calculated ...'
         endif
       enddo
 c
