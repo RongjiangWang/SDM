@@ -269,7 +269,6 @@ c
         nsmocmp=4
       else if(ismooth.eq.2)then
         nsmocmp=6
-        wei2smo=wei2smo
       else
         stop ' Error in sdmmain: wrong ´smoothing selection!'
       endif
