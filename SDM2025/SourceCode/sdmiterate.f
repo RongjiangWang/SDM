@@ -61,6 +61,9 @@ c
 c
       landweber=.true.
       jter=0
+      do i=1,nsys
+        vecswp(i)=sysvec(i)
+      enddo
 c
       do iter=1,niter
 c

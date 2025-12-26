@@ -138,6 +138,7 @@ c     initialization
 c
       do i=1,nsys
         sysvec(i)=0.d0
+        vecswp(i)=0.d0
       enddo
 c
       do ips=1,nps
