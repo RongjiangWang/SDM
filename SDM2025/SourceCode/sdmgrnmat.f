@@ -65,5 +65,18 @@ c
         enddo
       enddo
 c
+      if(izhy.eq.0)return
+c
+      do n=1,nps*2
+        sd=0.d0
+        do m=1,nps*nsmocmp
+          sd=sd+smomat(m,n)**2
+        enddo
+        sd=dsqrt(sd/dble(nps*2))
+        do m=1,nps*nsmocmp
+          smomat(m,n)=smomat(m,n)/sd
+        enddo
+      enddo
+c
       return
       end
