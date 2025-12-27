@@ -55,6 +55,7 @@ c
             do ira=1,2
               n=n+1
               smomat(m,n)=dsqrt(parea(jps))*dcgrn(ira,ips,i,jps)
+     &                   *zhy(jps)/zhy(ips)
             enddo
           enddo
           do ipar=1,npar
