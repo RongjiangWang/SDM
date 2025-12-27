@@ -119,6 +119,13 @@ c
 c
       sig2max=maxsing(sysmat,sysvec,vecswp,nsys,eps)
 c
+      do m=1,nsys
+        do n=1,nsys
+          sysmat(m,n)=sysmat(m,n)/sig2max
+        enddo
+        sysbat(m)=sysbat(m)/sig2max
+      enddo
+c
       do i=1,nsys
         vecswp(i)=0.d0
         do j=1,nsys

@@ -49,21 +49,12 @@ c
         mwpsum=0.d0
         step=step0
 c
+        landweber=.true.
+        jter=0
         do i=1,nsys
-          sysvec(i)=0.d0
-        enddo
-        call sdmproj(ierr)
-        sysmis0=sysmis
-        do i=1,nsys
-          vecswp(i)=0.d0
+          vecswp(i)=sysvec(i)
         enddo
       endif
-c
-      landweber=.true.
-      jter=0
-      do i=1,nsys
-        vecswp(i)=sysvec(i)
-      enddo
 c
       do iter=1,niter
 c
@@ -84,21 +75,21 @@ c
         convergence=dabs(sysmis-sysmis0).le.eps*sysmis
 c
         if(sysmis.gt.sysmis0.and..not.landweber)then
-          step=1.d0/sig2max
+          step=1.d0
           landweber=.true.
           jter=jter+1
           goto 20
         else
           irelax=irelax+1
           if(irelax.gt.nrelax)irelax=1
-          step=relax(irelax)/sig2max
+          step=relax(irelax)
           landweber=.false.
         endif
         sysmis0=sysmis
         do i=1,nsys
           vecswp(i)=sysvec(i)
         enddo
-        write(*, '(i8,f19.15)')iter,sysmis
+        write(*, '(i8,f19.15,f19.5)')iter,sysmis,step0
         write(30,'(i8,f19.15)')iter,sysmis
         write(32,'(i8,f19.15)')iter,sysmis
 c
@@ -107,13 +98,16 @@ c
      &                  iter,' successful iterations!'
           goto 100
         endif
+        step0=step
       enddo
       if(niter.gt.0)then
         write(*,'(a,i6,a)')' Convergence not achieved by ',
      &                  niter,' iterations!'
       endif
 100   continue
-      write(*,'(a,i6)')' --- failed interations: ',jter
+      if(niter.gt.0)then
+        write(*,'(a,i6)')' --- failed interations: ',jter
+      endif
 c
 c     end of Landwerber iteration
 c
