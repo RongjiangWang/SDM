@@ -16,7 +16,7 @@ c
       logical*2 convergence,landweber
 c
       real*8 eps
-      data eps/1.0d-15/
+      data eps/1.0d-12/
 c
       iter=0
       sysmis=1.d0
