@@ -8,8 +8,7 @@ c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
       integer*4 i,j,ira,ips,igd,is,ipar
       integer*4 irelax,jter,nrelax
-      real*8 misfit,misfit0,roughness0,corl
-      real*8 ds,rmsslp
+      real*8 misfit,corl,a,b,c
       character*1 text
 c
       real*8 sdmcorl
@@ -17,7 +16,7 @@ c
       logical*2 convergence,landweber
 c
       real*8 eps
-      data eps/1.0d-12/
+      data eps/1.0d-15/
 c
       iter=0
       sysmis=1.d0
@@ -54,6 +53,12 @@ c
         do i=1,nsys
           vecswp(i)=sysvec(i)
         enddo
+        do i=1,nsys
+          resbat(i)=-sysbat(i)
+          do j=1,nsys
+            resbat(i)=resbat(i)+sysmat(i,j)*vecswp(j)
+          enddo
+        enddo
       endif
 c
       do iter=1,niter
@@ -61,23 +66,41 @@ c
 20      continue
 c
         do i=1,nsys
-          ds=0.d0
-          do j=1,nsys
-            ds=ds+sysmat(i,j)*vecswp(j)
-          enddo
-          sysvec(i)=vecswp(i)-step*(ds-sysbat(i))
+          sysvec(i)=vecswp(i)-step*resbat(i)
         enddo
 c
         call sdmproj(ierr)
+c
+        sysmis=0.d0
+        do i=1,nsys
+          resbat(i)=-sysbat(i)
+          do j=1,nsys
+            resbat(i)=resbat(i)+sysmat(i,j)*sysvec(j)
+          enddo
+          sysmis=sysmis+sysvec(i)*(resbat(i)-sysbat(i))
+        enddo
+        sysmis=1+sysmis/datnrm
 c
 c       ckeck convergence
 c
         convergence=dabs(sysmis-sysmis0).le.eps*sysmis
 c
+        if(sysmis.le.sysmis0)then
+          write(*, '(i8,f19.15)')iter,sysmis
+          write(30,'(i8,f19.15)')iter,sysmis
+          write(32,'(i8,f19.15)')iter,sysmis
+        endif
+c
         if(sysmis.gt.sysmis0.and..not.landweber)then
           step=1.d0
           landweber=.true.
           jter=jter+1
+          do i=1,nsys
+            resbat(i)=-sysbat(i)
+            do j=1,nsys
+              resbat(i)=resbat(i)+sysmat(i,j)*vecswp(j)
+            enddo
+          enddo
           goto 20
         else
           irelax=irelax+1
@@ -89,16 +112,12 @@ c
         do i=1,nsys
           vecswp(i)=sysvec(i)
         enddo
-        write(*, '(i8,f19.15,f19.5)')iter,sysmis,step0
-        write(30,'(i8,f19.15)')iter,sysmis
-        write(32,'(i8,f19.15)')iter,sysmis
 c
         if(convergence)then
           write(*,'(a,i6,a)')' Convergence achieved by ',
      &                  iter,' successful iterations!'
           goto 100
         endif
-        step0=step
       enddo
       if(niter.gt.0)then
         write(*,'(a,i6,a)')' Convergence not achieved by ',

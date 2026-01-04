@@ -9,7 +9,7 @@ c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
       integer*4 i,j,is,ira,ips,igd,iobs,ipar
       real*8 a,b,racs1,racs2,rass1,rass2,ra,racs,rass
-      real*8 slp,datnrm
+      real*8 slp
 c
       i=0
       do ips=1,nps
@@ -81,25 +81,5 @@ c
         sysvec(i)=corrpar(ipar)/parunit(ipar)
       enddo
 c
-      sysmis=0.d0
-      datnrm=0.d0
-      do iobs=1,nobs
-        obsswp(iobs)=-wf(iobs)*datobs(iobs)
-        datnrm=datnrm+obsswp(iobs)**2
-        do i=1,nsys
-          obsswp(iobs)=obsswp(iobs)+obsmat(iobs,i)*sysvec(i)
-        enddo
-        sysmis=sysmis+obsswp(iobs)**2
-      enddo
-c
-      do j=1,nps*nsmocmp
-        obsswp(j)=0.d0
-        do i=1,nsys
-          obsswp(j)=obsswp(j)+smomat(j,i)*sysvec(i)
-        enddo
-        sysmis=sysmis+wei2smo*obsswp(j)**2
-      enddo
-c
-      sysmis=sysmis/datnrm
       return
       end

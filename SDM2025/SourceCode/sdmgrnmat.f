@@ -72,7 +72,7 @@ c
         do m=1,nps*nsmocmp
           sd=sd+smomat(m,n)**2
         enddo
-        sd=dsqrt(sd/dble(nps*nsmocmp))
+        sd=dsqrt(sd)
         do m=1,nps*nsmocmp
           smomat(m,n)=smomat(m,n)/sd
         enddo

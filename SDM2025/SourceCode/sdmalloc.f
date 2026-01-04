@@ -98,12 +98,12 @@ c     zhang(ips) = weighted smoothing of roughness (Yong Zhang, 2025)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       integer*4 iearth,iter,niter,nsys,ismooth,izhy,nsmocmp
       real*8 wei2smo0,wei2smo,sig2max,step,step0
-      real*8 mwpsum,mwssum,mweq
+      real*8 mwpsum,mwssum,mweq,datnrm
       real*8 rmsresall,rmsdatall,sysmis,sysmis0
       real*8, allocatable:: slpmdl(:,:),vecswp(:),matswp(:,:)
       real*8, allocatable:: datgrn(:,:,:),datmdl(:),batswp(:)
       real*8, allocatable:: sysmat(:,:),sysbat(:),sysvec(:),zhy(:)
-      real*8, allocatable:: obsmat(:,:),smomat(:,:),obsswp(:)
+      real*8, allocatable:: obsmat(:,:),smomat(:,:),obsswp(:),resbat(:)
       real*8, allocatable:: rmsres(:),resmin(:),resmax(:),corrmdl(:)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     WARNING STATISTICS

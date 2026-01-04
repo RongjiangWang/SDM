@@ -6,7 +6,7 @@ c
 c     first step to prepare SDM iteration
 c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
-      integer*4 i,j,k,m,n,ira,ips,jps,igd,ipar
+      integer*4 i,j,k,m,n,ira,ips,jps,igd,iobs,ipar
       real*8 a,b
       real*8 datvar,smovar
       real*8 maxsing
@@ -50,6 +50,9 @@ c
 c
       allocate(obsswp(max0(nps*nsmocmp,nobs)),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmpreinv: obsswp not allocated!'
+c
+      allocate(resbat(nsys),stat=ierr)
+      if(ierr.ne.0)stop ' Error in sdmpreinv: resbat not allocated!'
 c
       call sdmgrnmat(ierr)
 c
@@ -156,6 +159,12 @@ c
       do ipar=1,npar
         corrpar(ipar)=0.d0
       enddo
+c
+      datnrm=0.d0
+      do iobs=1,nobs
+        datnrm=datnrm+(wf(iobs)*datobs(iobs))**2
+      enddo
+      datnrm=datnrm/sig2max
 c
       deallocate(matswp)
 c
