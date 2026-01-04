@@ -7,7 +7,7 @@ c     Projection on to subspace with positive constraint
 c
 c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
-      integer*4 i,j,is,ira,ips,igd,iobs,ipar
+      integer*4 i,j,is,ira,ips,ipar
       real*8 a,b,racs1,racs2,rass1,rass2,ra,racs,rass
       real*8 slp
 c
