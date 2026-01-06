@@ -92,12 +92,8 @@ c
       write(*,'(a)')' ... calculate the complete Green functions ...'
       call sdmgrn(ierr)
 c
-      if(niter.gt.0)then
-        write(*,'(a)')' ... calculate weight of roughness term ...'
-        call sdmzhy(ierr)
-      else
-        write(*,'(a)')' ... forward modeling ...'
-      endif
+      write(*,'(a)')' ... calculate weight of roughness term ...'
+      call sdmzhy(ierr)
 c
       write(*,'(a)')' ... prepare SDM iteration ...'
       call sdmpreinv(ierr)

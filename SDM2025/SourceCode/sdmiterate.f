@@ -23,13 +23,13 @@ c
       open(30,file='converge.dat',status='unknown')
       logfile='log_'//slipout
       open(32,file=logfile,status='unknown')
-      write(*,'(a)') '   iter.      cost_function'
-      write(30,'(a)')'   iter.      cost_function'
-      write(32,'(a)')'   iter.      cost_function'
-      write(*, '(i8,f19.15)')iter,sysmis
-      write(30,'(i8,f19.15)')iter,sysmis
-      write(32,'(i8,f19.15)')iter,sysmis
       if(niter.gt.0)then
+        write(*,'(a)') '   iter.      cost_function'
+        write(30,'(a)')'   iter.      cost_function'
+        write(32,'(a)')'   iter.      cost_function'
+        write(*, '(i8,f19.15)')iter,sysmis
+        write(30,'(i8,f19.15)')iter,sysmis
+        write(32,'(i8,f19.15)')iter,sysmis
         sysmis0=1.d0
 c
 c       Modified Landweber iteration
@@ -155,12 +155,26 @@ c
           slpmdl(2,ips)=-slpmdl(2,ips)
         enddo
         close(20)
-        call sdmcalmw(ierr)
-        call sdmdatfit(ierr)
-c
         do ipar=1,npar
           corrpar(ipar)=0.d0
         enddo
+        i=0
+        do ips=1,nps
+          do ira=1,2
+            i=i+1
+            sysvec(i)=slpmdl(ira,ips)*zhy(ips)
+          enddo
+        enddo
+c
+        sysmis=0.d0
+        do i=1,nsys
+          resbat(i)=-sysbat(i)
+          do j=1,nsys
+            resbat(i)=resbat(i)+sysmat(i,j)*sysvec(j)
+          enddo
+          sysmis=sysmis+sysvec(i)*(resbat(i)-sysbat(i))
+        enddo
+        sysmis=1+sysmis/datnrm
       endif
       write(*,'(a)') '      Mw data_misfit cost_function mdl_roughness'
       write(30,'(a)')'      Mw data_misfit cost_function mdl_roughness'

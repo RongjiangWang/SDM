@@ -28,7 +28,7 @@ c
       allocate(resmax(ngd),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmpreinv: resmax not allocated!'
 c
-      if(niter.le.0)return
+c      if(niter.le.0)return
 c
       allocate(sysmat(nsys,nsys),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmpreinv: sysmat not allocated!'
