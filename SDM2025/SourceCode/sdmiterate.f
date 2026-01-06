@@ -8,7 +8,7 @@ c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
       integer*4 i,j,ira,ips,igd,is,ipar
       integer*4 irelax,jter,nrelax
-      real*8 misfit,corl,a,b,c
+      real*8 misfit,corl,vecvar,dvcvar
       character*1 text
 c
       real*8 sdmcorl
@@ -81,12 +81,20 @@ c
         enddo
         sysmis=1+sysmis/datnrm
 c
+        vecvar=0.d0
+        dvcvar=0.d0
+        do i=1,nps*2
+          vecvar=vecvar+sysvec(i)**2
+          dvcvar=dvcvar+(sysvec(i)-vecswp(i))**2
+        enddo
+c
 c       ckeck convergence
 c
-        convergence=dabs(sysmis-sysmis0).le.eps*sysmis
+        convergence=dabs(sysmis-sysmis0).le.eps*sysmis.and.
+     &              dvcvar.le.eps*vecvar
 c
         if(sysmis.le.sysmis0)then
-          write(*, '(i8,f19.15)')iter,sysmis
+          write( *,'(i8,f19.15)')iter,sysmis
           write(30,'(i8,f19.15)')iter,sysmis
           write(32,'(i8,f19.15)')iter,sysmis
         endif
@@ -139,6 +147,11 @@ c
         do ips=1,nps
           read(20,*)plat(ips),plon(ips),pz(ips),pl(ips),pw(ips),
      &              dlen(ips),dwid(ips),slpmdl(1,ips),slpmdl(2,ips)
+          pz(ips)=pz(ips)*KM2M
+          pl(ips)=pl(ips)*KM2M
+          pw(ips)=pw(ips)*KM2M
+          dlen(ips)=dlen(ips)*KM2M
+          dwid(ips)=dwid(ips)*KM2M
           slpmdl(2,ips)=-slpmdl(2,ips)
         enddo
         close(20)
