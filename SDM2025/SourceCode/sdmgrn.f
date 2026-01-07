@@ -360,17 +360,17 @@ c
             dal=16.d0/dlen(jps)**2
             daw=16.d0/dwid(jps)**2
 c
-            dl(1)=0.25d0*dlen(jps)
+            dl(1)=dlen(jps)
             dw(1)=0.d0
 c
             dl(2)=0.d0
-            dw(2)=0.25d0*dwid(jps)
+            dw(2)=dwid(jps)
 c
-            dl(3)=-0.25d0*dlen(jps)
+            dl(3)=-dlen(jps)
             dw(3)=0.d0
 c
             dl(4)=0.d0
-            dw(4)=-0.25d0*dwid(jps)
+            dw(4)=-dwid(jps)
 c
             call disazi(REARTH,plat(ips),plon(ips),
      &                         plat(jps),plon(jps),xobs,yobs)
