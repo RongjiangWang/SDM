@@ -370,7 +370,11 @@ c
             dw(3)=0.d0
 c
             dl(4)=0.d0
-            dw(4)=-dwid(jps)
+            if(ipsu(jps).lt.0)then
+              dw(4)=dwid(jps)
+            else
+              dw(4)=-dwid(jps)
+            endif
 c
             call disazi(REARTH,plat(ips),plon(ips),
      &                         plat(jps),plon(jps),xobs,yobs)
