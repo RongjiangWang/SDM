@@ -13,11 +13,7 @@ c
       allocate(zhy(nps),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmzhy: zhy not allocated!'
 c
-      if(izhy.ne.1)then
-        do ips=1,nps
-          zhy(ips)=1.d0
-        enddo
-      else
+      if(izhy.eq.1)then
         zhysum=0.d0
         do ips=1,nps
           zhy(ips)=0.d0
@@ -31,6 +27,10 @@ c
         zhysum=dsqrt(zhysum/dble(nps))
         do ips=1,nps
           zhy(ips)=zhy(ips)/zhysum
+        enddo
+      else
+        do ips=1,nps
+          zhy(ips)=1.d0
         enddo
       endif
       return

@@ -20,7 +20,6 @@ c
 c
       iter=0
       sysmis=1.d0
-      open(30,file='converge.dat',status='unknown')
       logfile='log_'//slipout
       open(32,file=logfile,status='unknown')
       if(niter.gt.0)then
@@ -28,7 +27,6 @@ c
         write(30,'(a)')'   iter.      cost_function'
         write(32,'(a)')'   iter.      cost_function'
         write(*, '(i8,f19.15)')iter,sysmis
-        write(30,'(i8,f19.15)')iter,sysmis
         write(32,'(i8,f19.15)')iter,sysmis
         sysmis0=1.d0
 c
@@ -94,8 +92,7 @@ c
      &              dvcvar.le.eps*vecvar
 c
         if(sysmis.le.sysmis0)then
-          write( *,'(i8,f19.15)')iter,sysmis
-          write(30,'(i8,f19.15)')iter,sysmis
+          write( *,'(i8,f19.15,f19.6)')iter,sysmis,step
           write(32,'(i8,f19.15)')iter,sysmis
         endif
 c
@@ -177,13 +174,11 @@ c
         sysmis=1+sysmis/datnrm
       endif
       write(*,'(a)') '      Mw data_misfit cost_function mdl_roughness'
-      write(30,'(a)')'      Mw data_misfit cost_function mdl_roughness'
       write(32,'(a)')'      Mw data_misfit cost_function mdl_roughness'
       call sdmcalmw(ierr)
       call sdmdatfit(ierr)
       misfit=rmsresall
       write(*, 1000)mwssum,misfit,sysmis,roughness
-      write(30,1000)mwssum,misfit,sysmis,roughness
       write(32,1000)mwssum,misfit,sysmis,roughness
 c
       do igd=1,ngd
@@ -235,7 +230,6 @@ c
 c
       write(*,'(a,f8.4)')' Data-model correlation: ',corl
       write(32,'(a,f8.4)')' Data-model correlation: ',corl
-      close(30)
       close(32)
 1000  format(f8.4,f12.6,2E14.6)
       return

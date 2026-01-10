@@ -12,9 +12,9 @@ c
       real*8 xobs,yobs,xobs0,yobs0,xps,yps,dobs,dal,daw,wfsum
       real*8 eii,exx,eyy,ezz,exy,eyz,ezx
       real*8 si,si0,bsi,co,co0,bco,si2,co2,dis,dis0,azi,azi0,bazi
-      real*8 w1,w2,psss,psds,pscl,shss,shds
+      real*8 w1,w2,psss,psds,pscl,shss,shds,strst,strdi,strnn
       real*8 dz1,dz2,dpz,dwei,pz1,pz2,xp,yp,px,py
-      real*8 strst(0:4),strdi(0:4),strnn(0:4),dl(4),dw(4)
+      real*8 flr(-1:1),fud(-1:1)
       real*8 sig(3,3),dsp(3),stress(3),dux0(2),duy0(2),duz0(2)
       character*10 header
 c
@@ -296,17 +296,17 @@ c
               enddo
             enddo
 c
-            strst(1)=0.d0
-            strdi(1)=0.d0
-            strnn(1)=0.d0
+            strst=0.d0
+            strdi=0.d0
+            strnn=0.d0
             do i=1,3
-              strst(1)=strst(1)+stress(i)*rst(i,jps)
-              strdi(1)=strdi(1)+stress(i)*rdi(i,jps)
-              strnn(1)=strnn(1)+stress(i)*rnn(i,jps)
+              strst=strst+stress(i)*rst(i,jps)
+              strdi=strdi+stress(i)*rdi(i,jps)
+              strnn=strnn+stress(i)*rnn(i,jps)
             enddo
-            strgrn(ira,ips,1,jps)=strst(1)
-            strgrn(ira,ips,2,jps)=strdi(1)
-            strgrn(ira,ips,3,jps)=strnn(1)
+            strgrn(ira,ips,1,jps)=strst
+            strgrn(ira,ips,2,jps)=strdi
+            strgrn(ira,ips,3,jps)=strnn
           enddo
         enddo
 c
@@ -314,147 +314,74 @@ c
           do jps=1,nps
             dal=1.d0/dlen(jps)**2
             daw=1.d0/dwid(jps)**2
-            do i=0,4
-              strst(i)=0.d0
-              strdi(i)=0.d0
+            do ira=1,2
+              do i=1,4
+                dcgrn(ira,ips,i,jps)=0.d0
+              enddo
+              do i=-1,1
+                flr(i)=0.d0
+                fud(i)=0.d0
+              enddo
+              if(ips.eq.jps)then
+                if(ipsl(jps).le.0.or.ipsr(jps).le.0)then
+                  flr(0)=1.d0
+                else
+                  flr(0)=2.d0
+                endif
+                if(ipsu(jps).le.0.or.ipsd(jps).le.0)then
+                  fud(0)=1.d0
+                else
+                  fud(0)=2.d0
+                endif
+              else if(ips.eq.ipsl(jps))then
+                flr(-1)=1.d0
+              else if(ips.eq.ipsr(jps))then
+                flr(1)=1.d0
+              else if(ips.eq.ipsu(jps))then
+                fud(-1)=1.d0
+              else if(ips.eq.ipsd(jps))then
+                fud(1)=1.d0
+              endif
+              dcgrn(ira,ips,2*ira-1,jps)=(flr(-1)-flr(0)+flr(1))*dal
+              dcgrn(ira,ips,2*ira  ,jps)=(fud(-1)-fud(0)+fud(1))*daw
             enddo
-            if(ips.eq.jps)then
-              strst(0)=1.d0
-              strdi(0)=1.d0
-            else if(ips.eq.ipsl(jps))then
-              strst(1)=1.d0
-              strdi(1)=1.d0
-              if(ipsr(jps).le.0)then
-                strst(3)=1.d0
-                strdi(3)=1.d0
-              endif
-            else if(ips.eq.ipsr(jps))then
-              strst(3)=1.d0
-              strdi(3)=1.d0
-              if(ipsl(jps).le.0)then
-                strst(1)=1.d0
-                strdi(1)=1.d0
-              endif
-            else if(ips.eq.ipsu(jps))then
-              strst(2)=1.d0
-              strdi(2)=1.d0
-              if(ipsd(jps).le.0)then
-                strst(4)=1.d0
-                strdi(4)=1.d0
-              endif
-            else if(ips.eq.ipsd(jps))then
-              strst(4)=1.d0
-              strdi(4)=1.d0
-              if(ipsu(jps).le.0)then
-                strst(2)=1.d0
-                strdi(2)=1.d0
-              endif
-            endif
-            dcgrn(1,ips,1,jps)=(strst(1)-2.d0*strst(0)+strst(3))*dal
-            dcgrn(1,ips,2,jps)=(strst(2)-2.d0*strst(0)+strst(4))*daw
-            dcgrn(2,ips,3,jps)=(strdi(1)-2.d0*strdi(0)+strdi(3))*dal
-            dcgrn(2,ips,4,jps)=(strdi(2)-2.d0*strdi(0)+strdi(4))*daw
           enddo
         else
           do jps=1,nps
-            dal=16.d0/dlen(jps)**2
-            daw=16.d0/dwid(jps)**2
-c
-            dl(1)=dlen(jps)
-            dw(1)=0.d0
-c
-            dl(2)=0.d0
-            dw(2)=dwid(jps)
-c
-            dl(3)=-dlen(jps)
-            dw(3)=0.d0
-c
-            dl(4)=0.d0
-            if(ipsu(jps).lt.0)then
-              dw(4)=dwid(jps)
-            else
-              dw(4)=-dwid(jps)
-            endif
-c
-            call disazi(REARTH,plat(ips),plon(ips),
-     &                         plat(jps),plon(jps),xobs,yobs)
-c
+            dal=1.d0/dlen(jps)**2
+            daw=1.d0/dwid(jps)**2
             do ira=1,2
-              DISL1=SS(ira)
-              DISL2=DS(ira)
-              strst(0)=strgrn(ira,ips,1,jps)
-              strdi(0)=strgrn(ira,ips,2,jps)
-              strnn(0)=strgrn(ira,ips,3,jps)
-              do idiv=1,4
-                dobs=dmax1(0.d0,pz(jps)+dw(idiv)*ssdi(jps))
-                if(dobs.gt.0.d0)then
-                  xobs=xobs
-     &                +dl(idiv)*csst(jps)-dw(idiv)*csdi(jps)*ssst(jps)
-                  yobs=yobs
-     &                +dl(idiv)*ssst(jps)+dw(idiv)*csdi(jps)*csst(jps)
-                  X=sngl(xobs*csst(ips)+yobs*ssst(ips))
-                  Y=sngl(xobs*ssst(ips)-yobs*csst(ips))
-                  Z=-sngl(dobs)
-                  IRET=1
-                  call DC3D(ALPHA,X,Y,Z,DEPTH,DIPS,AL1,AL2,AW1,AW2,
-     &                      DISL1,DISL2,DISL3,UX,UY,UZ,
-     &                      UXX,UYX,UZX,UXY,UYY,UZY,UXZ,UYZ,UZZ,IRET)
-c
-c                 transform from Okada's to Aki's system
-c
-                  exx=dble(UXX)*csst(ips)*csst(ips)
-     &               +dble(UYY)*ssst(ips)*ssst(ips)
-     &               +0.5d0*dble(UXY+UYX)*ss2st(ips)
-                  eyy=dble(UXX)*ssst(ips)*ssst(ips)
-     &               +dble(UYY)*csst(ips)*csst(ips)
-     &               -0.5d0*dble(UXY+UYX)*ss2st(ips)
-                  ezz=dble(UZZ)
-                  exy=0.5d0*dble(UXX-UYY)*ss2st(ips)
-     &               -0.5d0*dble(UXY+UYX)*cs2st(ips)
-                  eyz=-0.5d0*dble(UZX+UXZ)*ssst(ips)
-     &                +0.5d0*dble(UYZ+UZY)*csst(ips)
-                  ezx=-0.5d0*dble(UZX+UXZ)*csst(ips)
-     &                  -0.5d0*dble(UYZ+UZY)*ssst(ips)
-                  eii=exx+eyy+ezz
-c
-                  sig(1,1)=lamhs*eii+2.d0*muehs*exx
-                  sig(2,2)=lamhs*eii+2.d0*muehs*eyy
-                  sig(3,3)=lamhs*eii+2.d0*muehs*ezz
-                  sig(1,2)=2.d0*muehs*exy
-                  sig(2,3)=2.d0*muehs*eyz
-                  sig(3,1)=2.d0*muehs*ezx
-                  sig(2,1)=sig(1,2)
-                  sig(3,2)=sig(2,3)
-                  sig(1,3)=sig(3,1)
-c
-c                 stress drop at jps-th patch
-c
-                  do i=1,3
-                    stress(i)=0.d0
-                    do j=1,3
-                      stress(i)=stress(i)+sig(i,j)*rnn(j,jps)
-                    enddo
-                  enddo
-c
-                  strst(idiv)=0.d0
-                  strdi(idiv)=0.d0
-                  strnn(idiv)=0.d0
-                  do i=1,3
-                    strst(idiv)=strst(idiv)+stress(i)*rst(i,jps)
-                    strdi(idiv)=strdi(idiv)+stress(i)*rdi(i,jps)
-                    strnn(idiv)=strnn(idiv)+stress(i)*rnn(i,jps)
-                  enddo
-                else
-                  strst(idiv)=0.d0
-                  strdi(idiv)=0.d0
-                endif
+              do i=1,6
+                dcgrn(ira,ips,i,jps)=0.d0
               enddo
-              dcgrn(ira,ips,1,jps)=(strst(1)-2.d0*strst(0)+strst(3))*dal
-              dcgrn(ira,ips,2,jps)=(strst(2)-2.d0*strst(0)+strst(4))*daw
-              dcgrn(ira,ips,3,jps)=(strdi(1)-2.d0*strdi(0)+strdi(3))*dal
-              dcgrn(ira,ips,4,jps)=(strdi(2)-2.d0*strdi(0)+strdi(4))*daw
-              dcgrn(ira,ips,5,jps)=(strnn(1)-2.d0*strnn(0)+strnn(3))*dal
-              dcgrn(ira,ips,6,jps)=(strnn(2)-2.d0*strnn(0)+strnn(4))*daw
+              if(ipsl(jps).gt.0)then
+                do i=1,3
+                  dcgrn(ira,ips,i,jps)=dcgrn(ira,ips,i,jps)
+     &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsl(jps)))
+     &              *dal
+                enddo
+              endif
+              if(ipsr(jps).gt.0)then
+                do i=1,3
+                  dcgrn(ira,ips,i,jps)=dcgrn(ira,ips,i,jps)
+     &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsr(jps)))
+     &              *dal
+                enddo
+              endif
+              if(ipsu(jps).gt.0)then
+                do i=1,3
+                  dcgrn(ira,ips,i+3,jps)=dcgrn(ira,ips,i+3,jps)
+     &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsu(jps)))
+     &              *daw
+                enddo
+              endif
+              if(ipsd(jps).gt.0)then
+                do i=1,3
+                  dcgrn(ira,ips,i+3,jps)=dcgrn(ira,ips,i+3,jps)
+     &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsd(jps)))
+     &              *daw
+                enddo
+              endif
             enddo
           enddo
         endif
