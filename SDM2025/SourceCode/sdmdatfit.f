@@ -85,7 +85,7 @@ c
         enddo
       endif
 c
-      roughness=roughness*slparea/sdmod
+      roughness=roughness/sdmod
 c
       return
       end

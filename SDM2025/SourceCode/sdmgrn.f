@@ -312,8 +312,8 @@ c
 c
         if(ismooth.eq.1)then
           do jps=1,nps
-            dal=1.d0/dlen(jps)**2
-            daw=1.d0/dwid(jps)**2
+            dal=parea(jps)/dlen(jps)**2
+            daw=parea(jps)/dwid(jps)**2
             do ira=1,2
               do i=1,4
                 dcgrn(ira,ips,i,jps)=0.d0
@@ -348,8 +348,8 @@ c
           enddo
         else
           do jps=1,nps
-            dal=1.d0/dlen(jps)**2
-            daw=1.d0/dwid(jps)**2
+            dal=parea(jps)/dlen(jps)**2
+            daw=parea(jps)/dwid(jps)**2
             do ira=1,2
               do i=1,6
                 dcgrn(ira,ips,i,jps)=0.d0
