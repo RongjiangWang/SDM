@@ -24,7 +24,6 @@ c
       open(32,file=logfile,status='unknown')
       if(niter.gt.0)then
         write(*,'(a)') '   iter.      cost_function'
-        write(30,'(a)')'   iter.      cost_function'
         write(32,'(a)')'   iter.      cost_function'
         write(*, '(i8,f19.15)')iter,sysmis
         write(32,'(i8,f19.15)')iter,sysmis
