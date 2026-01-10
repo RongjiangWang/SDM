@@ -65,18 +65,18 @@ c
         enddo
       enddo
 c
-      if(izhy.eq.0)return
+c      if(izhy.eq.0)return
 c
-      do n=1,nps*2
-        sd=0.d0
-        do m=1,nps*nsmocmp
-          sd=sd+smomat(m,n)**2
-        enddo
-        sd=dsqrt(sd)
-        do m=1,nps*nsmocmp
-          smomat(m,n)=smomat(m,n)/sd
-        enddo
-      enddo
+c      do n=1,nps*2
+c        sd=0.d0
+c        do m=1,nps*nsmocmp
+c          sd=sd+smomat(m,n)**2
+c        enddo
+c        sd=dsqrt(sd)
+c        do m=1,nps*nsmocmp
+c          smomat(m,n)=smomat(m,n)/sd
+c        enddo
+c      enddo
 c
       return
       end
