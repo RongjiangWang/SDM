@@ -125,17 +125,6 @@ c00000000000000000000000000000000000000000000000000000000000000000000000
 c
         if(testread)nftmax=max0(nftmax,nft(is))
 c
-        if(.not.testread)then
-          allocate(latft(nftmax,ns),stat=ierr)
-          if(ierr.ne.0)stop ' Error in sdmgetinp: latft not allocated!'
-          allocate(lonft(nftmax,ns),stat=ierr)
-          if(ierr.ne.0)stop ' Error in sdmgetinp: lonft not allocated!'
-          allocate(topdip(nftmax,ns),stat=ierr)
-          if(ierr.ne.0)stop ' Error in sdmgetinp: topdip not allocated!'
-          allocate(botdip(nftmax,ns),stat=ierr)
-          if(ierr.ne.0)stop ' Error in sdmgetinp: botdip not allocated!'
-        endif
-c
         do i=1,nft(is)
           call skipdoc(unit)
           read(unit,*)(dswap(j),j=1,4)
@@ -152,16 +141,24 @@ c
           endif
         enddo
 c
-        if(testread)then
-          testread=.false.
-          close(unit)
-          goto 10
-        endif
-c
         topdep(is)=KM2M*topdep(is)
         width(is)=KM2M*width(is)
         patchsize(is)=KM2M*patchsize(is)
       enddo
+c
+      if(testread)then
+        allocate(latft(nftmax,ns),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgetinp: latft not allocated!'
+        allocate(lonft(nftmax,ns),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgetinp: lonft not allocated!'
+        allocate(topdip(nftmax,ns),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgetinp: topdip not allocated!'
+        allocate(botdip(nftmax,ns),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgetinp: botdip not allocated!'
+        testread=.false.
+        close(unit)
+        goto 10
+      endif
 30    continue
       do is=1,ns
         if(maxslip(is).le.0.d0)then
