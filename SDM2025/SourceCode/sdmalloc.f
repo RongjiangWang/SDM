@@ -50,7 +50,6 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       real*8, allocatable:: strike(:),dip(:)
       real*8, allocatable:: pmwei(:,:,:)
       real*8, allocatable:: strgrn(:,:,:,:)
-      real*8, allocatable:: dcgrn(:,:,:,:)
       real*8, allocatable:: strdrop(:,:),strdc(:,:)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     GREEN'S FUNCTION INFO
@@ -100,10 +99,11 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       real*8 wei2smo0,wei2smo,sig2max,step,step0
       real*8 mwpsum,mwssum,mweq,datnrm
       real*8 rmsresall,rmsdatall,sysmis,sysmis0
-      real*8, allocatable:: slpmdl(:,:),vecswp(:),matswp(:,:)
+      real*8, allocatable:: slpmdl(:,:),vecswp(:)
       real*8, allocatable:: datgrn(:,:,:),datmdl(:),batswp(:)
       real*8, allocatable:: sysmat(:,:),sysbat(:),sysvec(:),zhy(:)
-      real*8, allocatable:: obsmat(:,:),smomat(:,:),obsswp(:),resbat(:)
+      real*8, allocatable:: obsgrnmat(:,:),smogrnmat(:,:),resbat(:)
+      real*8, allocatable:: obssysmat(:,:),smosysmat(:,:),vecini(:)
       real*8, allocatable:: rmsres(:),resmin(:),resmax(:),corrmdl(:)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     WARNING STATISTICS

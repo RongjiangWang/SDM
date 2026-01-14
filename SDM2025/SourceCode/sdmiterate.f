@@ -8,7 +8,7 @@ c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
       integer*4 i,j,ira,ips,igd,is,ipar
       integer*4 irelax,jter,nrelax
-      real*8 misfit,corl,vecvar,dvcvar
+      real*8 misfit,corl
       character*1 text
 c
       real*8 sdmcorl
@@ -18,15 +18,16 @@ c
       real*8 eps
       data eps/1.0d-12/
 c
-      iter=0
-      sysmis=1.d0
       logfile='log_'//slipout
       open(32,file=logfile,status='unknown')
       if(niter.gt.0)then
-        write(*,'(a)') '   iter.      cost_function'
-        write(32,'(a)')'   iter.      cost_function'
-        write(*, '(i8,f19.15)')iter,sysmis
-        write(32,'(i8,f19.15)')iter,sysmis
+        iter=0
+        sysmis=1.d0
+        step0=0.d0
+        write(*,'(a)') '   iter.      cost_function     iteration_step'
+        write(32,'(a)')'   iter.      cost_function     iteration_step'
+        write(*, '(i8,f19.15,f19.6)')iter,sysmis,step0
+        write(32,'(i8,f19.15,f19.6)')iter,sysmis,step0
         sysmis0=1.d0
 c
 c       Modified Landweber iteration
@@ -43,7 +44,7 @@ c
         mweq=0.d0
         mwssum=0.d0
         mwpsum=0.d0
-        step=step0
+        step0=step
 c
         landweber=.true.
         jter=0
@@ -68,31 +69,13 @@ c
 c
         call sdmproj(ierr)
 c
-        sysmis=0.d0
-        do i=1,nsys
-          resbat(i)=-sysbat(i)
-          do j=1,nsys
-            resbat(i)=resbat(i)+sysmat(i,j)*sysvec(j)
-          enddo
-          sysmis=sysmis+sysvec(i)*(resbat(i)-sysbat(i))
-        enddo
-        sysmis=1+sysmis/datnrm
-c
-        vecvar=0.d0
-        dvcvar=0.d0
-        do i=1,nps*2
-          vecvar=vecvar+sysvec(i)**2
-          dvcvar=dvcvar+(sysvec(i)-vecswp(i))**2
-        enddo
-c
 c       ckeck convergence
 c
-        convergence=dabs(sysmis-sysmis0).le.eps*sysmis.and.
-     &              dvcvar.le.eps*vecvar
+        convergence=dabs(sysmis-sysmis0).le.eps*sysmis
 c
-        if(sysmis.le.sysmis0)then
-          write( *,'(i8,f19.15,f19.6)')iter,sysmis,step
-          write(32,'(i8,f19.15)')iter,sysmis
+        if(sysmis.le.sysmis0.or.landweber)then
+          write(*, '(i8,f19.15,f19.6)')iter,sysmis,step0
+          write(32,'(i8,f19.15,f19.6)')iter,sysmis,step0
         endif
 c
         if(sysmis.gt.sysmis0.and..not.landweber)then
@@ -112,6 +95,7 @@ c
           step=relax(irelax)
           landweber=.false.
         endif
+        step0=step
         sysmis0=sysmis
         do i=1,nsys
           vecswp(i)=sysvec(i)

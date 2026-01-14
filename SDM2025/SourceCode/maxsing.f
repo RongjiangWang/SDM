@@ -1,24 +1,30 @@
-      real*8 function maxsing(mat,vec,swp,n,eps)
+      real*8 function maxsing(mat,n,eps,vecini,ierr)
       implicit none
-      integer*4 n
+      integer*4 n,ierr
       real*8 eps
-      real*8 mat(n,n),vec(n),swp(n)
+      real*8 mat(n,n),vecini(n)
 c
 c     dominant eigenvalue of a positive defined symmetric matrix
 c     by the power method
 c
-      integer*4 i,j,iter
+      integer*4 i,j,itr
       real*8 a,b
+      real*8, allocatable:: vec(:),swp(:)
 c
-      integer*4 niter
-      data niter/10000/
+      integer*4 nitr
+      data nitr/10000/
+c
+      allocate(vec(n),stat=ierr)
+      if(ierr.ne.0)stop ' Error in maxsing: vec not allocated!'
+      allocate(swp(n),stat=ierr)
+      if(ierr.ne.0)stop ' Error in maxsing: vec not allocated!'
 c
       do i=1,n
-        swp(i)=1.d0
+        swp(i)=vecini(i)
       enddo
 c
       b=0.d0
-      do iter=1,niter
+      do itr=1,nitr
         a=0.d0
         do i=1,n
           vec(i)=0.d0
@@ -43,6 +49,8 @@ c
 c     the dominant eigenvalue sigma2 of sysmat found
 c
       maxsing=a
+c
+      deallocate(vec,swp)
 c
       return
       end

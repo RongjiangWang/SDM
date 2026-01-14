@@ -14,7 +14,6 @@ c
       real*8 si,si0,bsi,co,co0,bco,si2,co2,dis,dis0,azi,azi0,bazi
       real*8 w1,w2,psss,psds,pscl,shss,shds,strst,strdi,strnn
       real*8 dz1,dz2,dpz,dwei,pz1,pz2,xp,yp,px,py
-      real*8 flr(-1:1),fud(-1:1)
       real*8 sig(3,3),dsp(3),stress(3),dux0(2),duy0(2),duz0(2)
       character*10 header
 c
@@ -59,8 +58,6 @@ c
       if(ierr.ne.0)stop ' Error in sdmgrn: datgrn not allocated!'
       allocate(strgrn(2,nps,3,nps),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmgrn: strgrn not allocated!'
-      allocate(dcgrn(2,nps,nsmocmp,nps),stat=ierr)
-      if(ierr.ne.0)stop ' Error in sdmgrn: dcgrn not allocated!'
 c
       allocate(corrmdl(nobs),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmgrn: corrmdl not allocated!'
@@ -309,82 +306,6 @@ c
             strgrn(ira,ips,3,jps)=strnn
           enddo
         enddo
-c
-        if(ismooth.eq.1)then
-          do jps=1,nps
-            dal=parea(jps)/dlen(jps)**2
-            daw=parea(jps)/dwid(jps)**2
-            do ira=1,2
-              do i=1,4
-                dcgrn(ira,ips,i,jps)=0.d0
-              enddo
-              do i=-1,1
-                flr(i)=0.d0
-                fud(i)=0.d0
-              enddo
-              if(ips.eq.jps)then
-                if(ipsl(jps).le.0.or.ipsr(jps).le.0)then
-                  flr(0)=1.d0
-                else
-                  flr(0)=2.d0
-                endif
-                if(ipsu(jps).le.0.or.ipsd(jps).le.0)then
-                  fud(0)=1.d0
-                else
-                  fud(0)=2.d0
-                endif
-              else if(ips.eq.ipsl(jps))then
-                flr(-1)=1.d0
-              else if(ips.eq.ipsr(jps))then
-                flr(1)=1.d0
-              else if(ips.eq.ipsu(jps))then
-                fud(-1)=1.d0
-              else if(ips.eq.ipsd(jps))then
-                fud(1)=1.d0
-              endif
-              dcgrn(ira,ips,2*ira-1,jps)=(flr(-1)-flr(0)+flr(1))*dal
-              dcgrn(ira,ips,2*ira  ,jps)=(fud(-1)-fud(0)+fud(1))*daw
-            enddo
-          enddo
-        else
-          do jps=1,nps
-            dal=parea(jps)/dlen(jps)**2
-            daw=parea(jps)/dwid(jps)**2
-            do ira=1,2
-              do i=1,6
-                dcgrn(ira,ips,i,jps)=0.d0
-              enddo
-              if(ipsl(jps).gt.0)then
-                do i=1,3
-                  dcgrn(ira,ips,i,jps)=dcgrn(ira,ips,i,jps)
-     &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsl(jps)))
-     &              *dal
-                enddo
-              endif
-              if(ipsr(jps).gt.0)then
-                do i=1,3
-                  dcgrn(ira,ips,i,jps)=dcgrn(ira,ips,i,jps)
-     &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsr(jps)))
-     &              *dal
-                enddo
-              endif
-              if(ipsu(jps).gt.0)then
-                do i=1,3
-                  dcgrn(ira,ips,i+3,jps)=dcgrn(ira,ips,i+3,jps)
-     &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsu(jps)))
-     &              *daw
-                enddo
-              endif
-              if(ipsd(jps).gt.0)then
-                do i=1,3
-                  dcgrn(ira,ips,i+3,jps)=dcgrn(ira,ips,i+3,jps)
-     &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsd(jps)))
-     &              *daw
-                enddo
-              endif
-            enddo
-          enddo
-        endif
 c
         if(mod(ips,np10).eq.0)then
           npercent=10*(ips/np10)

@@ -7,9 +7,14 @@ c     Projection on to subspace with positive constraint
 c
 c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
-      integer*4 i,j,is,ira,ips,ipar
+      integer*4 i,j,k,m,n,is,ira,ips,ipar
       real*8 a,b,racs1,racs2,rass1,rass2,ra,racs,rass
-      real*8 slp
+      real*8 slp,maxsing
+c
+      real*8 eps
+      data eps/1.0d-08/
+c
+      real*8, allocatable:: vec(:),swp(:)
 c
       i=0
       do ips=1,nps
@@ -80,6 +85,16 @@ c
         i=i+1
         sysvec(i)=corrpar(ipar)/parunit(ipar)
       enddo
+c
+      sysmis=0.d0
+      do i=1,nsys
+        resbat(i)=-sysbat(i)
+        do j=1,nsys
+          resbat(i)=resbat(i)+sysmat(i,j)*sysvec(j)
+        enddo
+        sysmis=sysmis+sysvec(i)*(resbat(i)-sysbat(i))
+      enddo
+      sysmis=1+sysmis/datnrm
 c
       return
       end

@@ -6,7 +6,7 @@ c
 c     first step to prepare SDM iteration
 c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
-      integer*4 i,j,ira,ips,jps,igd,iobs,ipar
+      integer*4 i,j,m,n,ira,ips,jps,igd,iobs,ipar
       real*8 dswp,res,resvar,wfsum,wfgd,sdmod
       real*8 sd(6)
 c
@@ -58,12 +58,16 @@ c
         do i=1,nsmocmp
           sd(i)=0.d0
           do ips=1,nps
-            sd(i)=sd(i)+slpmdl(1,ips)*dcgrn(1,ips,i,jps)
-     &                 +slpmdl(2,ips)*dcgrn(2,ips,i,jps)
+            do ira=1,2
+              m=(jps-1)*nsmocmp+i
+              n=(ips-1)*2+ira
+              sd(i)=sd(i)
+     &             +slpmdl(ira,ips)*smogrnmat(m,n)*zhy(ips)/zhy(jps)
+            enddo
           enddo
           sdmod=sdmod+sd(i)*sd(i)
         enddo
-        roughness=roughness+parea(jps)*sdmod
+        roughness=roughness+sdmod
       enddo
 c
       if(ismooth.eq.2)then
