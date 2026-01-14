@@ -6,15 +6,15 @@ c
 c     first step to prepare SDM iteration
 c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
-      integer*4 i,j,k,m,n,ira,ips,jps,igd,iobs,ipar
+      integer*4 i,j,k,m,n,ira,ips,jps,igd,iobs,iusrp
       real*8 a,b,sum
       real*8 datvar,smovar
-      real*8 maxsing
+      real*8 maxsing,minsing
 c
       real*8 eps
-      data eps/1.0d-08/
+      data eps/1.0d-06/
 c
-      nsys=nps*2+npar
+      nsys=nps*2+nusrp
 c
       allocate(slpmdl(2,nps),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmpreinv: slpmdl not allocated!'
@@ -126,6 +126,7 @@ c
       enddo
 c
       sig2max=maxsing(sysmat,nsys,eps,vecini,ierr)
+c     sig2min=minsing(sysmat,nsys,sig2max,eps,vecini,ierr)
 c
       do m=1,nsys
         do n=1,nsys
@@ -161,8 +162,8 @@ c
           slpmdl(ira,ips)=0.d0
         enddo
       enddo
-      do ipar=1,npar
-        corrpar(ipar)=0.d0
+      do iusrp=1,nusrp
+        corrusrp(iusrp)=0.d0
       enddo
 c
       datnrm=0.d0

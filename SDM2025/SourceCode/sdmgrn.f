@@ -3,7 +3,7 @@
       implicit none
       integer*4 ierr
 c
-c     Last modified: 2025 in Zhuhai by R. Wang
+c     Last modified: Jan 2026 in Berlin by R. Wang
 c
       integer*4 is,ips,jps,iobs,nlarge,ira,il,nl,lend,lenf
       integer*4 i,j,k,l,ir,ir1,ir2,izs,izs1,izs2,idiv
@@ -61,26 +61,26 @@ c
 c
       allocate(corrmdl(nobs),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmgrn: corrmdl not allocated!'
-      if(npar.gt.0)then
-        allocate(corrgrn(npar,nobs),stat=ierr)
+      if(nusrp.gt.0)then
+        allocate(corrgrn(nusrp,nobs),stat=ierr)
         if(ierr.ne.0)stop ' Error in sdmgrn: corrgrn not allocated!'
-        allocate(parunit(npar),stat=ierr)
-        if(ierr.ne.0)stop ' Error in sdmgrn: parunit not allocated!'
+        allocate(usrpunit(nusrp),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgrn: usrpunit not allocated!'
         open(20,file=corrgrnfile,status='old')
         read(20,'(a)')header
-        do j=1,npar
-          parunit(j)=0.d0
+        do j=1,nusrp
+          usrpunit(j)=0.d0
         enddo
         wfsum=0.d0
         do iobs=1,nobs
-          read(20,*)(corrgrn(j,iobs),j=1,npar)
-          do j=1,npar
-            parunit(j)=parunit(j)+(wf(iobs)*corrgrn(j,iobs))**2
+          read(20,*)(corrgrn(j,iobs),j=1,nusrp)
+          do j=1,nusrp
+            usrpunit(j)=usrpunit(j)+(wf(iobs)*corrgrn(j,iobs))**2
           enddo
           wfsum=wfsum+wf(iobs)**2
         enddo
-        do j=1,npar
-          parunit(j)=dsqrt(parunit(j)/wfsum)
+        do j=1,nusrp
+          usrpunit(j)=dsqrt(usrpunit(j)/wfsum)
         enddo
         close(20)
       endif

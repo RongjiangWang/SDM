@@ -3,16 +3,12 @@
       implicit none
       integer*4 ierr
 c
-c     Projection on to subspace with positive constraint
+c     Project on to subspace with positivity constraint
 c
-c     Last modified: Zhuhai, Nov. 2025, by R. Wang
+c     Last modified: Berlin, Jan. 2026, by R. Wang
 c
-      integer*4 i,j,k,m,n,is,ira,ips,ipar
-      real*8 a,b,racs1,racs2,rass1,rass2,ra,racs,rass
-      real*8 slp,maxsing
-c
-      real*8 eps
-      data eps/1.0d-08/
+      integer*4 i,j,k,is,ira,ips,iusrp
+      real*8 a,b,slp,racs1,racs2,rass1,rass2,ra,racs,rass
 c
       i=0
       do ips=1,nps
@@ -22,8 +18,8 @@ c
         enddo
       enddo
 c
-      do ipar=1,npar
-        corrpar(ipar)=sysvec(2*nps+ipar)*parunit(ipar)
+      do iusrp=1,nusrp
+        corrusrp(iusrp)=sysvec(2*nps+iusrp)*usrpunit(iusrp)
       enddo
 c
       do is=1,ns
@@ -67,9 +63,9 @@ c
           endif
         enddo
       enddo
-      do ipar=1,npar
-        corrpar(ipar)=dmin1(parmax(ipar),
-     &                dmax1(parmin(ipar),corrpar(ipar)))
+      do iusrp=1,nusrp
+        corrusrp(iusrp)=dmin1(usrpmax(iusrp),
+     &                dmax1(usrpmin(iusrp),corrusrp(iusrp)))
       enddo
 c
       i=0
@@ -79,9 +75,9 @@ c
           sysvec(i)=slpmdl(ira,ips)*zhy(ips)
         enddo
       enddo
-      do ipar=1,npar
+      do iusrp=1,nusrp
         i=i+1
-        sysvec(i)=corrpar(ipar)/parunit(ipar)
+        sysvec(i)=corrusrp(iusrp)/usrpunit(iusrp)
       enddo
 c
       sysmis=0.d0

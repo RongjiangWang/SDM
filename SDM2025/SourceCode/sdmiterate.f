@@ -6,7 +6,7 @@ c
 c     SDM iteration
 c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
-      integer*4 i,j,ira,ips,igd,is,ipar
+      integer*4 i,j,ira,ips,igd,is,iusrp
       integer*4 irelax,jter,nrelax
       real*8 misfit,corl
       character*1 text
@@ -135,8 +135,8 @@ c
           slpmdl(2,ips)=-slpmdl(2,ips)
         enddo
         close(20)
-        do ipar=1,npar
-          corrpar(ipar)=0.d0
+        do iusrp=1,nusrp
+          corrusrp(iusrp)=0.d0
         enddo
         i=0
         do ips=1,nps
@@ -179,11 +179,11 @@ c
 c
 c     final message
 c
-      do ipar=1,npar
-        write(*,'(a,i2,a,E14.6)')'  data-correction parameter ',ipar,
-     &                         ' found: ',corrpar(ipar)
-        write(32,'(a,i2,a,E14.6)')'  data-correction parameter ',ipar,
-     &                         ' found: ',corrpar(ipar)
+      do iusrp=1,nusrp
+        write(*,'(a,i2,a,E14.6)')'  data-correction parameter ',iusrp,
+     &                         ' found: ',corrusrp(iusrp)
+        write(32,'(a,i2,a,E14.6)')'  data-correction parameter ',iusrp,
+     &                         ' found: ',corrusrp(iusrp)
       enddo
       write(*,'(a)')'  seg  mean_slp mean_rake   max_slp'
      &      //'      rake   pos_lat   pos_lon     pos_z'

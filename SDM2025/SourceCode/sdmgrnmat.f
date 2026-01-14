@@ -7,14 +7,14 @@ c     Green's functions matrix element Mnm
 c
 c     Last modified: Zhuhai, Dec 7, 2025, by R. Wang
 c
-      integer*4 i,j,m,n,igd,ira,ips,iobs,jps,ipar
-      real*8 sd,paru,wfsum,dal,daw
+      integer*4 i,j,m,n,igd,ira,ips,iobs,jps,iusrp
+      real*8 sd,usrpu,wfsum,dal,daw
       real*8 dcg(6),flr(-1:1),fud(-1:1)
 c
 c     observation matrix
-c     m(1:nobs): raw, n(1:nps*2+npar): column
+c     m(1:nobs): raw, n(1:nps*2+nusrp): column
 c
-      paru=0.d0
+      usrpu=0.d0
       wfsum=0.d0
       do iobs=1,nobs
         m=iobs
@@ -23,7 +23,7 @@ c
           do ira=1,2
             n=n+1
             obsgrnmat(m,n)=wf(iobs)*datgrn(ira,ips,iobs)/zhy(ips)
-            paru=paru+obsgrnmat(m,n)**2
+            usrpu=usrpu+obsgrnmat(m,n)**2
             wfsum=wfsum+wf(iobs)**2
           enddo
         enddo
@@ -31,21 +31,21 @@ c
 c
 c     offunit: a very important parameter to avoid loss-of-precision problem!
 c
-      paru=dsqrt(paru/wfsum)
-      do ipar=1,npar
-        parunit(ipar)=paru/parunit(ipar)
+      usrpu=dsqrt(usrpu/wfsum)
+      do iusrp=1,nusrp
+        usrpunit(iusrp)=usrpu/usrpunit(iusrp)
       enddo
 c
       do iobs=1,nobs
         m=iobs
-        do ipar=1,npar
-          n=nps*2+ipar
-          obsgrnmat(m,n)=wf(iobs)*corrgrn(ipar,iobs)*parunit(ipar)
+        do iusrp=1,nusrp
+          n=nps*2+iusrp
+          obsgrnmat(m,n)=wf(iobs)*corrgrn(iusrp,iobs)*usrpunit(iusrp)
         enddo
       enddo
 c
 c     smoothing matrix
-c     m(1:nps*nsmocmp): raw, n(1:nps*2+npar): column
+c     m(1:nps*nsmocmp): raw, n(1:nps*2+nusrp): column
 c
       do m=1,nps*nsmocmp
         do n=1,nsys

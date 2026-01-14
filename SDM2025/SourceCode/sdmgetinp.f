@@ -235,18 +235,18 @@ c     ==================================
 c00000000000000000000000000000000000000000000000000000000000000000000000
       call skipdoc(unit)
       read(unit,'(a)')dataline
-      read(dataline,*)npar
-      if(npar.gt.0)then
-        read(dataline,*)npar,corrgrnfile
-        allocate(corrpar(npar),stat=ierr)
-        if(ierr.ne.0)stop ' Error in sdmgetinp: corrpar not allocated!'
-        allocate(parmin(npar),stat=ierr)
-        if(ierr.ne.0)stop ' Error in sdmgetinp: parmin not allocated!'
-        allocate(parmax(npar),stat=ierr)
-        if(ierr.ne.0)stop ' Error in sdmgetinp: parmax not allocated!'
-        do i=1,npar
+      read(dataline,*)nusrp
+      if(nusrp.gt.0)then
+        read(dataline,*)nusrp,corrgrnfile
+        allocate(corrusrp(nusrp),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgetinp: corrusrp not allocated!'
+        allocate(usrpmin(nusrp),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgetinp: usrpmin not allocated!'
+        allocate(usrpmax(nusrp),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgetinp: usrpmax not allocated!'
+        do i=1,nusrp
           call skipdoc(unit)
-          read(unit,*)parmin(i),parmax(i)
+          read(unit,*)usrpmin(i),usrpmax(i)
         enddo
       endif
 c00000000000000000000000000000000000000000000000000000000000000000000000
@@ -280,8 +280,8 @@ c00000000000000000000000000000000000000000000000000000000000000000000000
       call skipdoc(unit)
       read(unit,*)slipout
       call skipdoc(unit)
-      if(npar.gt.0)then
-        read(unit,*)(gdout(i),i=1,ngd),parout
+      if(nusrp.gt.0)then
+        read(unit,*)(gdout(i),i=1,ngd),usrpout
       else
         read(unit,*)(gdout(i),i=1,ngd)
       endif

@@ -6,7 +6,7 @@ c
 c     first step to prepare SDM iteration
 c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
-      integer*4 i,j,m,n,ira,ips,jps,igd,iobs,ipar
+      integer*4 i,j,m,n,ira,ips,jps,igd,iobs,iusrp
       real*8 dswp,res,resvar,wfsum,wfgd,sdmod
       real*8 sd(6)
 c
@@ -21,9 +21,9 @@ c
       enddo
       do iobs=1,nobs
         corrmdl(iobs)=0.d0
-        do ipar=1,npar
+        do iusrp=1,nusrp
           corrmdl(iobs)=corrmdl(iobs)
-     &                 +corrpar(ipar)*corrgrn(ipar,iobs)
+     &                 +corrusrp(iusrp)*corrgrn(iusrp,iobs)
         enddo
       enddo
 c

@@ -79,16 +79,16 @@ c     =======================================
 c     (xobs(i),yobs(i))=coordinates of the observation positions
 c     the 3 displcement components: ux,uy,uz
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer*4 nheader,ngd,nobs,npar
+      integer*4 nheader,ngd,nobs,nusrp
       real*8 datunit,offunit
       logical*2, allocatable:: csconst(:)
       integer*4, allocatable:: nobs1(:),nobs2(:),nobsj(:)
       real*8, allocatable:: dinc_const(:),dazi_const(:)
       real*8, allocatable:: xcs(:),ycs(:),zcs(:)
       real*8, allocatable:: do0(:),dm0(:),corrgrn(:,:)
-      real*8, allocatable:: latobs(:),lonobs(:),parunit(:)
-      real*8, allocatable:: datobs(:),datres(:),corrpar(:)
-      real*8, allocatable:: wf(:),wfm(:),parmin(:),parmax(:)
+      real*8, allocatable:: latobs(:),lonobs(:),usrpunit(:)
+      real*8, allocatable:: datobs(:),datres(:),corrusrp(:)
+      real*8, allocatable:: wf(:),wfm(:),usrpmin(:),usrpmax(:)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     SLIP MODEL
 c     ==========
@@ -96,7 +96,7 @@ c     slpmdl(2,..) = slip components in the strike and dip directions
 c     zhang(ips) = weighted smoothing of roughness (Yong Zhang, 2025)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       integer*4 iearth,iter,niter,nsys,ismooth,izhy,nsmocmp
-      real*8 wei2smo0,wei2smo,sig2max,step,step0
+      real*8 wei2smo0,wei2smo,sig2max,sig2min,step,step0
       real*8 mwpsum,mwssum,mweq,datnrm
       real*8 rmsresall,rmsdatall,sysmis,sysmis0
       real*8, allocatable:: slpmdl(:,:),vecswp(:)
@@ -116,7 +116,7 @@ c     FILE NAMES
 c     ==========
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       character*80 grndir,infile,slipout,logfile,zhyrelax
-      character*80 usr3dgrn(2),green(3),corrgrnfile,parout
+      character*80 usr3dgrn(2),green(3),corrgrnfile,usrpout
       character*80, allocatable:: gddata(:),gdout(:)
       character*80, allocatable:: inpatches(:)
 c

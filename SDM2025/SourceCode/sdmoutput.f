@@ -5,7 +5,7 @@
 c
 c     Last modified: 7 Dec. 2025 by R. Wang
 c
-      integer*4 i,j,is,ira,ips,jps,igd,iobs,ipar
+      integer*4 i,j,is,ira,ips,jps,igd,iobs,iusrp
       real*8 slp,rake,sdam
       character*1 text,txtis*2,slipfile*80
 c
@@ -82,11 +82,11 @@ c
         close(33)
       enddo
 c
-      if(npar.gt.0)then
-        open(34,file=parout,status='unknown')
+      if(nusrp.gt.0)then
+        open(34,file=usrpout,status='unknown')
         write(34,'(a)')'  no data_correction_parameter'
-        do ipar=1,npar
-          write(34,'(i4,E16.6)')ipar,corrpar(ipar)
+        do iusrp=1,nusrp
+          write(34,'(i4,E16.6)')iusrp,corrusrp(iusrp)
         enddo
         close(34)
       endif

@@ -6,7 +6,7 @@ c     this program synthesizes seismograms due to a number of          c
 c     rectanglar rupture planes using the Green's function approach.   c
 c     The input data will be read from an input file                   c
 c                                                                      c
-c     Last modified: Zhuhai, Nov, 2025, by R. Wang                    c
+c     Last modified: Berlin, Jan, 2026, by R. Wang                     c
 c                                                                      c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,7 +21,7 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     LOCAL WORK SPACES
 c     =================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer*4 ierr
+      integer*4 ierr,time,it1,it2
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     END DECLARATIONS
 c     ================
@@ -67,6 +67,7 @@ c
 c
       write(*,'(a,$)')' Please type the file name of input data: '
       read(*,'(a)')infile
+      it1=time()
       call sdmgetinp(ierr)
 c00000000000000000000000000000000000000000000000000000000000000000000000
 c      END READ IN INPUT PARAMETERS
@@ -102,23 +103,18 @@ c
 c
       write(*,'(a)')' ... output ...'
       call sdmoutput(ierr)
+      it2=time()
 c
 c00000000000000000000000000000000000000000000000000000000000000000000000
 c      END OF STANDARD PROCESSING
 c      ==========================
 c00000000000000000000000000000000000000000000000000000000000000000000000
-      if(nwarn.eq.0)then
-        print *,' ####################################################'
-        print *,' #                                                  #'
-        print *,' #        End of computations with SDM2025          #'
-        print *,' #                                                  #'
-        print *,' ####################################################'
-      else
-        print *,' ####################################################'
-        print *,'      There have been',nwarn,' warnings.      '
-        print *,'              Results may be inaccurate!             '
-        print *,' ####################################################'
-      endif
+      print *,' ####################################################'
+      print *,' #                                                  #'
+      print *,' #        End of computations with SDM2025          #'
+      print *,' #                                                  #'
+      print *,' ####################################################'
+      print *,' run time: ',it2-it1,'s.'
 c
       stop
       end

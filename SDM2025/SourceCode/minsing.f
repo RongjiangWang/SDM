@@ -1,22 +1,20 @@
-      real*8 function maxsing(mat,n,eps,vecini,ierr)
+      real*8 function minsing(mat,n,sig2max,eps,vecini,ierr)
       implicit none
       integer*4 n,ierr
-      real*8 eps
+      real*8 sig2max,eps
       real*8 mat(n,n),vecini(n)
 c
 c     dominant eigenvalue of a positive defined symmetric matrix
 c     by the power method
 c
-      integer*4 i,j,itr,ntr,it1,it2,time
+      integer*4 i,j,itr,ntr
       real*8 a,b
       real*8, allocatable:: vec(:),swp(:)
 c
-      it1=time()
-c
       allocate(vec(n),stat=ierr)
-      if(ierr.ne.0)stop ' Error in maxsing: vec not allocated!'
+      if(ierr.ne.0)stop ' Error in minsing: vec not allocated!'
       allocate(swp(n),stat=ierr)
-      if(ierr.ne.0)stop ' Error in maxsing: vec not allocated!'
+      if(ierr.ne.0)stop ' Error in minsing: vec not allocated!'
 c
       ntr=100*n
 c
@@ -28,9 +26,9 @@ c
       do itr=1,ntr
         a=0.d0
         do i=1,n
-          vec(i)=0.d0
+          vec(i)=sig2max*swp(i)
           do j=1,n
-            vec(i)=vec(i)+mat(i,j)*swp(j) 
+            vec(i)=vec(i)-mat(i,j)*swp(j) 
           enddo
           a=a+vec(i)**2
         enddo
@@ -44,18 +42,14 @@ c
           b=a
         endif
       enddo
-      print *,' Warning in maxsing: convergence not achieved!'
+      print *,' Warning in minsing: convergence not achieved!'
 100   continue
-c
-      deallocate(vec,swp)
 c
 c     the dominant eigenvalue sigma2 of sysmat found
 c
-      maxsing=a
+      minsing=sig2max-a
 c
-      it2=time()
-      write(*,'(a,E16.6,a,i4,a)')' ... dominant sigular value found: ',
-     &                      maxsing,' by ',it2-it1,'s.'
+      deallocate(vec,swp)
 c
       return
       end
