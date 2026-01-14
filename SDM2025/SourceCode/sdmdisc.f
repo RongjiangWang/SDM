@@ -433,96 +433,98 @@ c
 c
 500   continue
 c
-      do ips=1,nps
-        st=strike(ips)*DEG2RAD
-        di=dip(ips)*DEG2RAD
-        d0=dmax1(d0,dsqrt(dlen(ips)**2+dwid(ips)**2
-     &                  +(dwid(ips)*dsin(di))**2))
+      do is=1,ns
+        do ips=nps1(is),nps2(is)
+          st=strike(ips)*DEG2RAD
+          di=dip(ips)*DEG2RAD
+          d0=dmax1(d0,dsqrt(dlen(ips)**2+dwid(ips)**2
+     &                    +(dwid(ips)*dsin(di))**2))
 c
-c       search left neighboring patch
+c         search left neighboring patch
 c
-        dp=d0
-        ipsl(ips)=0
-        xp=-dlen(ips)*dcos(st)
-        yp=-dlen(ips)*dsin(st)
-        zp=pz(ips)
-c
-        do jps=1,nps
-          if(jps.ne.ips.and.dabs(pz(jps)-pz(ips)).le.
-     &       dwid(ips)*dsin(di)+dwid(jps)*dsin(dip(jps)*DEG2RAD))then
-            call disazi(rearth,plat(ips),plon(ips),
-     &                         plat(jps),plon(jps),dx,dy)
-            dp0=dsqrt((dx-xp)**2+(dy-yp)**2+(pz(jps)-zp)**2)
-            if(dp.ge.dp0)then
-              dp=dp0
-              ipsl(ips)=jps
-            endif
-          endif
-        enddo
-c
-c       search right neighboring patch
-c
-        dp=d0
-        ipsr(ips)=0
-        xp=dlen(ips)*dcos(st)
-        yp=dlen(ips)*dsin(st)
-        zp=pz(ips)
-c
-        do jps=1,nps
-          if(jps.ne.ips.and.dabs(pz(jps)-pz(ips)).le.
-     &       dwid(ips)*dsin(di)+dwid(jps)*dsin(dip(jps)*DEG2RAD))then
-            call disazi(rearth,plat(ips),plon(ips),
-     &                         plat(jps),plon(jps),dx,dy)
-            dp0=dsqrt((dx-xp)**2+(dy-yp)**2+(pz(jps)-zp)**2)
-            if(dp.ge.dp0)then
-              dp=dp0
-              ipsr(ips)=jps
-            endif
-          endif
-        enddo
-c
-c       search upper neighboring patch
-c
-        if(pz(ips).le.dwid(ips)*dsin(di))then
-          ipsu(ips)=-1
-        else
           dp=d0
-          ipsu(ips)=0
-          xp= dwid(ips)*dcos(di)*dsin(st)
-          yp=-dwid(ips)*dcos(di)*dcos(st)
-          zp=pz(ips)-dwid(ips)*dsin(di)
+          ipsl(ips)=0
+          xp=-dlen(ips)*dcos(st)
+          yp=-dlen(ips)*dsin(st)
+          zp=pz(ips)
 c
-          do jps=1,nps
-            if(jps.ne.ips.and.pz(jps).lt.pz(ips))then
+          do jps=nps1(is),nps2(is)
+            if(jps.ne.ips.and.dabs(pz(jps)-pz(ips)).le.
+     &         dwid(ips)*dsin(di)+dwid(jps)*dsin(dip(jps)*DEG2RAD))then
               call disazi(rearth,plat(ips),plon(ips),
      &                           plat(jps),plon(jps),dx,dy)
               dp0=dsqrt((dx-xp)**2+(dy-yp)**2+(pz(jps)-zp)**2)
               if(dp.ge.dp0)then
                 dp=dp0
-                ipsu(ips)=jps
+                ipsl(ips)=jps
               endif
             endif
           enddo
-        endif
 c
-c       search lower neighboring patch
+c         search right neighboring patch
 c
-        dp=d0
-        ipsd(ips)=0
-        xp=-dwid(ips)*dcos(di)*dsin(st)
-        yp= dwid(ips)*dcos(di)*dcos(st)
-        zp=pz(ips)+dwid(ips)*dsin(di)
+          dp=d0
+          ipsr(ips)=0
+          xp=dlen(ips)*dcos(st)
+          yp=dlen(ips)*dsin(st)
+          zp=pz(ips)
 c
-        do jps=1,nps
-          if(jps.ne.ips.and.pz(jps).gt.pz(ips))then
-            call disazi(rearth,plat(ips),plon(ips),
-     &                         plat(jps),plon(jps),dx,dy)
-            dp0=dsqrt((dx-xp)**2+(dy-yp)**2+(pz(jps)-zp)**2)
-            if(dp.ge.dp0)then
-              dp=dp0
-              ipsd(ips)=jps
+          do jps=nps1(is),nps2(is)
+            if(jps.ne.ips.and.dabs(pz(jps)-pz(ips)).le.
+     &         dwid(ips)*dsin(di)+dwid(jps)*dsin(dip(jps)*DEG2RAD))then
+              call disazi(rearth,plat(ips),plon(ips),
+     &                           plat(jps),plon(jps),dx,dy)
+              dp0=dsqrt((dx-xp)**2+(dy-yp)**2+(pz(jps)-zp)**2)
+              if(dp.ge.dp0)then
+                dp=dp0
+                ipsr(ips)=jps
+              endif
             endif
+          enddo
+c
+c         search upper neighboring patch
+c
+          if(pz(ips).le.dwid(ips)*dsin(di))then
+            ipsu(ips)=-1
+          else
+            dp=d0
+            ipsu(ips)=0
+            xp= dwid(ips)*dcos(di)*dsin(st)
+            yp=-dwid(ips)*dcos(di)*dcos(st)
+            zp=pz(ips)-dwid(ips)*dsin(di)
+c
+            do jps=nps1(is),nps2(is)
+              if(jps.ne.ips.and.pz(jps).lt.pz(ips))then
+                call disazi(rearth,plat(ips),plon(ips),
+     &                             plat(jps),plon(jps),dx,dy)
+                dp0=dsqrt((dx-xp)**2+(dy-yp)**2+(pz(jps)-zp)**2)
+                if(dp.ge.dp0)then
+                  dp=dp0
+                  ipsu(ips)=jps
+                endif
+              endif
+            enddo
           endif
+c
+c         search lower neighboring patch
+c
+          dp=d0
+          ipsd(ips)=0
+          xp=-dwid(ips)*dcos(di)*dsin(st)
+          yp= dwid(ips)*dcos(di)*dcos(st)
+          zp=pz(ips)+dwid(ips)*dsin(di)
+c
+          do jps=nps1(is),nps2(is)
+            if(jps.ne.ips.and.pz(jps).gt.pz(ips))then
+              call disazi(rearth,plat(ips),plon(ips),
+     &                           plat(jps),plon(jps),dx,dy)
+              dp0=dsqrt((dx-xp)**2+(dy-yp)**2+(pz(jps)-zp)**2)
+              if(dp.ge.dp0)then
+                dp=dp0
+                ipsd(ips)=jps
+              endif
+            endif
+          enddo
         enddo
       enddo
 c
