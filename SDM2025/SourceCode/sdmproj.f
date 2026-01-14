@@ -14,8 +14,6 @@ c
       real*8 eps
       data eps/1.0d-08/
 c
-      real*8, allocatable:: vec(:),swp(:)
-c
       i=0
       do ips=1,nps
         do ira=1,2
