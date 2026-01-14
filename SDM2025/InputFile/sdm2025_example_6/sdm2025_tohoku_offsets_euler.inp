@@ -213,12 +213,13 @@
 #
 # 2.1. file names of data set 1 (data format by 4[+2] columns: lat[deg],
 #      lon[deg], data, error, [incidence, azimuth])
-# 2.2. the weighting factor, selection for uniform (1) or position-dependent (0)
-#      orientation of the displacement, in case of the uniform orientation, the
-#      incidence and azimuth angles [deg]. examples: 90.0, 0.0 for x (north)
-#      displacement; 90.0, 90.0 for y (east) displacement; 0.0 0.0 for z (up)
-#      component; 23.0, -100.0 (flight azimuth - 90) for ascending LOS displacement
-#      or 23.0, 100.0 for descending LOS displacement
+# 2.2. the collective weighting factor of the current dataset, selection for
+#      uniform (1) or position-dependent (0) orientation of the displacement, in
+#      case of the uniform orientation, the incidence and azimuth angles [deg].
+#      examples: 90.0, 0.0 for x (north) displacement; 90.0, 90.0 for y (east)
+#      displacement; 0.0 0.0 for z (up) component; 23.0, -100.0 (flight azimuth
+#      - 90) for ascending LOS displacement or 23.0, 100.0 for descending LOS
+#      displacement
 #
 #      If the orientation of surface displacement within one dataset is
 #      position dependent, the data file should include 6 columns with the
@@ -254,9 +255,9 @@
       -0.1       0.1       !northward, unit = meter
       -0.1       0.1       !eastward, unit = meter
       -0.1       0.1       !upward, unit = meter
-  -1.0E-08   1.0E-08       !rotation around x ( 0°, 0°), unit = radian
-  -1.0E-08   1.0E-08       !rotation around y ( 0°,90°), unit = radian
-  -1.0E-08   1.0E-08       !rotation around z (90°, 0°), unit = radian
+  -1.0E-08   1.0E-08       !rotation around x ( 0Â°, 0Â°), unit = radian
+  -1.0E-08   1.0E-08       !rotation around y ( 0Â°,90Â°), unit = radian
+  -1.0E-08   1.0E-08       !rotation around z (90Â°, 0Â°), unit = radian
 #===============================================================================
 # PARAMETERS FOR ITERATIVE INVERSION
 # ==================================
@@ -289,4 +290,5 @@
 #===============================================================================
  'slip_model.dat'
  'output_un.dat'   'output_ue.dat'   'output_uz.dat' 'output_offsets_euler.dat'
+
 #================================end of input===================================
