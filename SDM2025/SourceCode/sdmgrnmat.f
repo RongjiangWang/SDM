@@ -5,7 +5,7 @@
 c
 c     Green's functions matrix element Mnm
 c
-c     Last modified: Zhuhai, Dec 7, 2025, by R. Wang
+c     Last modified: Berlin, Jan 14, 2026, by R. Wang
 c
       integer*4 i,j,m,n,igd,ira,ips,iobs,jps,iusrp
       real*8 sd,usrpu,wfsum,dal,daw
@@ -91,8 +91,8 @@ c
               do i=1,nsmocmp
                 m=(jps-1)*nsmocmp+i
                 n=(ips-1)*2+ira
-                smogrnmat(m,n)=dsqrt(parea(jps))
-     &                        *dcg(i)*zhy(jps)/zhy(ips)
+                smogrnmat(m,n)=dsqrt(parea(jps))*dcg(i)
+     &                        *zhy(jps)/zhy(ips)
               enddo
             enddo
           enddo
@@ -138,8 +138,8 @@ c
               do i=1,nsmocmp
                 m=(jps-1)*nsmocmp+i
                 n=(ips-1)*2+ira
-                smogrnmat(m,n)=dsqrt(parea(jps))
-     &                        *dcg(i)*zhy(jps)/zhy(ips)
+                smogrnmat(m,n)=dsqrt(parea(jps))*dcg(i)
+     &                        *zhy(jps)/zhy(ips)
               enddo
             enddo
           enddo
@@ -153,10 +153,12 @@ c
         do m=1,nps*nsmocmp
           sd=sd+smogrnmat(m,n)**2
         enddo
-        sd=dsqrt(sd)
-        do m=1,nps*nsmocmp
-          smogrnmat(m,n)=smogrnmat(m,n)/sd
-        enddo
+        if(sd.gt.0.d0)then
+          sd=dsqrt(sd)
+          do m=1,nps*nsmocmp
+            smogrnmat(m,n)=smogrnmat(m,n)/sd
+          enddo
+        endif
       enddo
 c
       return
