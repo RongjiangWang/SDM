@@ -61,7 +61,7 @@ c
       print *,' #               (wang@gfz-potsdam.de)                 #'
       print *,' #                                                     #'
       print *,' #        GFZ Helmholtz Centre for Geosciences         #'
-      print *,' #             Last modified Nov 28, 2025              #'
+      print *,' #             Last modified Jan 19, 2026              #'
       print *,' #######################################################'
       print *,'                                                       '
 c
