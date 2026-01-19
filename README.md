@@ -26,6 +26,8 @@ to get the excutable code sdm2025.
 
 After start the executable code, the program ask for an input file in the ASCII format. An example input file is provided under folder "InputFile". You may change the input data included in this file for your own applications.
 
+(Note: in comparison with the older versions, the output stress components on the fault plane are re-defined as their co-seismic increase rather than drop).
+
 References
 
 Wang, L., R. Wang, F. Roth, B. Enescu, S. Hainzl and S. Ergintav (2009). Afterslip and viscoelastic relaxation following the 1999 M 7.4 Izmit earthquake from GPS measurements, Geophysical Journal International, 178(3), 1220-1237.
