@@ -142,9 +142,17 @@ c
 c
 c       cosine vectors of normal of hanging plate
 c
-        rnn(1,ips)= ssdi(ips)*ssst(ips)
-        rnn(2,ips)=-ssdi(ips)*csst(ips)
-        rnn(3,ips)= csdi(ips)
+c        rnn(1,ips)= ssdi(ips)*ssst(ips)
+c        rnn(2,ips)=-ssdi(ips)*csst(ips)
+c        rnn(3,ips)= csdi(ips)
+c
+c       modified at Jan 19, 2026 by R. Wang:
+c
+c       cosine vectors of normal of foot plate
+c
+        rnn(1,ips)=-ssdi(ips)*ssst(ips)
+        rnn(2,ips)= ssdi(ips)*csst(ips)
+        rnn(3,ips)=-csdi(ips)
 c
 c       cosine vectors of strike direction
 c

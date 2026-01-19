@@ -50,7 +50,7 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       real*8, allocatable:: strike(:),dip(:)
       real*8, allocatable:: pmwei(:,:,:)
       real*8, allocatable:: strgrn(:,:,:,:)
-      real*8, allocatable:: strdrop(:,:),strdc(:,:)
+      real*8, allocatable:: costress(:,:)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     GREEN'S FUNCTION INFO
 c     =====================

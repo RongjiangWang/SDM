@@ -185,34 +185,40 @@ c
         write(32,'(a,i2,a,E14.6)')'  data-correction parameter ',iusrp,
      &                         ' found: ',corrusrp(iusrp)
       enddo
-      write(*,'(a)')'  seg  mean_slp mean_rake   max_slp'
+      write(*,'(a)')' fault_seg  mean_slp mean_rake   max_slp'
      &      //'      rake   pos_lat   pos_lon     pos_z'
-      write(32,'(a)')'  seg  mean_slp mean_rake   max_slp'
+      write(32,'(a)')' fault_seg  mean_slp mean_rake   max_slp'
      &      //'      rake   pos_lat   pos_lon     pos_z'
       do is=1,ns
-        write(*,'(i5,7f10.2)')is,slpm(is),ram(is),slpp(is),rap(is),
+        write(*,'(i10,7f10.2)')is,slpm(is),ram(is),slpp(is),rap(is),
      &      plat(ipsp(is)),plon(ipsp(is)),pz(ipsp(is))/KM2M
-        write(32,'(i5,7f10.2)')is,slpm(is),ram(is),slpp(is),rap(is),
+        write(32,'(i10,7f10.2)')is,slpm(is),ram(is),slpp(is),rap(is),
      &      plat(ipsp(is)),plon(ipsp(is)),pz(ipsp(is))/KM2M
       enddo
       write(*,'(a)')' =================================='
       write(32,'(a)')' =================================='
-      write(*,'(3(a,f8.4),a)')' Derived moment magnitude Mw = ',
+      write(*,'(3(a,f8.4),a)')' derived moment magnitude Mw = ',
      &                          mweq,' - ', mwpsum,' (',mwssum,')'
-      write(32,'(3(a,f8.4),a)')' Derived moment magnitude Mw = ',
+      write(32,'(3(a,f8.4),a)')' derived moment magnitude Mw = ',
      &                          mweq,' - ',mwpsum,' (',mwssum,')'
 c
-      write(*,'(a)')' Ave/Std/Max stress drop [MPa]: '
-      write(32,'(a)')' Ave/Std/Max stress drop [MPa]: '
+      write(*,'(a)')' ... stress changes within slip asperity ...'
+      write(*,'(a)')'     (area releasing 90% seismic moment)'
+      write(*,'(a)')' fault_seg averge/std_dev/max.'
+     &            //' coseismic stress change [MPa]:'
+      write(32,'(a)')' ... stress changes within slip asperity ...'
+      write(32,'(a)')'     (area releasing 90% seismic moment)'
+      write(32,'(a)')'fault_seg average/std_dev/max.'
+     &             //' coseismic stress change [MPa]:'
       do is=1,ns
-        write(*,'(i4,3f12.4)')is,measdrop(is)/MEGA,
+        write(*,'(i10,3f12.4)')is,measdrop(is)/MEGA,
      &      stdsdrop(is)*1.0d-06,maxsdrop(is)/MEGA
-        write(32,'(i4,3f12.4)')is,measdrop(is)/MEGA,
+        write(32,'(i10,3f12.4)')is,measdrop(is)/MEGA,
      &      stdsdrop(is)*1.0d-06,maxsdrop(is)/MEGA
       enddo
 c
-      write(*,'(a,f8.4)')' Data-model correlation: ',corl
-      write(32,'(a,f8.4)')' Data-model correlation: ',corl
+      write(*,'(a,f8.4)')' data-model correlation: ',corl
+      write(32,'(a,f8.4)')' data-model correlation: ',corl
       close(32)
 1000  format(f8.4,f12.6,2E14.6)
       return
