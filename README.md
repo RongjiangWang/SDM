@@ -12,7 +12,7 @@ Highlights:
 
 (4) optional smoothing constraint applied to slip or stress-drop
 
-(5) iterative inversion algorithm based on the Steepest Descent Method using the optimized step-size (relaxation) technique provided by Yong Zhang at Peking University (Zhang, person. comm., 2025)
+(5) iterative inversion algorithm based on the Steepest Descent Method using the optimized step-size (relaxation) technique provided by Yong Zhang at Peking University (https://pku-geophysics-source.group/release/pl_vt.zip)
 
 (6) improvement of slip resolution using Zhang's approach (Zhang, 2025)
 
