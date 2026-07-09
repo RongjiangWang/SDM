@@ -59,8 +59,8 @@ c
           endif
         enddo
         if(jps.gt.0)then
-          wei(jps)=1.d0
-          weisum=weisum+1.d0
+          wei(jps)=slpmdl(1,jps)**2+slpmdl(2,jps)**2
+          weisum=weisum+wei(jps)
           sm90=sm90+smmax
           if(sm90.lt.0.9d0*smsum)goto 10
         endif
@@ -100,7 +100,6 @@ c
      &                  +FRICTION*strdrop(3,ips)
         enddo
         stdsdrop(is)=dsqrt(stdsdrop(is))
-        
       enddo
 c
       return
