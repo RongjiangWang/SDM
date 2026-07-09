@@ -200,7 +200,7 @@
 #    nth: lat[deg]      lon[deg]          top_dip[deg]         bottom_dip[deg]
 #-------------------------------------------------------------------------------
     1    0.0            200.0             -1000.0              20.0
-         70.0           110.0                60.0
+         70.0           110.0                1000.0
          2
          40.7831487771473	144.577148641917	14.0	14.0
          35.3505099267260	142.978471497558    14.0    14.0
@@ -250,12 +250,12 @@
 # ...
 #===============================================================================
   6    'offset_euler_grns.dat'
-      -0.1       0.1       !northward, unit = meter
-      -0.1       0.1       !eastward, unit = meter
-      -0.1       0.1       !upward, unit = meter
-  -1.0E-08   1.0E-08       !rotation around x ( 0Â°, 0Â°), unit = radian
-  -1.0E-08   1.0E-08       !rotation around y ( 0Â°,90Â°), unit = radian
-  -1.0E-08   1.0E-08       !rotation around z (90Â°, 0Â°), unit = radian
+      -1.0       1.0       !northward, unit = meter
+      -1.0       1.0       !eastward, unit = meter
+      -1.0       1.0       !upward, unit = meter
+  -5.0E-06   5.0E-06       !rotation around x ( 0°, 0°), unit = radian
+  -5.0E-06   5.0E-06       !rotation around y ( 0°,90°), unit = radian
+  -5.0E-06   5.0E-06       !rotation around z (90°, 0°), unit = radian
 #===============================================================================
 # PARAMETERS FOR ITERATIVE INVERSION
 # ==================================
@@ -274,7 +274,7 @@
 #    smoothing), the normalized smoothing factor, and select the use of Zhang's
 #    approach to increase deep slip resolution (1/0 = yes/no)
 #===============================================================================
- 5000  './ZHYRELAX.txt'
+ 500000  './ZHYRELAX.txt'
  1  0.1  0
 #===============================================================================
 # OUTPUTS
@@ -288,5 +288,4 @@
 #===============================================================================
  'slip_model.dat'
  'output_un.dat'   'output_ue.dat'   'output_uz.dat' 'output_offsets_euler.dat'
-
 #================================end of input===================================
