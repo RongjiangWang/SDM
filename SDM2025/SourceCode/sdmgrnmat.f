@@ -39,7 +39,7 @@ c
       do iobs=1,nobs
         m=iobs
         do ipar=1,ndpar
-          n=nsmo+ipar
+          n=nps*2+ipar
           obsgrnmat(m,n)=wf(iobs)*corrgrn(ipar,iobs)*dparunit(ipar)
         enddo
       enddo

@@ -30,6 +30,7 @@ c
      &             //'  slp_strk_m  slp_ddip_m    slp_am_m'
      &             //'  strike_deg     dip_deg    rake_deg'
      &             //' sig_stk_MPa sig_ddi_MPa sig_nrm_MPa'
+     &             //' sig_cmb_MPa'
       do is=1,ns
         i=is/10
         txtis(1:1)=char(ichar('0')+i)
@@ -44,25 +45,26 @@ c
      &             //'  slp_strk_m  slp_ddip_m    slp_am_m'
      &             //'  strike_deg     dip_deg    rake_deg'
      &             //' sig_stk_MPa sig_ddi_MPa sig_nrm_MPa'
+     &             //' sig_cmb_MPa'
         do ips=nps1(is),nps2(is)
           slp=dsqrt(slpmdl(1,ips)**2+slpmdl(2,ips)**2)
           rake=dmod(datan2(slpmdl(2,ips),slpmdl(1,ips))/DEG2RAD
      &              +rake360(is),360.d0)
           sdam=dsqrt(strdrop(1,ips)**2+strdrop(2,ips)**2)
-          write(31,'(16f12.4)')plat(ips),plon(ips),
+          write(31,'(17f12.4)')plat(ips),plon(ips),
      &       pz(ips)/KM2M,pl(ips)/KM2M,pw(ips)/KM2M,
      &       dlen(ips)/KM2M,dwid(ips)/KM2M,
      &       slpmdl(1,ips),-slpmdl(2,ips),
      &       slp,strike(ips),dip(ips),rake,
      &       strdrop(1,ips)/MEGA,-strdrop(2,ips)/MEGA,
-     &       strdrop(3,ips)/MEGA
-          write(32,'(16f12.4)')plat(ips),plon(ips),
+     &       strdrop(3,ips)/MEGA,cmbstress(ips)/MEGA
+          write(32,'(17f12.4)')plat(ips),plon(ips),
      &       pz(ips)/KM2M,pl(ips)/KM2M,pw(ips)/KM2M,
      &       dlen(ips)/KM2M,dwid(ips)/KM2M,
      &       slpmdl(1,ips),-slpmdl(2,ips),
      &       slp,strike(ips),dip(ips),rake,
      &       strdrop(1,ips)/MEGA,-strdrop(2,ips)/MEGA,
-     &       strdrop(3,ips)/MEGA
+     &       strdrop(3,ips)/MEGA,cmbstress(ips)/MEGA
         enddo
         close(32)
         if(is.lt.ns)write(31,'(a)')'          '

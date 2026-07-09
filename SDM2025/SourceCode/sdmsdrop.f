@@ -8,7 +8,7 @@ c
 c     Last modified: Zhuhai, Nov. 2025, by R. Wang
 c
       integer*4 i,is,ips,jps
-      real*8 sd,sdss,sdds,sdnn,weisum,smsum,smmax,sm90
+      real*8 sd,sdss,sdds,sdnn,weisum,smsum,smmax,sm90,tau
 c
       real*8, allocatable:: wei(:),sm(:)
 c
@@ -25,6 +25,8 @@ c
       if(ierr.ne.0)stop ' Error in sdmsdrop: stdsdrop not allocated!'
       allocate(maxsdrop(ns),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmsdrop: maxsdrop not allocated!'
+      allocate(cmbstress(nps),stat=ierr)
+      if(ierr.ne.0)stop ' Error in sdmsdrop: dsdrop not allocated!'
 c
       do ips=1,nps
         do i=1,3
@@ -83,14 +85,22 @@ c
         maxsdrop(is)=dsqrt(maxsdrop(is))
         measdrop(is)=dsqrt(sdss**2+sdds**2)
 c
+        tau=dsqrt(sdss**2+sdds**2)
+c
         stdsdrop(is)=0.d0
         do ips=nps1(is),nps2(is)
           stdsdrop(is)=stdsdrop(is)+wei(ips)
      &       *((strdrop(1,ips)-sdss)**2
      &        +(strdrop(2,ips)-sdds)**2
      &        +(strdrop(3,ips)-sdnn)**2)
+c
+c         Coulumb stress change: negative = stress drop
+c
+          cmbstress(ips)=-(strdrop(1,ips)*sdss+strdrop(2,ips)*sdds)/tau
+     &                  +FRICTION*strdrop(3,ips)
         enddo
         stdsdrop(is)=dsqrt(stdsdrop(is))
+        
       enddo
 c
       return

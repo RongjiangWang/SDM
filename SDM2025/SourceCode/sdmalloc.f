@@ -3,10 +3,11 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     GLOBAL CONSTANTS
 c     ================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      real*8 DEG2RAD,PI,KM2M,DAY2SEC,REARTH,G0,MUEREF,MEGA
+      real*8 DEG2RAD,PI,KM2M,DAY2SEC,REARTH,G0,MUEREF,MEGA,FRICTION
       parameter(DEG2RAD=1.745329252d-02,PI=3.14159265358979d0)
       parameter(KM2M=1.0d+03,DAY2SEC=8.64d+04,REARTH=6.371d+06)
       parameter(G0=9.82d+00,MUEREF=3.0d+10,MEGA=1.0d+06)
+      parameter(FRICTION=4.0d-01)
       integer*4 nrelaxmax
       parameter(nrelaxmax=10000)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,7 +24,7 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       real*8, allocatable:: mstrike(:),patchsize(:)
       real*8, allocatable:: latft(:,:),lonft(:,:)
       real*8, allocatable:: topdip(:,:),botdip(:,:)
-      real*8, allocatable:: rake1(:),rake2(:),maxslip(:),sigpar(:)
+      real*8, allocatable:: rake1(:),rake2(:),maxslip(:),cmbstress(:)
       real*8, allocatable:: ram(:),rake360(:),ssm(:),dsm(:),slpm(:)
       real*8, allocatable:: slpp(:),rap(:),cs1(:),ss1(:),cs2(:),ss2(:)
       real*8, allocatable:: measdrop(:),stdsdrop(:),maxsdrop(:)
