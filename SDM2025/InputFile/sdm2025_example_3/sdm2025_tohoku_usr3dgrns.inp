@@ -1,14 +1,12 @@
 #===============================================================================
 # This is the input file of FORTRAN program "sdm2025" for inversion of slip
-# distribution from InSAR data by the Steepst Descent Method (SDM).
+# distribution from InSAR data by the modified Steepst Descent Method (SDM).
 #
 # written by Rongjiang Wang
 # GFZ Helmholtz Centre for Geosciences
 # e-mail: wang@gfz.de
-# Phone +49 331 2881209
-# Fax +49 331 2881204
 #
-# Last modified: Zhuhai, Dec 6, 2025 by R. Wang
+# Last modified: Beijing, July 6, 2026 by R. Wang
 #
 #################################################################
 ##                                                             ##
