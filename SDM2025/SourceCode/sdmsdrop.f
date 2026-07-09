@@ -59,7 +59,7 @@ c
           endif
         enddo
         if(jps.gt.0)then
-          wei(jps)=slpmdl(1,jps)**2+slpmdl(2,jps)**2
+          wei(jps)=sm(jps)
           weisum=weisum+wei(jps)
           sm90=sm90+smmax
           if(sm90.lt.0.9d0*smsum)goto 10
