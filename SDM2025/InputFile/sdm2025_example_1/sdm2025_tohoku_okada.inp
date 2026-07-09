@@ -1,14 +1,12 @@
 #===============================================================================
 # This is the input file of FORTRAN program "sdm2025" for inversion of slip
-# distribution from InSAR data by the Steepst Descent Method (SDM).
+# distribution from InSAR data by the modified Steepst Descent Method (SDM).
 #
 # written by Rongjiang Wang
 # GFZ Helmholtz Centre for Geosciences
 # e-mail: wang@gfz.de
-# Phone +49 331 2881209
-# Fax +49 331 2881204
 #
-# Last modified: Zhuhai, Dec 6, 2025 by R. Wang
+# Last modified: Beijing, July 6, 2026 by R. Wang
 #
 #################################################################
 ##                                                             ##
@@ -115,7 +113,7 @@
 #   n[-]  rake1[deg]  rake2[deg]    max_slip[m]                  file_name  isref
 #--------------------------------------------------------------------------------
 #   1
-#   1           70.0     110.0            60.0   './fault_patches_310.dat'     5
+#   1           70.0     110.0           100.0   './asperity_model.dat'     5
 #------------------------ -------------------------------------------------------
 #
 # ELSE
@@ -201,8 +199,8 @@
 #    ......
 #    nth: lat[deg]      lon[deg]          top_dip[deg]         bottom_dip[deg]
 #-------------------------------------------------------------------------------
-    1    0.0            200.0             -1000.0              20.0
-         70.0           110.0                60.0
+    1    0.0            200.0             -1000.0              7.5
+         70.0           110.0               100.0
          2
          40.7831487771473	144.577148641917	14.0	14.0
          35.3505099267260	142.978471497558    14.0    14.0
@@ -257,9 +255,9 @@
 #  -0.1  0.1       !eastward, unit = meter
 #  -0.1  0.1       !upward, unit = meter
 #  3    'euler_grns.dat'
-#  -5.0E-08   5.0E-08       !rotation around x ( 0Â°, 0Â°), unit = radian
-#  -5.0E-08   5.0E-08       !rotation around y ( 0Â°,90Â°), unit = radian
-#  -5.0E-08   5.0E-08       !rotation around z (90Â°, 0Â°), unit = radian
+#  -5.0E-08   5.0E-08       !rotation around x ( 0°, 0°), unit = radian
+#  -5.0E-08   5.0E-08       !rotation around y ( 0°,90°), unit = radian
+#  -5.0E-08   5.0E-08       !rotation around z (90°, 0°), unit = radian
 #===============================================================================
 # PARAMETERS FOR ITERATIVE INVERSION
 # ==================================
@@ -278,8 +276,8 @@
 #    smoothing), the normalized smoothing factor, and select the use of Zhang's
 #    approach to increase deep slip resolution (1/0 = yes/no)
 #===============================================================================
- 5000  './ZHYRELAX.txt'
- 1  0.1  0
+ 100000  './ZHYRELAX.txt'
+ 2  2.5  0
 #===============================================================================
 # OUTPUTS
 # =======
@@ -290,7 +288,6 @@
 #    corresponding to the input displacement data files, and for the data-
 #    correction parameters (if available)
 #===============================================================================
- 'slip_model.dat'
+ 'slip_model_2.dat'
  'output_un.dat'   'output_ue.dat'   'output_uz.dat'
-
 #================================end of input===================================
