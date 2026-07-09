@@ -4,11 +4,11 @@
       integer*4 ierr
 c
 c     SDM iteration
-c     Last modified: Zhuhai, Nov. 2025, by R. Wang
+c     Last modified: Beijing, July 2026, by R. Wang
 c
-      integer*4 i,j,ira,ips,igd,is,iusrp
+      integer*4 i,j,ira,ips,igd,is,ipar
       integer*4 irelax,jter,nrelax
-      real*8 misfit,corl
+      real*8 misfit,corl,vecvar,dvcvar
       character*1 text
 c
       real*8 sdmcorl
@@ -18,16 +18,14 @@ c
       real*8 eps
       data eps/1.0d-12/
 c
+      sysmis=1.d0
       logfile='log_'//slipout
       open(32,file=logfile,status='unknown')
       if(niter.gt.0)then
-        iter=0
-        sysmis=1.d0
-        step0=0.d0
         write(*,'(a)') '   iter.      cost_function     iteration_step'
-        write(32,'(a)')'   iter.      cost_function     iteration_step'
-        write(*, '(i8,f19.15,f19.6)')iter,sysmis,step0
-        write(32,'(i8,f19.15,f19.6)')iter,sysmis,step0
+        write(32,'(a)')'   iter.      cost_function'
+        write(*, '(i8,f19.15)')iter,sysmis
+        write(32,'(i8,f19.15)')iter,sysmis
         sysmis0=1.d0
 c
 c       Modified Landweber iteration
@@ -44,19 +42,14 @@ c
         mweq=0.d0
         mwssum=0.d0
         mwpsum=0.d0
-        step0=step
 c
         landweber=.true.
         jter=0
         do i=1,nsys
-          vecswp(i)=sysvec(i)
-        enddo
-        do i=1,nsys
           resbat(i)=-sysbat(i)
-          do j=1,nsys
-            resbat(i)=resbat(i)+sysmat(i,j)*vecswp(j)
-          enddo
+          vecswp(i)=0.d0
         enddo
+        step=1.d0/sig2max
       endif
 c
       do iter=1,niter
@@ -66,36 +59,50 @@ c
         do i=1,nsys
           sysvec(i)=vecswp(i)-step*resbat(i)
         enddo
+        step0=step
 c
         call sdmproj(ierr)
+        call sdmresbat(ierr)
+c
+        vecvar=0.d0
+        dvcvar=0.d0
+        do i=1,nsys
+          vecvar=vecvar+sysvec(i)**2
+          dvcvar=dvcvar+(sysvec(i)-vecswp(i))**2
+        enddo
 c
 c       ckeck convergence
 c
-        convergence=dabs(sysmis-sysmis0).le.eps*sysmis
+        convergence=dabs(sysmis-sysmis0).le.eps*sysmis.and.
+     &              dvcvar.le.eps*vecvar
 c
         if(sysmis.le.sysmis0.or.landweber)then
-          write(*, '(i8,f19.15,f19.6)')iter,sysmis,step0
-          write(32,'(i8,f19.15,f19.6)')iter,sysmis,step0
+          write( *,'(i8,f19.15,f19.6)')iter,sysmis,step*sig2max
+          write(32,'(i8,f19.15)')iter,sysmis
         endif
 c
-        if(sysmis.gt.sysmis0.and..not.landweber)then
-          step=1.d0
-          landweber=.true.
+        if(sysmis.gt.sysmis0)then
+          if(landweber)then
+            sig2max=1.5d0*sig2max
+            print *,' Landweber step reduced!'
+          else
+            landweber=.true.
+            sig2max=0.75d0*sig2max
+            print *,' Landweber step recovered!'
+          endif
+          step=1.d0/sig2max
           jter=jter+1
           do i=1,nsys
-            resbat(i)=-sysbat(i)
-            do j=1,nsys
-              resbat(i)=resbat(i)+sysmat(i,j)*vecswp(j)
-            enddo
+            sysvec(i)=vecswp(i)
           enddo
           goto 20
         else
           irelax=irelax+1
           if(irelax.gt.nrelax)irelax=1
-          step=relax(irelax)
+          step=relax(irelax)/sig2max
           landweber=.false.
         endif
-        step0=step
+        step0=step*sig2max
         sysmis0=sysmis
         do i=1,nsys
           vecswp(i)=sysvec(i)
@@ -135,8 +142,8 @@ c
           slpmdl(2,ips)=-slpmdl(2,ips)
         enddo
         close(20)
-        do iusrp=1,nusrp
-          corrusrp(iusrp)=0.d0
+        do ipar=1,ndpar
+          corrpar(ipar)=0.d0
         enddo
         i=0
         do ips=1,nps
@@ -146,12 +153,14 @@ c
           enddo
         enddo
 c
+        do i=1,nsys
+          vecswp(i)=sysvec(i)
+        enddo
+c
+        call sdmresbat(ierr)
+c
         sysmis=0.d0
         do i=1,nsys
-          resbat(i)=-sysbat(i)
-          do j=1,nsys
-            resbat(i)=resbat(i)+sysmat(i,j)*sysvec(j)
-          enddo
           sysmis=sysmis+sysvec(i)*(resbat(i)-sysbat(i))
         enddo
         sysmis=1+sysmis/datnrm
@@ -179,46 +188,40 @@ c
 c
 c     final message
 c
-      do iusrp=1,nusrp
-        write(*,'(a,i2,a,E14.6)')'  data-correction parameter ',iusrp,
-     &                         ' found: ',corrusrp(iusrp)
-        write(32,'(a,i2,a,E14.6)')'  data-correction parameter ',iusrp,
-     &                         ' found: ',corrusrp(iusrp)
+      do ipar=1,ndpar
+        write(*,'(a,i2,a,E14.6)')'  data-correction parameter ',ipar,
+     &                         ' found: ',corrpar(ipar)
+        write(32,'(a,i2,a,E14.6)')'  data-correction parameter ',ipar,
+     &                         ' found: ',corrpar(ipar)
       enddo
-      write(*,'(a)')' fault_seg  mean_slp mean_rake   max_slp'
+      write(*,'(a)')'  seg  mean_slp mean_rake   max_slp'
      &      //'      rake   pos_lat   pos_lon     pos_z'
-      write(32,'(a)')' fault_seg  mean_slp mean_rake   max_slp'
+      write(32,'(a)')'  seg  mean_slp mean_rake   max_slp'
      &      //'      rake   pos_lat   pos_lon     pos_z'
       do is=1,ns
-        write(*,'(i10,7f10.2)')is,slpm(is),ram(is),slpp(is),rap(is),
+        write(*,'(i5,7f10.2)')is,slpm(is),ram(is),slpp(is),rap(is),
      &      plat(ipsp(is)),plon(ipsp(is)),pz(ipsp(is))/KM2M
-        write(32,'(i10,7f10.2)')is,slpm(is),ram(is),slpp(is),rap(is),
+        write(32,'(i5,7f10.2)')is,slpm(is),ram(is),slpp(is),rap(is),
      &      plat(ipsp(is)),plon(ipsp(is)),pz(ipsp(is))/KM2M
       enddo
       write(*,'(a)')' =================================='
       write(32,'(a)')' =================================='
-      write(*,'(3(a,f8.4),a)')' derived moment magnitude Mw = ',
+      write(*,'(3(a,f8.4),a)')' Derived moment magnitude Mw = ',
      &                          mweq,' - ', mwpsum,' (',mwssum,')'
-      write(32,'(3(a,f8.4),a)')' derived moment magnitude Mw = ',
+      write(32,'(3(a,f8.4),a)')' Derived moment magnitude Mw = ',
      &                          mweq,' - ',mwpsum,' (',mwssum,')'
 c
-      write(*,'(a)')' ... stress changes within slip asperity ...'
-      write(*,'(a)')'     (area releasing 90% seismic moment)'
-      write(*,'(a)')' fault_seg averge/std_dev/max.'
-     &            //' coseismic stress change [MPa]:'
-      write(32,'(a)')' ... stress changes within slip asperity ...'
-      write(32,'(a)')'     (area releasing 90% seismic moment)'
-      write(32,'(a)')'fault_seg average/std_dev/max.'
-     &             //' coseismic stress change [MPa]:'
+      write(*,'(a)')' Ave/Std/Max stress change [MPa]: '
+      write(32,'(a)')' Ave/Std/Max stress change [MPa]: '
       do is=1,ns
-        write(*,'(i10,3f12.4)')is,measdrop(is)/MEGA,
-     &      stdsdrop(is)*1.0d-06,maxsdrop(is)/MEGA
-        write(32,'(i10,3f12.4)')is,measdrop(is)/MEGA,
-     &      stdsdrop(is)*1.0d-06,maxsdrop(is)/MEGA
+        write(*,'(i4,3f12.4)')is,measdrop(is)/MEGA,
+     &      stdsdrop(is)/MEGA,maxsdrop(is)/MEGA
+        write(32,'(i4,3f12.4)')is,measdrop(is)/MEGA,
+     &      stdsdrop(is)/MEGA,maxsdrop(is)/MEGA
       enddo
 c
-      write(*,'(a,f8.4)')' data-model correlation: ',corl
-      write(32,'(a,f8.4)')' data-model correlation: ',corl
+      write(*,'(a,f8.4)')' Data-model correlation: ',corl
+      write(32,'(a,f8.4)')' Data-model correlation: ',corl
       close(32)
 1000  format(f8.4,f12.6,2E14.6)
       return

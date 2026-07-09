@@ -4,7 +4,7 @@
       integer*4 ierr
 c
 c     allocate arrays for slip patches
-c     Last modified: Zhuhai, Nov. 2025, by R. Wang
+c     Last modified: Beijing, July 2026, by R. Wang
 c      
       allocate(plat(nps),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmdisc: plat not allocated!'

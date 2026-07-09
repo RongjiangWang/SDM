@@ -7,25 +7,24 @@ c
 c     dominant eigenvalue of a positive defined symmetric matrix
 c     by the power method
 c
-      integer*4 i,j,itr,ntr,it1,it2,time
+      integer*4 i,j,itr
       real*8 a,b
       real*8, allocatable:: vec(:),swp(:)
 c
-      it1=time()
+      integer*4 nitr
+      data nitr/10000/
 c
       allocate(vec(n),stat=ierr)
       if(ierr.ne.0)stop ' Error in maxsing: vec not allocated!'
       allocate(swp(n),stat=ierr)
       if(ierr.ne.0)stop ' Error in maxsing: vec not allocated!'
 c
-      ntr=100*n
-c
       do i=1,n
         swp(i)=vecini(i)
       enddo
 c
       b=0.d0
-      do itr=1,ntr
+      do itr=1,nitr
         a=0.d0
         do i=1,n
           vec(i)=0.d0
@@ -47,15 +46,14 @@ c
       print *,' Warning in maxsing: convergence not achieved!'
 100   continue
 c
-      deallocate(vec,swp)
-c
 c     the dominant eigenvalue sigma2 of sysmat found
 c
       maxsing=a
+      do i=1,n
+        vecini(i)=swp(i)
+      enddo
 c
-      it2=time()
-      write(*,'(a,E16.6,a,i4,a)')' ... dominant sigular value found: ',
-     &                      maxsing,' by ',it2-it1,'s.'
+      deallocate(vec,swp)
 c
       return
       end

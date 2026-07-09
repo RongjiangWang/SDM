@@ -23,7 +23,7 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       real*8, allocatable:: mstrike(:),patchsize(:)
       real*8, allocatable:: latft(:,:),lonft(:,:)
       real*8, allocatable:: topdip(:,:),botdip(:,:)
-      real*8, allocatable:: rake1(:),rake2(:),maxslip(:)
+      real*8, allocatable:: rake1(:),rake2(:),maxslip(:),sigpar(:)
       real*8, allocatable:: ram(:),rake360(:),ssm(:),dsm(:),slpm(:)
       real*8, allocatable:: slpp(:),rap(:),cs1(:),ss1(:),cs2(:),ss2(:)
       real*8, allocatable:: measdrop(:),stdsdrop(:),maxsdrop(:)
@@ -50,7 +50,7 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       real*8, allocatable:: strike(:),dip(:)
       real*8, allocatable:: pmwei(:,:,:)
       real*8, allocatable:: strgrn(:,:,:,:)
-      real*8, allocatable:: costress(:,:)
+      real*8, allocatable:: strdrop(:,:),strdc(:,:)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     GREEN'S FUNCTION INFO
 c     =====================
@@ -79,28 +79,28 @@ c     =======================================
 c     (xobs(i),yobs(i))=coordinates of the observation positions
 c     the 3 displcement components: ux,uy,uz
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer*4 nheader,ngd,nobs,nusrp
-      real*8 datunit,offunit
+      integer*4 nheader,ngd,nobs,ndpar
+      real*8 datunit,offunit,sparunit
       logical*2, allocatable:: csconst(:)
       integer*4, allocatable:: nobs1(:),nobs2(:),nobsj(:)
       real*8, allocatable:: dinc_const(:),dazi_const(:)
       real*8, allocatable:: xcs(:),ycs(:),zcs(:)
       real*8, allocatable:: do0(:),dm0(:),corrgrn(:,:)
-      real*8, allocatable:: latobs(:),lonobs(:),usrpunit(:)
-      real*8, allocatable:: datobs(:),datres(:),corrusrp(:)
-      real*8, allocatable:: wf(:),wfm(:),usrpmin(:),usrpmax(:)
+      real*8, allocatable:: latobs(:),lonobs(:),dparunit(:)
+      real*8, allocatable:: datobs(:),datres(:),corrpar(:)
+      real*8, allocatable:: wf(:),wfm(:),parmin(:),parmax(:)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     SLIP MODEL
 c     ==========
 c     slpmdl(2,..) = slip components in the strike and dip directions
 c     zhang(ips) = weighted smoothing of roughness (Yong Zhang, 2025)
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer*4 iearth,iter,niter,nsys,ismooth,izhy,nsmocmp
-      real*8 wei2smo0,wei2smo,sig2max,sig2min,step,step0
-      real*8 mwpsum,mwssum,mweq,datnrm
+      integer*4 iearth,iter,niter,nsys,nsmo,ismooth,izhy
+      real*8 wei2smo0,wei2smo,sig2max,step,step0
+      real*8 mwpsum,mwssum,mweq,datnrm,ssconst,dsconst
       real*8 rmsresall,rmsdatall,sysmis,sysmis0
       real*8, allocatable:: slpmdl(:,:),vecswp(:)
-      real*8, allocatable:: datgrn(:,:,:),datmdl(:),batswp(:)
+      real*8, allocatable:: datgrn(:,:,:),datmdl(:)
       real*8, allocatable:: sysmat(:,:),sysbat(:),sysvec(:),zhy(:)
       real*8, allocatable:: obsgrnmat(:,:),smogrnmat(:,:),resbat(:)
       real*8, allocatable:: obssysmat(:,:),smosysmat(:,:),vecini(:)
@@ -116,7 +116,7 @@ c     FILE NAMES
 c     ==========
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       character*80 grndir,infile,slipout,logfile,zhyrelax
-      character*80 usr3dgrn(2),green(3),corrgrnfile,usrpout
+      character*80 usr3dgrn(2),green(3),corrgrnfile,parout
       character*80, allocatable:: gddata(:),gdout(:)
       character*80, allocatable:: inpatches(:)
 c

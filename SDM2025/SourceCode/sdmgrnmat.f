@@ -5,16 +5,16 @@
 c
 c     Green's functions matrix element Mnm
 c
-c     Last modified: Berlin, Jan 14, 2026, by R. Wang
+c     Last modified: Zhuhai, Dec 7, 2025, by R. Wang
 c
-      integer*4 i,j,m,n,igd,ira,ips,iobs,jps,iusrp
-      real*8 sd,usrpu,wfsum,dal,daw
-      real*8 dcg(6),flr(-1:1),fud(-1:1)
+      integer*4 i,j,m,n,igd,ira,ips,iobs,jps,ipar
+      real*8 sd,paru,wfsum,dal,daw
+      real*8 dcg(4),flr(-1:1),fud(-1:1)
 c
 c     observation matrix
-c     m(1:nobs): raw, n(1:nps*2+nusrp): column
+c     m(1:nobs): raw, n(1:nsmo+ndpar): column
 c
-      usrpu=0.d0
+      paru=0.d0
       wfsum=0.d0
       do iobs=1,nobs
         m=iobs
@@ -23,7 +23,7 @@ c
           do ira=1,2
             n=n+1
             obsgrnmat(m,n)=wf(iobs)*datgrn(ira,ips,iobs)/zhy(ips)
-            usrpu=usrpu+obsgrnmat(m,n)**2
+            paru=paru+obsgrnmat(m,n)**2
             wfsum=wfsum+wf(iobs)**2
           enddo
         enddo
@@ -31,27 +31,28 @@ c
 c
 c     offunit: a very important parameter to avoid loss-of-precision problem!
 c
-      usrpu=dsqrt(usrpu/wfsum)
-      do iusrp=1,nusrp
-        usrpunit(iusrp)=usrpu/usrpunit(iusrp)
+      paru=dsqrt(paru/wfsum)
+      do ipar=1,ndpar
+        dparunit(ipar)=paru/dparunit(ipar)
       enddo
 c
       do iobs=1,nobs
         m=iobs
-        do iusrp=1,nusrp
-          n=nps*2+iusrp
-          obsgrnmat(m,n)=wf(iobs)*corrgrn(iusrp,iobs)*usrpunit(iusrp)
+        do ipar=1,ndpar
+          n=nsmo+ipar
+          obsgrnmat(m,n)=wf(iobs)*corrgrn(ipar,iobs)*dparunit(ipar)
         enddo
       enddo
 c
 c     smoothing matrix
-c     m(1:nps*nsmocmp): raw, n(1:nps*2+nusrp): column
+c     m(1:nsmo): raw, n(1:nsys): column
 c
-      do m=1,nps*nsmocmp
+      do m=1,nsmo
         do n=1,nsys
           smogrnmat(m,n)=0.d0
         enddo
       enddo
+c
       if(ismooth.eq.1)then
         do ips=1,nps
           do jps=1,nps
@@ -88,58 +89,58 @@ c
               dcg(2*ira-1)=(flr(-1)-flr(0)+flr(1))*dal
               dcg(2*ira  )=(fud(-1)-fud(0)+fud(1))*daw
 c
-              do i=1,nsmocmp
-                m=(jps-1)*nsmocmp+i
+              do i=1,4
+                m=(jps-1)*4+i
                 n=(ips-1)*2+ira
-                smogrnmat(m,n)=dsqrt(parea(jps))*dcg(i)
-     &                        *zhy(jps)/zhy(ips)
+                smogrnmat(m,n)=dsqrt(parea(jps))
+     &                        *dcg(i)*zhy(jps)/zhy(ips)
               enddo
             enddo
           enddo
         enddo
       else
-        do ips=1,nps
+       do ips=1,nps
           do jps=1,nps
             dal=parea(jps)/dlen(jps)**2
             daw=parea(jps)/dwid(jps)**2
             do ira=1,2
-              do i=1,6
+              do i=1,4
                 dcg(i)=0.d0
               enddo
               if(ipsl(jps).gt.0)then
-                do i=1,3
+                do i=1,2
                   dcg(i)=dcg(i)
      &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsl(jps)))
      &              *dal
                 enddo
               endif
               if(ipsr(jps).gt.0)then
-                do i=1,3
+                do i=1,2
                   dcg(i)=dcg(i)
      &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsr(jps)))
      &              *dal
                 enddo
               endif
               if(ipsu(jps).gt.0)then
-                do i=1,3
-                  dcg(i+3)=dcg(i+3)
+                do i=1,2
+                  dcg(i+2)=dcg(i+2)
      &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsu(jps)))
      &              *daw
                 enddo
               endif
               if(ipsd(jps).gt.0)then
-                do i=1,3
-                  dcg(i+3)=dcg(i+3)
+                do i=1,2
+                  dcg(i+2)=dcg(i+2)
      &              +(strgrn(ira,ips,i,jps)-strgrn(ira,ips,i,ipsd(jps)))
      &              *daw
                 enddo
               endif
 c
-              do i=1,nsmocmp
-                m=(jps-1)*nsmocmp+i
+              do i=1,4
+                m=(jps-1)*4+i
                 n=(ips-1)*2+ira
-                smogrnmat(m,n)=dsqrt(parea(jps))*dcg(i)
-     &                        *zhy(jps)/zhy(ips)
+                smogrnmat(m,n)=dsqrt(parea(jps))
+     &                        *dcg(i)*zhy(jps)/zhy(ips)
               enddo
             enddo
           enddo
@@ -148,17 +149,15 @@ c
 c
       if(izhy.eq.0)return
 
-      do n=1,nps*2
+      do n=1,nsys
         sd=0.d0
-        do m=1,nps*nsmocmp
+        do m=1,nsmo
           sd=sd+smogrnmat(m,n)**2
         enddo
-        if(sd.gt.0.d0)then
-          sd=dsqrt(sd)
-          do m=1,nps*nsmocmp
-            smogrnmat(m,n)=smogrnmat(m,n)/sd
-          enddo
-        endif
+        sd=dsqrt(sd)
+        do m=1,nsmo
+          smogrnmat(m,n)=smogrnmat(m,n)/sd
+        enddo
       enddo
 c
       return

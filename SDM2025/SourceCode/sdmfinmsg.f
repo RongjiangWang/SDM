@@ -5,7 +5,7 @@
 c
 c     for final information messages
 c
-c     Last modified: Zhuhai, Nov. 2025, by R. Wang
+c     Last modified: Beijing, July 2026, by R. Wang
 c
       integer*4 is,ips
       real*8 slp

@@ -3,7 +3,7 @@
       implicit none
       integer*4 ierr
 c
-c     Last modified: Jan 2026 in Berlin by R. Wang
+c     Last modified: 2025 in Zhuhai by R. Wang
 c
       integer*4 is,ips,jps,iobs,nlarge,ira,il,nl,lend,lenf
       integer*4 i,j,k,l,ir,ir1,ir2,izs,izs1,izs2,idiv
@@ -61,26 +61,26 @@ c
 c
       allocate(corrmdl(nobs),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmgrn: corrmdl not allocated!'
-      if(nusrp.gt.0)then
-        allocate(corrgrn(nusrp,nobs),stat=ierr)
+      if(ndpar.gt.0)then
+        allocate(corrgrn(ndpar,nobs),stat=ierr)
         if(ierr.ne.0)stop ' Error in sdmgrn: corrgrn not allocated!'
-        allocate(usrpunit(nusrp),stat=ierr)
-        if(ierr.ne.0)stop ' Error in sdmgrn: usrpunit not allocated!'
+        allocate(dparunit(ndpar),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgrn: dparunit not allocated!'
         open(20,file=corrgrnfile,status='old')
         read(20,'(a)')header
-        do j=1,nusrp
-          usrpunit(j)=0.d0
+        do j=1,ndpar
+          dparunit(j)=0.d0
         enddo
         wfsum=0.d0
         do iobs=1,nobs
-          read(20,*)(corrgrn(j,iobs),j=1,nusrp)
-          do j=1,nusrp
-            usrpunit(j)=usrpunit(j)+(wf(iobs)*corrgrn(j,iobs))**2
+          read(20,*)(corrgrn(j,iobs),j=1,ndpar)
+          do j=1,ndpar
+            dparunit(j)=dparunit(j)+(wf(iobs)*corrgrn(j,iobs))**2
           enddo
           wfsum=wfsum+wf(iobs)**2
         enddo
-        do j=1,nusrp
-          usrpunit(j)=dsqrt(usrpunit(j)/wfsum)
+        do j=1,ndpar
+          dparunit(j)=dsqrt(dparunit(j)/wfsum)
         enddo
         close(20)
       endif
@@ -142,17 +142,9 @@ c
 c
 c       cosine vectors of normal of hanging plate
 c
-c        rnn(1,ips)= ssdi(ips)*ssst(ips)
-c        rnn(2,ips)=-ssdi(ips)*csst(ips)
-c        rnn(3,ips)= csdi(ips)
-c
-c       modified at Jan 19, 2026 by R. Wang:
-c
-c       cosine vectors of normal of foot plate
-c
-        rnn(1,ips)=-ssdi(ips)*ssst(ips)
-        rnn(2,ips)= ssdi(ips)*csst(ips)
-        rnn(3,ips)=-csdi(ips)
+        rnn(1,ips)= ssdi(ips)*ssst(ips)
+        rnn(2,ips)=-ssdi(ips)*csst(ips)
+        rnn(3,ips)= csdi(ips)
 c
 c       cosine vectors of strike direction
 c

@@ -235,18 +235,18 @@ c     ==================================
 c00000000000000000000000000000000000000000000000000000000000000000000000
       call skipdoc(unit)
       read(unit,'(a)')dataline
-      read(dataline,*)nusrp
-      if(nusrp.gt.0)then
-        read(dataline,*)nusrp,corrgrnfile
-        allocate(corrusrp(nusrp),stat=ierr)
-        if(ierr.ne.0)stop ' Error in sdmgetinp: corrusrp not allocated!'
-        allocate(usrpmin(nusrp),stat=ierr)
-        if(ierr.ne.0)stop ' Error in sdmgetinp: usrpmin not allocated!'
-        allocate(usrpmax(nusrp),stat=ierr)
-        if(ierr.ne.0)stop ' Error in sdmgetinp: usrpmax not allocated!'
-        do i=1,nusrp
+      read(dataline,*)ndpar
+      if(ndpar.gt.0)then
+        read(dataline,*)ndpar,corrgrnfile
+        allocate(corrpar(ndpar),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgetinp: corrpar not allocated!'
+        allocate(parmin(ndpar),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgetinp: parmin not allocated!'
+        allocate(parmax(ndpar),stat=ierr)
+        if(ierr.ne.0)stop ' Error in sdmgetinp: parmax not allocated!'
+        do i=1,ndpar
           call skipdoc(unit)
-          read(unit,*)usrpmin(i),usrpmax(i)
+          read(unit,*)parmin(i),parmax(i)
         enddo
       endif
 c00000000000000000000000000000000000000000000000000000000000000000000000
@@ -260,16 +260,9 @@ c00000000000000000000000000000000000000000000000000000000000000000000000
 c
 c     ismooth = 1: smoothing slip
 c               2: smoothing stress drop
-c     izhy = 1: using Zhang's approach to increase deep slip resolution
+c     izhy = 1: using Zhang's approach to increase deep slip resolution, but meaningless
+c               in case of stress-drop smoothing
 c
-      if(ismooth.eq.1)then
-        nsmocmp=4
-      else if(ismooth.eq.2)then
-        nsmocmp=6
-      else
-        stop ' Error in sdmmain: wrong ´smoothing selection!'
-      endif
-          
       if(wei2smo0.lt.0.d0)then
         wei2smo0=0.d0
       endif
@@ -280,8 +273,8 @@ c00000000000000000000000000000000000000000000000000000000000000000000000
       call skipdoc(unit)
       read(unit,*)slipout
       call skipdoc(unit)
-      if(nusrp.gt.0)then
-        read(unit,*)(gdout(i),i=1,ngd),usrpout
+      if(ndpar.gt.0)then
+        read(unit,*)(gdout(i),i=1,ngd),parout
       else
         read(unit,*)(gdout(i),i=1,ngd)
       endif

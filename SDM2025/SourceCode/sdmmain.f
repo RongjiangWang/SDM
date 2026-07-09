@@ -6,7 +6,7 @@ c     this program synthesizes seismograms due to a number of          c
 c     rectanglar rupture planes using the Green's function approach.   c
 c     The input data will be read from an input file                   c
 c                                                                      c
-c     Last modified: Berlin, Jan, 2026, by R. Wang                     c
+c     Last modified: Beijing, July, 2026, by R. Wang                   c
 c                                                                      c
 cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,7 +21,7 @@ c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     LOCAL WORK SPACES
 c     =================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      integer*4 ierr,time,it1,it2
+      integer*4 ierr
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c     END DECLARATIONS
 c     ================
@@ -53,21 +53,20 @@ c
       print *,' # --------------------------------------------------- #'
       print *,' #                   * * * * * * *                     #'
       print *,' #                                                     #'
-      print *,' #                   Version 2025                      #'
+      print *,' #                   Version 2026                      #'
       print *,' #                                                     #'
       print *,' #                       by                            #'
       print *,' #                                                     #'
       print *,' #                  Rongjiang Wang                     #'
-      print *,' #               (wang@gfz-potsdam.de)                 #'
+      print *,' #                  (wang@gfz.de)                      #'
       print *,' #                                                     #'
       print *,' #        GFZ Helmholtz Centre for Geosciences         #'
-      print *,' #             Last modified Jan 19, 2026              #'
+      print *,' #             Last modified July 6, 2026              #'
       print *,' #######################################################'
       print *,'                                                       '
 c
       write(*,'(a,$)')' Please type the file name of input data: '
       read(*,'(a)')infile
-      it1=time()
       call sdmgetinp(ierr)
 c00000000000000000000000000000000000000000000000000000000000000000000000
 c      END READ IN INPUT PARAMETERS
@@ -103,18 +102,23 @@ c
 c
       write(*,'(a)')' ... output ...'
       call sdmoutput(ierr)
-      it2=time()
 c
 c00000000000000000000000000000000000000000000000000000000000000000000000
 c      END OF STANDARD PROCESSING
 c      ==========================
 c00000000000000000000000000000000000000000000000000000000000000000000000
-      print *,' ####################################################'
-      print *,' #                                                  #'
-      print *,' #        End of computations with SDM2025          #'
-      print *,' #                                                  #'
-      print *,' ####################################################'
-      print *,' run time: ',it2-it1,'s.'
+      if(nwarn.eq.0)then
+        print *,' ####################################################'
+        print *,' #                                                  #'
+        print *,' #        End of computations with SDM2026          #'
+        print *,' #                                                  #'
+        print *,' ####################################################'
+      else
+        print *,' ####################################################'
+        print *,'      There have been',nwarn,' warnings.      '
+        print *,'              Results may be inaccurate!             '
+        print *,' ####################################################'
+      endif
 c
       stop
       end
