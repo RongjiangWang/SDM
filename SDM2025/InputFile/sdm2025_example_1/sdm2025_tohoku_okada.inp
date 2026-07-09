@@ -276,8 +276,8 @@
 #    smoothing), the normalized smoothing factor, and select the use of Zhang's
 #    approach to increase deep slip resolution (1/0 = yes/no)
 #===============================================================================
- 100000  './ZHYRELAX.txt'
- 2  2.5  0
+ 1000  './ZHYRELAX.txt'
+ 2  0.5  0
 #===============================================================================
 # OUTPUTS
 # =======
@@ -288,6 +288,6 @@
 #    corresponding to the input displacement data files, and for the data-
 #    correction parameters (if available)
 #===============================================================================
- 'slip_model_2.dat'
+ 'slip_model.dat'
  'output_un.dat'   'output_ue.dat'   'output_uz.dat'
 #================================end of input===================================
