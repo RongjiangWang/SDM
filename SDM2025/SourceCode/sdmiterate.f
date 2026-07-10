@@ -8,17 +8,18 @@ c     Last modified: Beijing, July 2026, by R. Wang
 c
       integer*4 i,j,ira,ips,igd,is,ipar
       integer*4 irelax,jter,nrelax
-      real*8 misfit,corl,vecvar,dvcvar
+      real*8 misfit,corl,vecvar,dvcvar,fmodi
       character*1 text
 c
       real*8 sdmcorl
       real*8 relax(nrelaxmax)
-      logical*2 convergence,landweber
+      logical*2 convergence
 c
       real*8 eps
       data eps/1.0d-12/
 c
       sysmis=1.d0
+      fmodi=1.d0
       logfile='log_'//slipout
       open(32,file=logfile,status='unknown')
       if(niter.gt.0)then
@@ -43,7 +44,6 @@ c
         mwssum=0.d0
         mwpsum=0.d0
 c
-        landweber=.true.
         jter=0
         do i=1,nsys
           resbat(i)=-sysbat(i)
@@ -59,7 +59,6 @@ c
         do i=1,nsys
           sysvec(i)=vecswp(i)-step*resbat(i)
         enddo
-        step0=step
 c
         call sdmproj(ierr)
         call sdmresbat(ierr)
@@ -76,37 +75,42 @@ c
         convergence=dabs(sysmis-sysmis0).le.eps*sysmis.and.
      &              dvcvar.le.eps*vecvar
 c
-        if(sysmis.le.sysmis0.or.landweber)then
+        if(sysmis.lt.sysmis0)then
           write( *,'(i8,f19.15,f19.6)')iter,sysmis,step*sig2max
           write(32,'(i8,f19.15)')iter,sysmis
-        endif
-c
-        if(sysmis.gt.sysmis0)then
-          if(landweber)then
-            sig2max=1.5d0*sig2max
-            print *,' Landweber step reduced!'
-          else
-            landweber=.true.
-            sig2max=0.75d0*sig2max
-            print *,' Landweber step recovered!'
+          if(step*sig2max.gt.1000.d0)then
+            sig2max=0.5d0*sig2max
+            fmodi=fmodi*2.d0
+            print *,' Landweber step doubled!'
           endif
-          step=1.d0/sig2max
+        else
           jter=jter+1
           do i=1,nsys
             sysvec(i)=vecswp(i)
           enddo
+          call sdmproj(ierr)
+          call sdmresbat(ierr)
+          if(step*sig2max.le.2.d0)then
+            sig2max=2.d0*sig2max
+            fmodi=fmodi*0.5d0
+            print *,' Landweber step halved!'
+          endif
+          step=1.d0/sig2max
           goto 20
-        else
-          irelax=irelax+1
-          if(irelax.gt.nrelax)irelax=1
-          step=relax(irelax)/sig2max
-          landweber=.false.
         endif
-        step0=step*sig2max
+c
+        irelax=irelax+1
+        if(irelax.gt.nrelax)irelax=1
+        step=relax(irelax)/sig2max
+c
         sysmis0=sysmis
         do i=1,nsys
           vecswp(i)=sysvec(i)
         enddo
+c
+        if(fmodi.le.eps)then
+          convergence=.true.
+        endif
 c
         if(convergence)then
           write(*,'(a,i6,a)')' Convergence achieved by ',
