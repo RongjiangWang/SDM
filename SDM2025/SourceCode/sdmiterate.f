@@ -23,10 +23,11 @@ c
       logfile='log_'//slipout
       open(32,file=logfile,status='unknown')
       if(niter.gt.0)then
-        write(*,'(a)') '   iter.      cost_function     iteration_step'
+        write(*,'(a)') '   iter.      cost_function'
+     &               //'     iteration_step'
         write(32,'(a)')'   iter.      cost_function'
-        write(*, '(i8,f19.15)')iter,sysmis
-        write(32,'(i8,f19.15)')iter,sysmis
+        write(*, '(i8,2f19.15)')iter,sysmis
+        write(32,'(i8,2f19.15)')iter,sysmis
         sysmis0=1.d0
 c
 c       Modified Landweber iteration
@@ -46,9 +47,10 @@ c
 c
         jter=0
         do i=1,nsys
-          resbat(i)=-sysbat(i)
-          vecswp(i)=0.d0
+          vecswp(i)=sysvec(i)
         enddo
+        call sdmproj(ierr)
+        call sdmresbat(ierr)
         step=1.d0/sig2max
       endif
 c
@@ -75,13 +77,18 @@ c
         convergence=dabs(sysmis-sysmis0).le.eps*sysmis.and.
      &              dvcvar.le.eps*vecvar
 c
-        if(sysmis.lt.sysmis0)then
-          write( *,'(i8,f19.15,f19.6)')iter,sysmis,step*sig2max
-          write(32,'(i8,f19.15)')iter,sysmis
+        if(sysmis.lt.sysmis0.or.iter.le.1)then
+          if(sysmis.le.1.d0)then
+            write( *,'(i8,f19.15,f19.6)')iter,sysmis,step*sig2max
+            write(32,'(i8,f19.15)')iter,sysmis
+          else
+            write( *,'(i8,E19.11,f19.6)')iter,sysmis,step*sig2max
+            write(32,'(i8,E19.11)')iter,sysmis
+          endif
           if(step*sig2max.gt.1000.d0)then
             sig2max=0.5d0*sig2max
             fmodi=fmodi*2.d0
-            print *,' Landweber step doubled!'
+            write(*,'(a,E19.11)')' Landweber step doubled to ',fmodi
           endif
         else
           jter=jter+1
@@ -90,10 +97,14 @@ c
           enddo
           call sdmproj(ierr)
           call sdmresbat(ierr)
-          if(step*sig2max.le.2.d0)then
+          if(step*sig2max.le.10.d0)then
             sig2max=2.d0*sig2max
             fmodi=fmodi*0.5d0
-            print *,' Landweber step halved!'
+            write(*,'(a,E19.11)')' Landweber step halved to ',fmodi
+            if(fmodi.le.eps)then
+              convergence=.true.
+              goto 50
+            endif
           endif
           step=1.d0/sig2max
           goto 20
@@ -108,9 +119,7 @@ c
           vecswp(i)=sysvec(i)
         enddo
 c
-        if(fmodi.le.eps)then
-          convergence=.true.
-        endif
+50      continue
 c
         if(convergence)then
           write(*,'(a,i6,a)')' Convergence achieved by ',
