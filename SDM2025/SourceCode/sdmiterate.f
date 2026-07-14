@@ -85,11 +85,6 @@ c
             write( *,'(i8,E19.11,f19.6)')iter,sysmis,step*sig2max
             write(32,'(i8,E19.11)')iter,sysmis
           endif
-          if(step*sig2max.gt.1000.d0)then
-            sig2max=0.5d0*sig2max
-            fmodi=fmodi*2.d0
-            write(*,'(a,E19.11)')' Landweber step doubled to ',fmodi
-          endif
         else
           jter=jter+1
           do i=1,nsys
