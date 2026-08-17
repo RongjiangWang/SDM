@@ -9,14 +9,14 @@ c     LOCAL WORK SPACES
 c     =================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       integer*4 i,is,iw,il,ips,jps,ira,nlmax,nwmax
-      real*8 lat0,lon0,st,st0,di,dl,dw,pn,pe
+      real*8 st,st0,di,dl,dw,pn,pe
       real*8 dx,dy,xp,yp,zp,d0,dp0,dp
       real*8 dx1,dx2,dy1,dy2,dz1,dz2,dnx,dny,dnz,hdis,vdis
       real*8 x0,y0,bga,bgc,sma,smb,smc,alf,beta,d1,d2,dd
       real*8 ra(2),sm(3,3)
       character*10 header
 c
-      real*8, allocatable:: lft(:,:),xft(:,:),yft(:,:)
+      real*8, allocatable:: lft(:,:),xft(:,:),yft(:,:),lat0(:),lon0(:)
       real*8, allocatable:: x(:,:),y(:,:),z(:,:),dip1(:),dip2(:)
 c
       real*8 EPSDIP
@@ -26,6 +26,10 @@ c
       if(ierr.ne.0)stop ' Error in sdmdisc: nps1 not allocated!'
       allocate(nps2(ns),stat=ierr)
       if(ierr.ne.0)stop ' Error in sdmdisc: nps2 not allocated!'
+      allocate(lat0(ns),stat=ierr)
+      if(ierr.ne.0)stop ' Error in sdmdisc: lat0 not allocated!'
+      allocate(lon0(ns),stat=ierr)
+      if(ierr.ne.0)stop ' Error in sdmdisc: lon0 not allocated!'
 c
       ra(1)=0.d0
       ra(2)=90.d0*DEG2RAD
@@ -62,7 +66,7 @@ c
           open(20,file=inpatches(is),status='old')
           read(20,'(a)')header
           do ips=nps1(is),nps2(is)
-          read(20,*)plat(ips),plon(ips),pz(ips),
+          read(20,*)plat(ips),plon(ips),pz(ips),pl(ips),pw(ips),
      &              dlen(ips),dwid(ips),strike(ips),dip(ips)
           pz(ips)=pz(ips)*KM2M
           dlen(ips)=dlen(ips)*KM2M
@@ -177,13 +181,13 @@ c
       nlmax=0
       nwmax=0
       do is=1,ns
-        lat0=0.5d0*(latft(1,is)+latft(nft(is),is))
-        lon0=0.5d0*(lonft(1,is)+lonft(nft(is),is))
+        lat0(is)=0.5d0*(latft(1,is)+latft(nft(is),is))
+        lon0(is)=0.5d0*(lonft(1,is)+lonft(nft(is),is))
 c
 c       local cartesian coordinates of surface ruptures
 c
         do i=1,nft(is)
-          call disazi(REARTH,lat0,lon0,latft(i,is),lonft(i,is),
+          call disazi(REARTH,lat0(is),lon0(is),latft(i,is),lonft(i,is),
      &                xft(i,is),yft(i,is))
         enddo
 c
@@ -366,7 +370,7 @@ c           spherical triangle:
 c           A = pole, B = source position, C = reference position
 c
             sma=dsqrt(pn**2+pe**2)/REARTH
-            smb=0.5d0*PI-lat0*DEG2RAD
+            smb=0.5d0*PI-lat0(is)*DEG2RAD
             bgc=datan2(pe,pn)
             smc=dacos(dcos(sma)*dcos(smb)
      &         +dsin(sma)*dsin(smb)*dcos(bgc))
@@ -375,7 +379,7 @@ c
 c           geographic coordinate of the equivalent point source
 c
             plat(ips)=90.d0-smc/DEG2RAD
-            plon(ips)=dmod(lon0+bga/DEG2RAD,360.d0)
+            plon(ips)=dmod(lon0(is)+bga/DEG2RAD,360.d0)
 c
             st=strike(ips)*DEG2RAD
             di=dip(ips)*DEG2RAD
@@ -435,25 +439,17 @@ c
 c
       do is=1,ns
         do ips=nps1(is),nps2(is)
-          st=strike(ips)*DEG2RAD
-          di=dip(ips)*DEG2RAD
-          d0=dmax1(d0,dsqrt(dlen(ips)**2+dwid(ips)**2
-     &                    +(dwid(ips)*dsin(di))**2))
 c
 c         search left neighboring patch
 c
-          dp=d0
           ipsl(ips)=0
-          xp=-dlen(ips)*dcos(st)
-          yp=-dlen(ips)*dsin(st)
-          zp=pz(ips)
+          dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
+          xp=pl(ips)-dlen(ips)
+          yp=pw(ips)
 c
           do jps=nps1(is),nps2(is)
-            if(jps.ne.ips.and.dabs(pz(jps)-pz(ips)).le.
-     &         dwid(ips)*dsin(di)+dwid(jps)*dsin(dip(jps)*DEG2RAD))then
-              call disazi(rearth,plat(ips),plon(ips),
-     &                           plat(jps),plon(jps),dx,dy)
-              dp0=dsqrt((dx-xp)**2+(dy-yp)**2+(pz(jps)-zp)**2)
+            if(jps.ne.ips)then
+              dp0=dsqrt((xp-pl(jps))**2+(yp-pw(jps))**2)
               if(dp.ge.dp0)then
                 dp=dp0
                 ipsl(ips)=jps
@@ -463,18 +459,14 @@ c
 c
 c         search right neighboring patch
 c
-          dp=d0
           ipsr(ips)=0
-          xp=dlen(ips)*dcos(st)
-          yp=dlen(ips)*dsin(st)
-          zp=pz(ips)
+          dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
+          xp=pl(ips)+dlen(ips)
+          yp=pw(ips)
 c
           do jps=nps1(is),nps2(is)
-            if(jps.ne.ips.and.dabs(pz(jps)-pz(ips)).le.
-     &         dwid(ips)*dsin(di)+dwid(jps)*dsin(dip(jps)*DEG2RAD))then
-              call disazi(rearth,plat(ips),plon(ips),
-     &                           plat(jps),plon(jps),dx,dy)
-              dp0=dsqrt((dx-xp)**2+(dy-yp)**2+(pz(jps)-zp)**2)
+            if(jps.ne.ips)then
+              dp0=dsqrt((xp-pl(jps))**2+(yp-pw(jps))**2)
               if(dp.ge.dp0)then
                 dp=dp0
                 ipsr(ips)=jps
@@ -489,15 +481,13 @@ c
           else
             dp=d0
             ipsu(ips)=0
-            xp= dwid(ips)*dcos(di)*dsin(st)
-            yp=-dwid(ips)*dcos(di)*dcos(st)
-            zp=pz(ips)-dwid(ips)*dsin(di)
+            dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
+            xp=pl(ips)
+            yp=pw(ips)-dwid(ips)
 c
             do jps=nps1(is),nps2(is)
-              if(jps.ne.ips.and.pz(jps).lt.pz(ips))then
-                call disazi(rearth,plat(ips),plon(ips),
-     &                             plat(jps),plon(jps),dx,dy)
-                dp0=dsqrt((dx-xp)**2+(dy-yp)**2+(pz(jps)-zp)**2)
+              if(jps.ne.ips)then
+                dp0=dsqrt((xp-pl(jps))**2+(yp-pw(jps))**2)
                 if(dp.ge.dp0)then
                   dp=dp0
                   ipsu(ips)=jps
@@ -510,15 +500,13 @@ c         search lower neighboring patch
 c
           dp=d0
           ipsd(ips)=0
-          xp=-dwid(ips)*dcos(di)*dsin(st)
-          yp= dwid(ips)*dcos(di)*dcos(st)
-          zp=pz(ips)+dwid(ips)*dsin(di)
+          dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
+          xp=pl(ips)
+          yp=pw(ips)+dwid(ips)
 c
           do jps=nps1(is),nps2(is)
-            if(jps.ne.ips.and.pz(jps).gt.pz(ips))then
-              call disazi(rearth,plat(ips),plon(ips),
-     &                           plat(jps),plon(jps),dx,dy)
-              dp0=dsqrt((dx-xp)**2+(dy-yp)**2+(pz(jps)-zp)**2)
+            if(jps.ne.ips)then
+              dp0=dsqrt((xp-pl(jps))**2+(yp-pw(jps))**2)
               if(dp.ge.dp0)then
                 dp=dp0
                 ipsd(ips)=jps
@@ -536,7 +524,7 @@ c
       enddo
 c
       if(idisc.eq.1)then
-        deallocate(lft,xft,yft,x,y,z,dip1,dip2)
+        deallocate(lft,xft,yft,x,y,z,dip1,dip2,lat0,lon0)
       endif
 c
       return
