@@ -10,7 +10,7 @@ c     =================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       integer*4 i,is,iw,il,ips,jps,ira,nlmax,nwmax
       real*8 st,st0,di,dl,dw,pn,pe
-      real*8 dx,dy,xp,yp,zp,d0,dp0,dp
+      real*8 dx,dy,xp,yp,dp0,dp
       real*8 dx1,dx2,dy1,dy2,dz1,dz2,dnx,dny,dnz,hdis,vdis
       real*8 x0,y0,bga,bgc,sma,smb,smc,alf,beta,d1,d2,dd
       real*8 ra(2),sm(3,3)
@@ -479,7 +479,6 @@ c
           if(pz(ips).le.dwid(ips)*dsin(di))then
             ipsu(ips)=-1
           else
-            dp=d0
             ipsu(ips)=0
             dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
             xp=pl(ips)
@@ -498,7 +497,6 @@ c
 c
 c         search lower neighboring patch
 c
-          dp=d0
           ipsd(ips)=0
           dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
           xp=pl(ips)
