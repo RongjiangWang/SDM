@@ -291,9 +291,10 @@ c
             st0=datan2(y(nlength(is),1)-y(1,1),
      &                 alf*(y(nlength(is),1)-y(1,1)))
           endif
+          st0=dmod(st0+2.d0*PI,2.d0*PI)
+          mstrike(is)=st0/DEG2RAD
           write(*,'(a,i4,a,f6.2,a)')' Average strike of ',
-     &         is,'. fault segment: ',
-     &         dmod(st0+2.d0*PI,2.d0*PI)/DEG2RAD,' deg'
+     &         is,'. fault segment: ',mstrike(is),' deg'
         endif
 c
 c       --- cartesian coordinates of nodes at curved fault plane
@@ -331,12 +332,7 @@ c
             pn=0.25d0*(x(il,iw)+x(il-1,iw)+x(il,iw-1)+x(il-1,iw-1))
             pe=0.25d0*(y(il,iw)+y(il-1,iw)+y(il,iw-1)+y(il-1,iw-1))
             pz(ips)=0.25d0*(z(il,iw)+z(il-1,iw)+z(il,iw-1)+z(il-1,iw-1))
-c
-            strike(ips)=0.5d0*(datan2(y(il,iw-1)-y(il-1,iw-1),
-     &                                x(il,iw-1)-x(il-1,iw-1))
-     &                        +datan2(y(il,iw)-y(il-1,iw),
-     &                                x(il,iw)-x(il-1,iw)))/DEG2RAD
-            if(strike(ips).lt.0.d0)strike(ips)=strike(ips)+360.d0
+            strike(ips)=mstrike(is)
 c
 c           determine two diagonal vectors
 c
@@ -443,7 +439,7 @@ c
 c         search left neighboring patch
 c
           ipsl(ips)=0
-          dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
+          dp=0.5d0*(dlen(ips)+dsqrt(dlen(ips)**2+dwid(ips)**2))
           xp=pl(ips)-dlen(ips)
           yp=pw(ips)
 c
@@ -460,7 +456,7 @@ c
 c         search right neighboring patch
 c
           ipsr(ips)=0
-          dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
+          dp=0.5d0*(dlen(ips)+dsqrt(dlen(ips)**2+dwid(ips)**2))
           xp=pl(ips)+dlen(ips)
           yp=pw(ips)
 c
@@ -480,7 +476,7 @@ c
             ipsu(ips)=-1
           else
             ipsu(ips)=0
-            dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
+            dp=0.5d0*(dwid(ips)+dsqrt(dlen(ips)**2+dwid(ips)**2))
             xp=pl(ips)
             yp=pw(ips)-dwid(ips)
 c
@@ -498,7 +494,7 @@ c
 c         search lower neighboring patch
 c
           ipsd(ips)=0
-          dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
+          dp=0.5d0*(dwid(ips)+dsqrt(dlen(ips)**2+dwid(ips)**2))
           xp=pl(ips)
           yp=pw(ips)+dwid(ips)
 c
