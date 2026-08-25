@@ -10,7 +10,7 @@ c     =================
 c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       integer*4 i,is,iw,il,ips,jps,ira,nlmax,nwmax
       real*8 st,st0,di,dl,dw,pn,pe
-      real*8 dx,dy,xp,yp,dp0,dp
+      real*8 dx,dy,xp,yp,dp0,dp,mnx,mny,mnz
       real*8 dx1,dx2,dy1,dy2,dz1,dz2,dnx,dny,dnz,hdis,vdis
       real*8 x0,y0,bga,bgc,sma,smb,smc,alf,beta,d1,d2,dd
       real*8 ra(2),sm(3,3)
@@ -332,7 +332,6 @@ c
             pn=0.25d0*(x(il,iw)+x(il-1,iw)+x(il,iw-1)+x(il-1,iw-1))
             pe=0.25d0*(y(il,iw)+y(il-1,iw)+y(il,iw-1)+y(il-1,iw-1))
             pz(ips)=0.25d0*(z(il,iw)+z(il-1,iw)+z(il,iw-1)+z(il-1,iw-1))
-            strike(ips)=mstrike(is)
 c
 c           determine two diagonal vectors
 c
@@ -351,14 +350,12 @@ c
             dnz=dx1*dy2-dx2*dy1
 c
             parea(ips)=0.5d0*dsqrt(dnx**2+dny**2+dnz**2)
+            dwid(ips)=dw
+            dlen(ips)=parea(ips)/dwid(ips)
 c
             dip(ips)=dacos(0.5d0*dnz/parea(ips))/DEG2RAD
-c
-            dlen(ips)=0.5d0*(dsqrt((x(il,iw)-x(il-1,iw))**2
-     &                            +(y(il,iw)-y(il-1,iw))**2)
-     &                      +dsqrt((x(il,iw-1)-x(il-1,iw-1))**2
-     &                            +(y(il,iw-1)-y(il-1,iw-1))**2))
-            dwid(ips)=parea(ips)/dlen(ips)
+            strike(ips)=datan2(dny,dnx)/DEG2RAD+90.d0
+            if(strike(ips).lt.0.d0)strike(ips)=strike(ips)+360.d0
 c
 c           convert to geographic coordinates
 c
@@ -523,3 +520,4 @@ c
 c
       return
       end
+
