@@ -50,7 +50,6 @@ c
           goto 103
         else
 104       continue
-          read(unit,'(a)')dataline
           read(unit,*,end=105)lat,lon,obs,d4,d5,d6
           nobsj(igd)=nobsj(igd)+1
           goto 104
