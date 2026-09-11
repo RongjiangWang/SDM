@@ -430,13 +430,20 @@ c
 c
 500   continue
 c
+c     rupture area
+c
+      slparea=0.d0
+      do ips=1,nps
+        slparea=slparea+parea(ips)
+      enddo
+c
       do is=1,ns
         do ips=nps1(is),nps2(is)
 c
 c         search left neighboring patch
 c
           ipsl(ips)=0
-          dp=0.5d0*(dlen(ips)+dsqrt(dlen(ips)**2+dwid(ips)**2))
+          dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
           xp=pl(ips)-dlen(ips)
           yp=pw(ips)
 c
@@ -453,7 +460,7 @@ c
 c         search right neighboring patch
 c
           ipsr(ips)=0
-          dp=0.5d0*(dlen(ips)+dsqrt(dlen(ips)**2+dwid(ips)**2))
+          dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
           xp=pl(ips)+dlen(ips)
           yp=pw(ips)
 c
@@ -473,7 +480,7 @@ c
             ipsu(ips)=-1
           else
             ipsu(ips)=0
-            dp=0.5d0*(dwid(ips)+dsqrt(dlen(ips)**2+dwid(ips)**2))
+            dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
             xp=pl(ips)
             yp=pw(ips)-dwid(ips)
 c
@@ -491,7 +498,7 @@ c
 c         search lower neighboring patch
 c
           ipsd(ips)=0
-          dp=0.5d0*(dwid(ips)+dsqrt(dlen(ips)**2+dwid(ips)**2))
+          dp=0.5d0*dsqrt(dlen(ips)**2+dwid(ips)**2)
           xp=pl(ips)
           yp=pw(ips)+dwid(ips)
 c
@@ -505,13 +512,6 @@ c
             endif
           enddo
         enddo
-      enddo
-c
-c     rupture area
-c
-      slparea=0.d0
-      do ips=1,nps
-        slparea=slparea+parea(ips)
       enddo
 c
       if(idisc.eq.1)then
